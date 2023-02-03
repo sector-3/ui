@@ -257,15 +257,13 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .vercelLogo {
-    filter: invert(1);
-  }
+.vercelLogo {
+  filter: invert(1);
+}
 
-  .logo,
-  .thirteen img {
-    filter: invert(1) drop-shadow(0 0 0.3rem #ffffff70);
-  }
+.logo,
+.thirteen img {
+  filter: invert(1) drop-shadow(0 0 0.3rem #ffffff70);
 }
 
 @keyframes rotate {

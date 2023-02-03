@@ -34,3 +34,9 @@ Run lint check:
 ```bash
 npm run lint
 ```
+
+## Build
+
+```bash
+npm run build
+```

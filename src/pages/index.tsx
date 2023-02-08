@@ -42,7 +42,7 @@ export default function Home() {
         <div className={styles.center}>
           <span className="text-5xl font-bold">Sector</span>
           <div className={styles.thirteen}>
-            <span className="text-4xl font-bold">#3</span>
+            <span className="text-5xl font-bold">#3</span>
           </div>
         </div>
 

@@ -17,24 +17,16 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.description}>
           <p>
-          Do Androids Dream of&nbsp;
+          Do DAOs Dream of&nbsp;
             <code className={styles.code}>Electric Sheep? ⚡️🐑</code>
           </p>
           <div>
             <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+              href="https://snapshot.org/#/sector3dao.eth"
               target="_blank"
               rel="noopener noreferrer"
             >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
+              <code className="text-gray-400">⚡️ /#/sector3dao.eth</code>
             </a>
           </div>
         </div>
@@ -48,59 +40,28 @@ export default function Home() {
 
         <div className={styles.grid}>
           <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            href="/daos"
             className={styles.card}
-            target="_blank"
             rel="noopener noreferrer"
           >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
+            <h2 className="{inter.className} text-2xl">
+              Explore DAOs ⚡️
             </h2>
             <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
+              Contribute to a DAO and get rewarded, with <i>complete transparency</i>.
             </p>
           </a>
 
           <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            href="/new-dao"
             className={styles.card}
-            target="_blank"
             rel="noopener noreferrer"
           >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
+            <h2 className="{inter.className} text-2xl">
+              Deploy a DAO 🚀
             </h2>
             <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
+              Reward DAO contributors <i>autonomously</i> with Sector#3.
             </p>
           </a>
         </div>

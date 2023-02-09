@@ -10,7 +10,7 @@ export default function Home() {
     <>
       <Head>
         <title>Sector#3</title>
-        <meta name="description" content="Do Androids Dream of Electric Sheep? ⚡️🐑" />
+        <meta name="description" content="Do DAOs Dream of Electric Sheep? ⚡️🐑" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -42,9 +42,8 @@ export default function Home() {
           <a
             href="/daos"
             className={styles.card}
-            rel="noopener noreferrer"
           >
-            <h2 className="{inter.className} text-2xl">
+            <h2 className="text-2xl">
               Explore DAOs ⚡️
             </h2>
             <p className={inter.className}>
@@ -55,9 +54,8 @@ export default function Home() {
           <a
             href="/new-dao"
             className={styles.card}
-            rel="noopener noreferrer"
           >
-            <h2 className="{inter.className} text-2xl">
+            <h2 className="text-2xl">
               Deploy a DAO 🚀
             </h2>
             <p className={inter.className}>

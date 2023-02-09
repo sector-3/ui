@@ -41,9 +41,9 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(25%, auto));
+  grid-template-columns: repeat(2, minmax(25%, auto));
   width: var(--max-width);
-  max-width: 100%;
+  max-width: 50%;
 }
 
 .card {

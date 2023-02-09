@@ -41,9 +41,9 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(25%, auto));
+  grid-template-columns: repeat(2, minmax(25%, auto));
   width: var(--max-width);
-  max-width: 100%;
+  max-width: 50%;
 }
 
 .card {
@@ -113,7 +113,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 75px;
+  width: 100px;
   height: 75px;
   padding: 25px 10px;
   margin-left: 16px;
@@ -257,15 +257,13 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .vercelLogo {
-    filter: invert(1);
-  }
+.vercelLogo {
+  filter: invert(1);
+}
 
-  .logo,
-  .thirteen img {
-    filter: invert(1) drop-shadow(0 0 0.3rem #ffffff70);
-  }
+.logo,
+.thirteen img {
+  filter: invert(1) drop-shadow(0 0 0.3rem #ffffff70);
 }
 
 @keyframes rotate {

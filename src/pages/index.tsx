@@ -6,6 +6,7 @@ import styles from '@/styles/Home.module.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  console.log('Home')
   return (
     <>
       <Head>
@@ -17,16 +18,16 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.description}>
           <p>
-          Do DAOs Dream of&nbsp;
+            Do DAOs Dream of&nbsp;
             <code className={styles.code}>Electric Sheep? ⚡️🐑</code>
           </p>
           <div>
             <a
-              href="https://snapshot.org/#/sector3dao.eth"
+              href="https://www.tally.xyz/gov/sector-3-goerli-63"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <code className="text-gray-400">⚡️ /#/sector3dao.eth</code>
+              <code className="text-gray-400">🗳️ Tally</code>
             </a>
           </div>
         </div>

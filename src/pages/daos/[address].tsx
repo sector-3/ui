@@ -1,20 +1,41 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import { Aboreto } from '@next/font/google'
+import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
+import { configureChains, goerli, createClient, readContracts, Address } from '@wagmi/core'
+import { publicProvider } from '@wagmi/core/providers/public'
+import Sector3DAO from '../../../abis/Sector3DAO.json'
+import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
+import { useState } from 'react'
+import { ethers } from 'ethers'
+import Link from 'next/link'
 
-const inter = Aboreto({ subsets: ['latin'], weight: '400' })
+const inter = Inter({ subsets: ['latin'] })
 
-export default function DAO({ dao }: any) {
+const { provider } = configureChains(
+  [goerli],
+  [publicProvider()]
+)
+
+const client = createClient({
+  autoConnect: true,
+  provider
+})
+
+export default function DAO({ dao, priorities }: any) {
   console.log('DAO')
 
   console.log('dao:', dao)
+  console.log('priorities:', priorities)
+
+  const headTitle = 'Sector#3 / ' + dao.name
+  const headDescription = dao.purpose
 
   return (
     <>
       <Head>
-        <title>Sector#3</title>
-        <meta name="description" content="Do DAOs Dream of Autonomous Sheep? ⚡️🐑" />
+        <title>{headTitle}</title>
+        <meta name="description" content={headDescription} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -35,17 +56,20 @@ export default function DAO({ dao }: any) {
         </div>
 
         <div className='container'>
-          <div className='container mt-4 p-6 bg-gray-800 rounded-xl'>
-            Priority 3...
-          </div>
+          {
+            priorities.map((priority: any, index: number) => (
+              <div key={index} className='mt-4 p-6 bg-gray-800 rounded-xl'>
+                Title: <b>{priority.title}</b><br />
+                Reward token: <code>{priority.rewardToken}</code><br />
+                Epoch budget: {priority.epochBudget} per {priority.epochDuration} days<br />
+                Start date: {priority.startDate}<br />
 
-          <div className='container mt-4 p-6 bg-gray-800 rounded-xl'>
-            Priority 2...
-          </div>
-
-          <div className='container mt-4 p-6 bg-gray-800 rounded-xl'>
-            Priority 1...
-          </div>
+                <Link href={`/priorities/${priority.address}`}>
+                  <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Contributions</button>
+                </Link>
+              </div>
+            ))
+          }
         </div>
       </main>
     </>
@@ -66,18 +90,85 @@ export async function getStaticPaths() {
 export async function getStaticProps(context: any) {
   console.log('getStaticProps')
 
-  const address: string = context.params.address;
+  const address = context.params.address
   console.log('address:', address)
 
+  const daoContract = {
+    address: address,
+    abi: Sector3DAO.abi
+  }
+
+  const daoData = await readContracts({
+    contracts: [
+      {
+        ...daoContract,
+        functionName: 'name'
+      },
+      {
+        ...daoContract,
+        functionName: 'purpose'
+      }
+    ]
+  })
+  console.log('daoData:', daoData)
+
+  let priorities = []
+  const priorityAddresses: Address[] = [ '0xcfed46a9DADDcbEEC23FF8Ef99cFF6A572c36DbE', '0x2B8810457595f7c2DCd0F24ac953236CAa07e5B8']
+  for (const priorityAddress of priorityAddresses) {
+    console.log('priorityAddress:', priorityAddress)
+
+    const priorityContract = {
+      address: priorityAddress,
+      abi: Sector3DAOPriority.abi
+    }
+
+    const priorityData = await readContracts({
+      contracts: [
+        {
+          ...priorityContract,
+          functionName: 'title'
+        },
+        {
+          ...priorityContract,
+          functionName: 'rewardToken'
+        },
+        {
+          ...priorityContract,
+          functionName: 'startTime'
+        },
+        {
+          ...priorityContract,
+          functionName: 'epochDuration'
+        },
+        {
+          ...priorityContract,
+          functionName: 'epochBudget'
+        }
+      ]
+    })
+    console.log('priorityData:', priorityData)
+
+    const priority: any = {
+      address: priorityAddress,
+      title: priorityData[0],
+      rewardToken: priorityData[1],
+      startDate: new Date(Number(priorityData[2]) * 1_000).toISOString().substring(0, 10),
+      epochDuration: priorityData[3],
+      epochBudget: ethers.utils.formatUnits(String(priorityData[4]))
+    }
+    priorities[priorities.length] = priority
+  }
+
   const dao = {
-    name: '<name>',
-    purpose: '<purpose>',
+    name: daoData[0],
+    purpose: daoData[1],
     address: address
   }
 
   return {
     props: {
-      dao: dao
+      dao: dao,
+      priorities: priorities
     }
   }
 }

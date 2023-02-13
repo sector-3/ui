@@ -2,10 +2,12 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
+import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  console.log('Home')
   return (
     <>
       <Head>
@@ -17,16 +19,16 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.description}>
           <p>
-          Do DAOs Dream of&nbsp;
+            Do DAOs Dream of&nbsp;
             <code className={styles.code}>Electric Sheep? ⚡️🐑</code>
           </p>
           <div>
             <a
-              href="https://snapshot.org/#/sector3dao.eth"
+              href="https://www.tally.xyz/gov/sector-3-goerli"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <code className="text-gray-400">⚡️ /#/sector3dao.eth</code>
+              <code className="text-gray-400">🗳️ Tally</code>
             </a>
           </div>
         </div>
@@ -39,7 +41,7 @@ export default function Home() {
         </div>
 
         <div className={styles.grid}>
-          <a
+          <Link
             href="/daos"
             className={styles.card}
           >
@@ -49,9 +51,9 @@ export default function Home() {
             <p className={inter.className}>
               Contribute to a DAO and get rewarded, with <i>complete transparency</i>.
             </p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/new-dao"
             className={styles.card}
           >
@@ -61,7 +63,7 @@ export default function Home() {
             <p className={inter.className}>
               Reward DAO contributors <i>autonomously</i> with Sector#3.
             </p>
-          </a>
+          </Link>
         </div>
       </main>
     </>

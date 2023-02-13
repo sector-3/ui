@@ -1,0 +1,75 @@
+{
+	"abi": [{
+		"inputs": [{
+			"internalType": "string",
+			"name": "name_",
+			"type": "string"
+		}, {
+			"internalType": "string",
+			"name": "purpose_",
+			"type": "string"
+		}],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	}, {
+		"inputs": [],
+		"name": "name",
+		"outputs": [{
+			"internalType": "string",
+			"name": "",
+			"type": "string"
+		}],
+		"stateMutability": "view",
+		"type": "function"
+	}, {
+		"inputs": [],
+		"name": "owner",
+		"outputs": [{
+			"internalType": "address",
+			"name": "",
+			"type": "address"
+		}],
+		"stateMutability": "view",
+		"type": "function"
+	}, {
+		"inputs": [],
+		"name": "purpose",
+		"outputs": [{
+			"internalType": "string",
+			"name": "",
+			"type": "string"
+		}],
+		"stateMutability": "view",
+		"type": "function"
+	}, {
+		"inputs": [{
+			"internalType": "string",
+			"name": "name_",
+			"type": "string"
+		}],
+		"name": "setName",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}, {
+		"inputs": [{
+			"internalType": "string",
+			"name": "purpose_",
+			"type": "string"
+		}],
+		"name": "setPurpose",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}, {
+		"inputs": [],
+		"name": "version",
+		"outputs": [{
+			"internalType": "uint8",
+			"name": "",
+			"type": "uint8"
+		}],
+		"stateMutability": "view",
+		"type": "function"
+	}]
+}

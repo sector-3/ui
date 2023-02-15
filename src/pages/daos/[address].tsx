@@ -2,11 +2,10 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
-import { configureChains, goerli, createClient, readContracts, Address } from '@wagmi/core'
+import { configureChains, goerli, createClient, readContract, readContracts, Address } from '@wagmi/core'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAO from '../../../abis/Sector3DAO.json'
 import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
-import { useState } from 'react'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 
@@ -107,13 +106,36 @@ export async function getStaticProps(context: any) {
       {
         ...daoContract,
         functionName: 'purpose'
+      },
+      {
+        ...daoContract,
+        functionName: 'getPriorityCount'
       }
     ]
   })
   console.log('daoData:', daoData)
 
+  let priorityAddresses: any[] = []
+
+  const priorityCount: Number = Number(daoData[2])
+  console.log('priorityCount:', priorityCount)
+  let priorityIndex = 0;
+  while (priorityIndex < priorityCount) {
+    console.log('priorityIndex:', priorityIndex)
+
+    const priorityData = await readContract({
+      address: address,
+      abi: Sector3DAO.abi,
+      functionName: 'priorities',
+      args: [priorityIndex]
+    })
+    console.log('priorityData:', priorityData)
+    priorityAddresses[priorityIndex] = priorityData
+
+    priorityIndex++
+  }
+
   let priorities = []
-  const priorityAddresses: Address[] = [ '0xcfed46a9DADDcbEEC23FF8Ef99cFF6A572c36DbE', '0x2B8810457595f7c2DCd0F24ac953236CAa07e5B8']
   for (const priorityAddress of priorityAddresses) {
     console.log('priorityAddress:', priorityAddress)
 

@@ -115,7 +115,8 @@ export async function getStaticProps(context: any) {
   })
   console.log('daoData:', daoData)
 
-  let priorityAddresses: String[] = []
+  let priorityAddresses: any[] = []
+
   const priorityCount: Number = Number(daoData[2])
   console.log('priorityCount:', priorityCount)
   let priorityIndex = 0;
@@ -129,7 +130,7 @@ export async function getStaticProps(context: any) {
       args: [priorityIndex]
     })
     console.log('priorityData:', priorityData)
-    priorityAddresses[priorityIndex] = String(priorityData)
+    priorityAddresses[priorityIndex] = priorityData
 
     priorityIndex++
   }

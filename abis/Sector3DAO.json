@@ -12,6 +12,38 @@
 		"stateMutability": "nonpayable",
 		"type": "constructor"
 	}, {
+		"inputs": [{
+			"internalType": "string",
+			"name": "title",
+			"type": "string"
+		}, {
+			"internalType": "address",
+			"name": "rewardToken",
+			"type": "address"
+		}, {
+			"internalType": "uint16",
+			"name": "epochDurationInDays",
+			"type": "uint16"
+		}, {
+			"internalType": "uint256",
+			"name": "epochBudget",
+			"type": "uint256"
+		}],
+		"name": "deployPriority",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}, {
+		"inputs": [],
+		"name": "getPriorityCount",
+		"outputs": [{
+			"internalType": "uint16",
+			"name": "",
+			"type": "uint16"
+		}],
+		"stateMutability": "view",
+		"type": "function"
+	}, {
 		"inputs": [],
 		"name": "name",
 		"outputs": [{
@@ -26,6 +58,20 @@
 		"name": "owner",
 		"outputs": [{
 			"internalType": "address",
+			"name": "",
+			"type": "address"
+		}],
+		"stateMutability": "view",
+		"type": "function"
+	}, {
+		"inputs": [{
+			"internalType": "uint256",
+			"name": "",
+			"type": "uint256"
+		}],
+		"name": "priorities",
+		"outputs": [{
+			"internalType": "contract Sector3DAOPriority",
 			"name": "",
 			"type": "address"
 		}],

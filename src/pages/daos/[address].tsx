@@ -1,34 +1,38 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
-import { configureChains, goerli, createClient, readContract, readContracts, Address } from '@wagmi/core'
-import { publicProvider } from '@wagmi/core/providers/public'
-import Sector3DAO from '../../../abis/Sector3DAO.json'
-import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
-import { ethers } from 'ethers'
-import Link from 'next/link'
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "@next/font/google";
+import styles from "@/styles/Home.module.css";
+import {
+  configureChains,
+  goerli,
+  createClient,
+  readContract,
+  readContracts,
+  Address,
+} from "@wagmi/core";
+import { publicProvider } from "@wagmi/core/providers/public";
+import Sector3DAO from "../../../abis/Sector3DAO.json";
+import Sector3DAOPriority from "../../../abis/Sector3DAOPriority.json";
+import { ethers } from "ethers";
+import Link from "next/link";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
-const { provider } = configureChains(
-  [goerli],
-  [publicProvider()]
-)
+const { provider } = configureChains([goerli], [publicProvider()]);
 
 const client = createClient({
   autoConnect: true,
-  provider
-})
+  provider,
+});
 
 export default function DAO({ dao, priorities }: any) {
-  console.log('DAO')
+  console.log("DAO");
 
-  console.log('dao:', dao)
-  console.log('priorities:', priorities)
+  console.log("dao:", dao);
+  console.log("priorities:", priorities);
 
-  const headTitle = 'Sector#3 / ' + dao.name
-  const headDescription = dao.purpose
+  const headTitle = "Sector#3 / " + dao.name;
+  const headDescription = dao.purpose;
 
   return (
     <>
@@ -46,151 +50,204 @@ export default function DAO({ dao, priorities }: any) {
               width={64}
               height={64}
               src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
-            /> <b>{dao.name}</b> {dao.purpose}
+            />{" "}
+            <b>{dao.name}</b> {dao.purpose}
           </p>
         </div>
 
-        <div className='container mt-4'>
+        <div className="container mt-4">
           <h2 className="text-2xl text-gray-400">Priorities:</h2>
         </div>
 
-        <div className='container'>
-          {
-            priorities.map((priority: any, index: number) => (
-              <div key={index} className='mt-4 p-6 bg-gray-800 rounded-xl'>
-                Title: <b>{priority.title}</b><br />
-                Reward token: <code>{priority.rewardToken}</code><br />
-                Epoch budget: {priority.epochBudget} per {priority.epochDuration} days<br />
-                Start date: {priority.startDate}<br />
-
-                <Link href={`/priorities/${priority.address}`}>
-                  <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Contributions</button>
-                </Link>
-              </div>
-            ))
-          }
+        <div className="container">
+          {priorities.map((priority: any, index: number) => (
+            <div key={index} className="mt-4 p-6 bg-gray-800 rounded-xl">
+              Title: <b>{priority.title}</b>
+              <br />
+              Reward token: <code>{priority.rewardToken}</code>
+              <br />
+              Epoch budget: {priority.epochBudget} per {priority.epochDuration}{" "}
+              days
+              <br />
+              Start date: {priority.startDate}
+              <br />
+              <Link href={`/priorities/${priority.address}`}>
+                <button className="mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600">
+                  View Contributions
+                </button>
+              </Link>
+              {priority.epochContributions.length > 0 && (
+                <div className="mt-4 p-6 bg-gray-800 rounded-xl">
+                  <h2 className="text-xl text-gray-400 mb-4">
+                    Contributions for epoch {priority.currentEpoch}:
+                  </h2>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Contributor</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr key={epoch}>
+                        {contributions.map(
+                          (contribution: any, index: number) => (
+                            <React.Fragment key={index}>
+                              <td>{contribution.contributor}</td>
+                              <td>{contribution.amount}</td>
+                            </React.Fragment>
+                          )
+                        )}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </main>
     </>
-  )
+  );
 }
 
 export async function getStaticPaths() {
-  console.log('getStaticPaths')
+  console.log("getStaticPaths");
 
   return {
     paths: [
       // { params: { address: '0x96Bf89193E2A07720e42bA3AD736128a45537e63' } }
     ],
-    fallback: 'blocking'
-  }
+    fallback: "blocking",
+  };
 }
 
 export async function getStaticProps(context: any) {
-  console.log('getStaticProps')
+  console.log("getStaticProps");
 
-  const address = context.params.address
-  console.log('address:', address)
+  const address = context.params.address;
+  console.log("address:", address);
 
   const daoContract = {
     address: address,
-    abi: Sector3DAO.abi
-  }
+    abi: Sector3DAO.abi,
+  };
 
   const daoData = await readContracts({
     contracts: [
       {
         ...daoContract,
-        functionName: 'name'
+        functionName: "name",
       },
       {
         ...daoContract,
-        functionName: 'purpose'
+        functionName: "purpose",
       },
       {
         ...daoContract,
-        functionName: 'getPriorityCount'
-      }
-    ]
-  })
-  console.log('daoData:', daoData)
+        functionName: "getPriorityCount",
+      },
+    ],
+  });
+  console.log("daoData:", daoData);
 
-  let priorityAddresses: any[] = []
+  let priorityAddresses: any[] = [];
 
-  const priorityCount: Number = Number(daoData[2])
-  console.log('priorityCount:', priorityCount)
+  const priorityCount: Number = Number(daoData[2]);
+  console.log("priorityCount:", priorityCount);
   let priorityIndex = 0;
   while (priorityIndex < priorityCount) {
-    console.log('priorityIndex:', priorityIndex)
+    console.log("priorityIndex:", priorityIndex);
 
     const priorityData = await readContract({
       address: address,
       abi: Sector3DAO.abi,
-      functionName: 'priorities',
-      args: [priorityIndex]
-    })
-    console.log('priorityData:', priorityData)
-    priorityAddresses[priorityIndex] = priorityData
+      functionName: "priorities",
+      args: [priorityIndex],
+    });
+    console.log("priorityData:", priorityData);
+    priorityAddresses[priorityIndex] = priorityData;
 
-    priorityIndex++
+    priorityIndex++;
   }
 
-  let priorities = []
+  let priorities = [];
   for (const priorityAddress of priorityAddresses) {
-    console.log('priorityAddress:', priorityAddress)
+    console.log("priorityAddress:", priorityAddress);
 
     const priorityContract = {
       address: priorityAddress,
-      abi: Sector3DAOPriority.abi
-    }
+      abi: Sector3DAOPriority.abi,
+    };
 
     const priorityData = await readContracts({
       contracts: [
         {
           ...priorityContract,
-          functionName: 'title'
+          functionName: "title",
         },
         {
           ...priorityContract,
-          functionName: 'rewardToken'
+          functionName: "rewardToken",
         },
         {
           ...priorityContract,
-          functionName: 'startTime'
+          functionName: "startTime",
         },
         {
           ...priorityContract,
-          functionName: 'epochDuration'
+          functionName: "epochDuration",
         },
         {
           ...priorityContract,
-          functionName: 'epochBudget'
-        }
-      ]
-    })
-    console.log('priorityData:', priorityData)
+          functionName: "epochBudget",
+        },
+      ],
+    });
+    console.log("priorityData:", priorityData);
 
     const priority: any = {
       address: priorityAddress,
       title: priorityData[0],
       rewardToken: priorityData[1],
-      startDate: new Date(Number(priorityData[2]) * 1_000).toISOString().substring(0, 10),
+      startDate: new Date(Number(priorityData[2]) * 1_000)
+        .toISOString()
+        .substring(0, 10),
       epochDuration: priorityData[3],
-      epochBudget: ethers.utils.formatUnits(String(priorityData[4]))
-    }
-    priorities[priorities.length] = priority
+      epochBudget: ethers.utils.formatUnits(String(priorityData[4])),
+    };
+    priorities[priorities.length] = priority;
+
+    const currentEpoch = Math.floor(
+      Date.now() / (priorityData[3] * 24 * 60 * 60 * 1000)
+    );
+    const epochContributionsData = await readContract({
+      address: priorityAddress,
+      abi: Sector3DAOPriority.abi,
+      functionName: "getEpochContributions",
+      args: [currentEpoch],
+    });
+
+    const epochContributions = epochContributionsData[1].map(
+      (amount: any, index: number) => {
+        const contributor = epochContributionsData[0][index];
+        return { contributor, amount };
+      }
+    );
+
+    console.log("epochContributions:", epochContributions);
   }
 
   const dao = {
     name: daoData[0],
     purpose: daoData[1],
-    address: address
-  }
+    address: address,
+  };
 
   return {
     props: {
       dao: dao,
-      priorities: priorities
-    }
-  }
+      priorities: priorities,
+    },
+  };
 }

@@ -56,7 +56,7 @@ export default function DAO({ dao, priorities }: any) {
         </div>
 
         <div className='container mt-4'>
-          <h2 className="text-2xl text-gray-400">Priorities:</h2>
+          <h2 className="text-2xl text-gray-400">🎯 Priorities:</h2>
         </div>
 
         <div className='container'>
@@ -69,7 +69,7 @@ export default function DAO({ dao, priorities }: any) {
                 Start date: {priority.startDate}<br />
 
                 <Link href={`/priorities/${priority.address}`}>
-                  <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Epochs</button>
+                  <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Epochs ⏱️</button>
                 </Link>
               </div>
             ))

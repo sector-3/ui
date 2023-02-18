@@ -63,35 +63,44 @@ export default function Priority({ dao, priority, epochs }: any) {
         </div>
 
         <div className='container mt-4'>
-          <h2 className="text-2xl text-gray-400">Current Epoch:</h2>
+          <h2 className="text-2xl text-gray-400">⏳ Current Epoch:</h2>
         </div>
 
         <div className='container'>
           <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
-            From <b>{epochs[epochs.length - 1].startDate}</b> to <b>{epochs[epochs.length - 1].endDate}</b><br />
+            From <b>{epochs[0].startDate}</b> to <b>{epochs[0].endDate}</b><br />
 
-            <Link href={`/priorities/${priority.address}/${epochs.length - 1}`}>
-              <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Contributions</button>
+            <Link href={`/priorities/${priority.address}/0`}>
+              <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Contributions 😅</button>
             </Link>
           </div>
         </div>
 
         <div className='container mt-4'>
-          <h2 className="text-2xl text-gray-400">Past Epochs:</h2>
+          <h2 className="text-2xl text-gray-400">⌛️ Past Epochs:</h2>
         </div>
 
         <div className='container'>
-          {
+          {(epochs.length < 2) ? (
+            <div className='text-gray-400'>
+              Zero, zip, nil...
+            </div>
+          ) : (
             epochs.map((epoch: any, index: number) => (
-              <div key={index} className='mt-4 p-6 bg-gray-800 rounded-xl'>
-                From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b><br />
+              (index == 0) ? (
+                // Skip current epoch
+                null
+              ) : (
+                <div key={index} className='mt-4 p-6 bg-gray-800 rounded-xl'>
+                  From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b><br />
 
-                <Link href={`/priorities/${priority.address}/${index}`}>
-                  <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Contributions</button>
-                </Link>
-              </div>
+                  <Link href={`/priorities/${priority.address}/${index}`}>
+                    <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Contributions 😴</button>
+                  </Link>
+                </div>
+              )
             ))
-          }
+          )}
         </div>
       </main>
     </>
@@ -199,8 +208,8 @@ export async function getStaticProps(context: any) {
   let epochs: any[] = []
   const epochCount: Number = priority.epochIndex + 1
   console.log('epochCount:', epochCount)
-  let epochIndex = 0;
-  while (epochIndex < epochCount) {
+  let epochIndex = priority.epochIndex;
+  while (epochIndex >= 0) {
     console.log('epochIndex:', epochIndex)
 
     const epoch = {
@@ -209,9 +218,9 @@ export async function getStaticProps(context: any) {
       endTime: priority.startTime + ((epochIndex + 1) * priority.epochDuration * 24*60*60),
       endDate: new Date(Number(priority.startTime + ((epochIndex + 1) * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
     }
-    epochs[epochIndex] = epoch
+    epochs[epochs.length] = epoch
 
-    epochIndex++
+    epochIndex--
   }
 
   return {

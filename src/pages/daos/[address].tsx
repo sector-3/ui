@@ -16,6 +16,9 @@ import Sector3DAOPriority from "../../../abis/Sector3DAOPriority.json";
 import { ethers } from "ethers";
 import Link from "next/link";
 
+import React, { useState } from "react";
+
+
 const inter = Inter({ subsets: ["latin"] });
 
 const { provider } = configureChains([goerli], [publicProvider()]);
@@ -26,6 +29,8 @@ const client = createClient({
 });
 
 export default function DAO({ dao, priorities }: any) {
+  const [selectedPriorityContributions, setSelectedPriorityContributions] = useState<never[] | {}>({});
+  
   console.log("DAO");
 
   console.log("dao:", dao);
@@ -62,7 +67,7 @@ export default function DAO({ dao, priorities }: any) {
         <div className="container">
           {priorities.map((priority: any, index: number) => (
             <div key={index} className="mt-4 p-6 bg-gray-800 rounded-xl">
-              Title: <b>{priority.title}</b>
+              Title: <b>{priority.title}{index}</b>
               <br />
               Reward token: <code>{priority.rewardToken}</code>
               <br />
@@ -72,40 +77,23 @@ export default function DAO({ dao, priorities }: any) {
               Start date: {priority.startDate}
               <br />
               <Link href={`/priorities/${priority.address}`}>
-                <button className="mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600">
-                  View Contributions
-                </button>
+              <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600' onClick={async () => {
+                    const contributions = await readContract({
+                      address: priority.address,
+                      abi: Sector3DAOPriority.abi,
+                      functionName: 'getEpochContributions',
+                      args: [index], 
+                    });
+                    if(contributions) {
+                      setSelectedPriorityContributions(contributions);
+                    }
+                    
+                  }}>View Contributions</button>
               </Link>
-              {priority.epochContributions.length > 0 && (
-                <div className="mt-4 p-6 bg-gray-800 rounded-xl">
-                  <h2 className="text-xl text-gray-400 mb-4">
-                    Contributions for epoch {priority.currentEpoch}:
-                  </h2>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Contributor</th>
-                        <th>Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr key={epoch}>
-                        {contributions.map(
-                          (contribution: any, index: number) => (
-                            <React.Fragment key={index}>
-                              <td>{contribution.contributor}</td>
-                              <td>{contribution.amount}</td>
-                            </React.Fragment>
-                          )
-                        )}
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              )}
             </div>
           ))}
         </div>
+        {Array.isArray(selectedPriorityContributions) && selectedPriorityContributions.length > 0 && <Contributions contributions={selectedPriorityContributions} />}
       </main>
     </>
   );
@@ -217,25 +205,6 @@ export async function getStaticProps(context: any) {
       epochBudget: ethers.utils.formatUnits(String(priorityData[4])),
     };
     priorities[priorities.length] = priority;
-
-    const currentEpoch = Math.floor(
-      Date.now() / (priorityData[3] * 24 * 60 * 60 * 1000)
-    );
-    const epochContributionsData = await readContract({
-      address: priorityAddress,
-      abi: Sector3DAOPriority.abi,
-      functionName: "getEpochContributions",
-      args: [currentEpoch],
-    });
-
-    const epochContributions = epochContributionsData[1].map(
-      (amount: any, index: number) => {
-        const contributor = epochContributionsData[0][index];
-        return { contributor, amount };
-      }
-    );
-
-    console.log("epochContributions:", epochContributions);
   }
 
   const dao = {
@@ -250,4 +219,19 @@ export async function getStaticProps(context: any) {
       priorities: priorities,
     },
   };
+}
+
+
+export function Contributions({ contributions }: any) {
+  return (
+    <div className='container mt-4'>
+      <h2 className="text-2xl text-gray-400">Contributions:</h2>
+      {contributions.map((contribution: any, index: number) => (
+        <div key={index} className='p-6 mt-4 bg-gray-800 rounded-xl'>
+          Contributor: {contribution.contributor}<br />
+          Amount: {contribution.amount}<br />
+        </div>
+      ))}
+    </div>
+  )
 }

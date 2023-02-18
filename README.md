@@ -40,3 +40,9 @@ npm run lint
 ```bash
 npm run build
 ```
+
+## Routes
+
+- DAO: `/daos/<address>`
+- DAO priority: `/priorities/<address>`
+- Priority epoch (and contributions): `/priorities/<address>/<epochIndex>`

@@ -69,7 +69,7 @@ export default function DAO({ dao, priorities }: any) {
                 Start date: {priority.startDate}<br />
 
                 <Link href={`/priorities/${priority.address}`}>
-                  <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Contributions</button>
+                  <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Epochs</button>
                 </Link>
               </div>
             ))
@@ -85,7 +85,7 @@ export async function getStaticPaths() {
 
   return {
     paths: [
-      // { params: { address: '0x96Bf89193E2A07720e42bA3AD736128a45537e63' } }
+      { params: { address: '0x66E6Aed398d2BD699214c4580EC6A5D65C223176' } }
     ],
     fallback: 'blocking'
   }

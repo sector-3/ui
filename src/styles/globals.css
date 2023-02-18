@@ -5,7 +5,7 @@
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
+  --font-mono: 'PT mono', ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
     'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
@@ -43,6 +43,7 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  font-family: 'PT Mono', monospace;
 }
 
 html,
@@ -57,10 +58,23 @@ html {
 
 body {
   color: rgb(var(--foreground-rgb));  
-  background: no-repeat url(../../public/background.png);
+  /* background: no-repeat url(../../public/background.png); */
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: cover;
+}
+
+#background-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  opacity: 0.1;
 }
 
 a {

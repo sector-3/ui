@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import { Inter } from '@next/font/google'
+import { PT_Mono } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import { configureChains, goerli, createClient, readContract, readContracts, Address } from '@wagmi/core'
 import { publicProvider } from '@wagmi/core/providers/public'
@@ -9,7 +9,7 @@ import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 
-const inter = Inter({ subsets: ['latin'] })
+const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
 const { provider } = configureChains(
   [goerli],
@@ -38,6 +38,11 @@ export default function DAO({ dao, priorities }: any) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <video id="background-video" autoPlay loop muted poster="https://pbs.twimg.com/tweet_video_thumb/FpM9CcwagAIiRD7.jpg">
+        {/* <source src="https://video.twimg.com/tweet_video/FpM9CcwagAIiRD7.mp4" type="video/mp4" /> */}
+      </video>
+
       <main className={styles.main}>
         <div className={styles.description}>
           <p>

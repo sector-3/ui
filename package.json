@@ -14,7 +14,7 @@
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "@wagmi/core": "^0.9.5",
-    "eslint": "8.33.0",
+    "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
     "ethers": "^5.7.2",
     "next": "13.1.6",

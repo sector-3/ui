@@ -56,6 +56,10 @@ export default function DAO({ dao, priorities }: any) {
         </div>
 
         <div className='container mt-4'>
+          <Link href={`https://goerli.etherscan.io/address/${dao.address}#writeContract#F1`} target='_blank'>
+            <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>Add Priority</button>
+          </Link>
+
           <h2 className="text-2xl text-gray-400">🎯 Priorities:</h2>
         </div>
 

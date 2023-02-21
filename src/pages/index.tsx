@@ -29,11 +29,11 @@ export default function Home() {
           </p>
           <div>
             <a
-              href="https://www.tally.xyz/gov/sector-3-goerli"
+              href="https://github.com/sector-3"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <code className="text-gray-400">🗳️ Tally</code>
+              <code className="text-gray-400">GitHub</code>
             </a>
           </div>
         </div>

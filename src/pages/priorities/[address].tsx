@@ -70,20 +70,20 @@ export default function Priority({ dao, priority, epochs }: any) {
           <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
             From <b>{epochs[0].startDate}</b> to <b>{epochs[0].endDate}</b><br />
 
-            <Link href={`/priorities/${priority.address}/0`}>
-              <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Contributions 😅</button>
+            <Link href={`/priorities/${priority.address}/epochs/${priority.epochIndex}`}>
+              <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Current Contributions 😅</button>
             </Link>
           </div>
         </div>
 
-        <div className='container mt-4'>
+        <div className='container mt-8'>
           <h2 className="text-2xl text-gray-400">⌛️ Past Epochs:</h2>
         </div>
 
         <div className='container'>
           {(epochs.length < 2) ? (
             <div className='text-gray-400'>
-              Zero, zip, nil...
+              No data
             </div>
           ) : (
             epochs.map((epoch: any, index: number) => (
@@ -94,8 +94,8 @@ export default function Priority({ dao, priority, epochs }: any) {
                 <div key={index} className='mt-4 p-6 bg-gray-800 rounded-xl'>
                   From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b><br />
 
-                  <Link href={`/priorities/${priority.address}/${index}`}>
-                    <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Contributions 😴</button>
+                  <Link href={`/priorities/${priority.address}/epochs/${priority.epochIndex - index}`}>
+                    <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Past Contributions 😴</button>
                   </Link>
                 </div>
               )
@@ -213,6 +213,7 @@ export async function getStaticProps(context: any) {
     console.log('epochIndex:', epochIndex)
 
     const epoch = {
+      index: Number(epochIndex),
       startTime: priority.startTime + (epochIndex * priority.epochDuration * 24*60*60),
       startDate: new Date(Number(priority.startTime + (epochIndex * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
       endTime: priority.startTime + ((epochIndex + 1) * priority.epochDuration * 24*60*60),

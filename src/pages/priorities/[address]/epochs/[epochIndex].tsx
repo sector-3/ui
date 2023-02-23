@@ -311,6 +311,7 @@ export async function getStaticProps(context: any) {
       epoch: epoch,
       contributions: contributions,
       allocationPercentages: allocationPercentages
-    }
+    },
+    revalidate: 60
   }
 }

@@ -200,6 +200,7 @@ export async function getStaticProps(context: any) {
     props: {
       dao: dao,
       priorities: priorities
-    }
+    },
+    revalidate: 60
   }
 }

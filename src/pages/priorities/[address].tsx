@@ -229,6 +229,7 @@ export async function getStaticProps(context: any) {
       dao: dao,
       priority: priority,
       epochs: epochs
-    }
+    },
+    revalidate: 60
   }
 }

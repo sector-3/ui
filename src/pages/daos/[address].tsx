@@ -2,7 +2,9 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
-import { configureChains, goerli, createClient, readContract, readContracts, Address } from '@wagmi/core'
+import { config } from '@/utils/Config'
+import { chainUtils } from '@/utils/ChainUtils'
+import { configureChains, createClient, readContract, readContracts } from '@wagmi/core'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAO from '../../../abis/Sector3DAO.json'
 import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
@@ -12,7 +14,7 @@ import Link from 'next/link'
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
 const { provider } = configureChains(
-  [goerli],
+  [chainUtils.chain],
   [publicProvider()]
 )
 
@@ -56,7 +58,7 @@ export default function DAO({ dao, priorities }: any) {
         </div>
 
         <div className='container mt-4'>
-          <Link href={`https://goerli.etherscan.io/address/${dao.address}#writeContract#F1`} target='_blank'>
+          <Link href={`${config.etherscanDomain}/address/${dao.address}#writeContract#F1`} target='_blank'>
             <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>Add Priority</button>
           </Link>
 
@@ -89,7 +91,7 @@ export async function getStaticPaths() {
 
   return {
     paths: [
-      { params: { address: '0x66E6Aed398d2BD699214c4580EC6A5D65C223176' } }
+      // { params: { address: '0x66E6Aed398d2BD699214c4580EC6A5D65C223176' } }
     ],
     fallback: 'blocking'
   }

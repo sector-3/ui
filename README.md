@@ -11,6 +11,12 @@ Install the dependencies:
 npm install
 ```
 
+Set environment variables:
+
+```shell
+cp .env.sample .env
+```
+
 Run the development server:
 
 ```bash

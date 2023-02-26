@@ -2,17 +2,19 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
-import { configureChains, goerli, createClient, readContract, readContracts, Address } from '@wagmi/core'
+import { chainUtils } from '@/utils/ChainUtils'
+import { configureChains, createClient, readContract, readContracts } from '@wagmi/core'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAO from '../../../../../abis/Sector3DAO.json'
 import Sector3DAOPriority from '../../../../../abis/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
+import { config } from '@/utils/Config'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
 const { provider } = configureChains(
-  [goerli],
+  [chainUtils.chain],
   [publicProvider()]
 )
 
@@ -79,7 +81,7 @@ export default function Priority({ dao, priority, epoch, contributions, allocati
 
         <div className='container mt-4'>
           {(epoch.index == priority.epochIndex) ? (
-            <Link href={`https://goerli.etherscan.io/address/${priority.address}#writeContract#F1`} target='_blank'>
+            <Link href={`${config.etherscanDomain}/address/${priority.address}#writeContract#F1`} target='_blank'>
               <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>Add Contribution</button>
             </Link>
           ) : null}
@@ -150,10 +152,10 @@ export async function getStaticPaths() {
 
   return {
     paths: [
-      { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67', epochIndex: '0' } },
-      { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67', epochIndex: '1' } },
-      { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67', epochIndex: '2' } },
-      { params: { address: '0xd7aC7a02F171DDA4435Df9d4556AC92F388130Cb', epochIndex: '0' } }
+      // { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67', epochIndex: '0' } },
+      // { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67', epochIndex: '1' } },
+      // { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67', epochIndex: '2' } },
+      // { params: { address: '0xd7aC7a02F171DDA4435Df9d4556AC92F388130Cb', epochIndex: '0' } }
     ],
     fallback: 'blocking'
   }

@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
 import { config } from '@/utils/Config'
 import { chainUtils } from '@/utils/ChainUtils'
 import { configureChains, createClient, readContract, readContracts } from '@wagmi/core'
@@ -30,7 +29,7 @@ export default function DAO({ dao, priorities }: any) {
   console.log('priorities:', priorities)
 
   const headTitle = 'Sector#3 / ' + dao.name
-  const headDescription = dao.purpose
+  const headDescription = 'Purpose: ' + dao.purpose
 
   return (
     <>
@@ -45,16 +44,27 @@ export default function DAO({ dao, priorities }: any) {
         {/* <source src="https://video.twimg.com/tweet_video/FpM9CcwagAIiRD7.mp4" type="video/mp4" /> */}
       </video>
 
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            <Image
-              alt="Logo"
-              width={64}
-              height={64}
-              src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
-            /> <b>{dao.name}</b> {dao.purpose}
-          </p>
+      <main className='p-2 sm:p-4 md:p-8 lg:p-16 xl:p-32 2xl:p-64'>
+        <div id='header' className='md:flex p-6 bg-black rounded-xl'>
+          <div className='md:w-2/3 flex'>
+            <div className='w-1/6'>
+              <Image
+                alt="DAO token"
+                width={100}
+                height={100}
+                src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198/logo.png"
+              />
+            </div>
+            <div className='w-5/6 pl-6'>
+              <h2 className='text-xl font-bold'>{dao.name}</h2>
+              <p className='text-gray-400 pb-6 md:pb-0'>Purpose: {dao.purpose}</p>
+            </div>
+          </div>
+          <div className='text-center md:text-right md:w-1/3'>
+            <button className='rounded-xl text-xl font-bold bg-indigo-800 hover:bg-indigo-700 px-4 py-2'>
+              ♦ Connect
+            </button>
+          </div>
         </div>
 
         <div className='container mt-4'>

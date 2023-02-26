@@ -2,7 +2,8 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
-import { configureChains, goerli, createClient, readContract, readContracts, Address } from '@wagmi/core'
+import { chainUtils } from '@/utils/ChainUtils'
+import { configureChains, createClient, readContracts } from '@wagmi/core'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAO from '../../../abis/Sector3DAO.json'
 import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
@@ -12,7 +13,7 @@ import Link from 'next/link'
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
 const { provider } = configureChains(
-  [goerli],
+  [chainUtils.chain],
   [publicProvider()]
 )
 
@@ -112,8 +113,8 @@ export async function getStaticPaths() {
 
   return {
     paths: [
-      { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67' } },
-      { params: { address: '0xd7aC7a02F171DDA4435Df9d4556AC92F388130Cb' } }
+      // { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67' } },
+      // { params: { address: '0xd7aC7a02F171DDA4435Df9d4556AC92F388130Cb' } }
     ],
     fallback: 'blocking'
   }

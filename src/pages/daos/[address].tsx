@@ -22,14 +22,6 @@ const client = createClient({
   provider
 })
 
-const connectWallet = async () => {
-  console.log('connectWallet')
-
-  const result = await connect({
-    connector: new InjectedConnector()
-  })
-}
-
 export default function DAO({ dao, priorities }: any) {
   console.log('DAO')
 
@@ -38,8 +30,6 @@ export default function DAO({ dao, priorities }: any) {
 
   const headTitle = 'Sector#3 / ' + dao.name
   const headDescription = 'Purpose: ' + dao.purpose
-
-  connectWallet()
 
   return (
     <>

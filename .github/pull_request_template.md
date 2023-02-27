@@ -2,13 +2,17 @@
 
 <!--- Please link to the GitHub issue here, e.g. "closes #30" -->
 
+
 ## Screenshots (if appropriate):
 
 <!--- If your pull request changes the UI, please include before/after screenshots. -->
 
+
 ## How Has This Been Tested?
 
 <!--- Please describe in detail how you tested your changes. -->
+<!--- If your pull request changes the UI, please test the layout with common device resolutions:  https://tailwindcss.com/docs/screens -->
+
 
 ## Sector#3 Contribution
 

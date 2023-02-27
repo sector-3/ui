@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
 import { config } from '@/utils/Config'
 import { chainUtils } from '@/utils/ChainUtils'
-import { configureChains, createClient, readContract, readContracts } from '@wagmi/core'
+import { configureChains, connect, ConnectResult, createClient, InjectedConnector, Provider, readContract, readContracts } from '@wagmi/core'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAO from '../../../abis/Sector3DAO.json'
 import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
@@ -22,6 +22,14 @@ const client = createClient({
   provider
 })
 
+const connectWallet = async () => {
+  console.log('connectWallet')
+
+  const result = await connect({
+    connector: new InjectedConnector()
+  })
+}
+
 export default function DAO({ dao, priorities }: any) {
   console.log('DAO')
 
@@ -30,6 +38,8 @@ export default function DAO({ dao, priorities }: any) {
 
   const headTitle = 'Sector#3 / ' + dao.name
   const headDescription = 'Purpose: ' + dao.purpose
+
+  connectWallet()
 
   return (
     <>
@@ -62,14 +72,16 @@ export default function DAO({ dao, priorities }: any) {
           </div>
           <div className='text-center md:text-right md:w-1/3'>
             <button className='rounded-xl text-xl font-bold bg-indigo-800 hover:bg-indigo-700 px-4 py-2'>
-              ♦ Connect
+              <div className='flex'>
+                <Image alt='Ethereum' src='/ethereum.svg' width={24} height={24} className='mr-2' />Connect
+              </div>
             </button>
           </div>
         </div>
 
         <div className='container mt-4'>
           <Link href={`${config.etherscanDomain}/address/${dao.address}#writeContract#F1`} target='_blank'>
-            <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>Add Priority</button>
+            <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl disabled:text-gray-600 disabled:bg-gray-400' disabled>Add Priority</button>
           </Link>
 
           <h2 className="text-2xl text-gray-400">🎯 Priorities:</h2>

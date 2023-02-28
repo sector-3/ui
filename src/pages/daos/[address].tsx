@@ -106,13 +106,7 @@ function DAO({ address }: any) {
     purpose: purpose
   }
 
-  const isMounted = useIsMounted()
-  console.log('isMounted:', isMounted)
-  if (!isMounted) {
-    return null
-  }
-
-  if (!dao.name) {
+  if (!useIsMounted() || !dao.name) {
     return (
       <div className="flex items-center justify-center text-gray-400 pb-6 md:pb-0">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -148,13 +142,7 @@ function EthereumAccount() {
   })
   const { disconnect } = useDisconnect()
 
-  const isMounted = useIsMounted()
-  console.log('isMounted:', isMounted)
-  if (!isMounted) {
-    return null
-  }
-
-  if (!isConnected) {
+  if (!useIsMounted() || !isConnected) {
     return (
       <button onClick={() => connect()} className='rounded-xl text-xl font-bold bg-indigo-800 hover:bg-indigo-700 px-4 py-2'>
         <div className='flex'>
@@ -186,13 +174,7 @@ function Priorities({ address }: any) {
   let priorityAddresses: any[] = ['0x90568B9Ba334b992707E0580505260BFdA4F8C67', '0xd7aC7a02F171DDA4435Df9d4556AC92F388130Cb', '0xE52Ce0Ac083627c4232763148245b22d63227A2b']
   console.log('priorityAddresses:', priorityAddresses)
 
-  const isMounted = useIsMounted()
-  console.log('isMounted:', isMounted)
-  if (!isMounted) {
-    return null
-  }
-
-  if (priorityAddresses.length == 0) {
+  if (!useIsMounted() || (priorityAddresses.length == 0)) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>

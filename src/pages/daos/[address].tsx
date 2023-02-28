@@ -56,7 +56,7 @@ export default function Page() {
         </div>
 
         <div id='content' className='mt-4'>
-          <Priorities address={address} />
+          <PriorityCount daoAddress={address} />
         </div>
       </main>
     </WagmiConfig>
@@ -93,20 +93,18 @@ function DAO({ address }: any) {
   console.log('isError:', isError)
   console.log('isLoading:', isLoading)
 
-  let name = null
-  let purpose = null
+  let dao = null
   if (daoData != undefined) {
-    name = daoData[0]
-    purpose = daoData[1]
-  }
-  
-  const dao = {
-    address: address,
-    name: name,
-    purpose: purpose
+    const name = daoData[0]
+    const purpose = daoData[1]
+    dao = {
+      address: address,
+      name: name,
+      purpose: purpose
+    }
   }
 
-  if (!useIsMounted() || !dao.name) {
+  if (!useIsMounted() || !dao) {
     return (
       <div className="flex items-center justify-center text-gray-400 pb-6 md:pb-0">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -163,18 +161,69 @@ function EthereumAccount() {
   )
 }
 
-function Priorities({ address }: any) {
+function PriorityCount({ daoAddress }: any) {
+  console.log('PriorityCount')
+
+  const { data, isError, isLoading } = useContractRead({
+    address: daoAddress,
+    abi: Sector3DAO.abi,
+    functionName: 'getPriorityCount'
+  })
+  console.log('data:', data)
+
+  let priorityCount = null
+  if (data) {
+    priorityCount = data
+  }
+
+  if (!useIsMounted() || !priorityCount) {
+    return (
+      <div className="flex items-center text-gray-400">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+        &nbsp;Loading...
+      </div>
+    )
+  }
+  return <Priorities daoAddress={daoAddress} priorityCount={priorityCount} />
+}
+
+function Priorities({ daoAddress, priorityCount }: any) {
   console.log('Priorities')
 
-  console.log('address:', address)
+  console.log('daoAddress:', daoAddress)
+  console.log('priorityCount:', priorityCount)
 
   const { isConnected } = useAccount();
   console.log('isConnected:', isConnected)
 
-  let priorityAddresses: any[] = ['0x90568B9Ba334b992707E0580505260BFdA4F8C67', '0xd7aC7a02F171DDA4435Df9d4556AC92F388130Cb', '0xE52Ce0Ac083627c4232763148245b22d63227A2b']
+  let contracts: any = [priorityCount]
+  let i = 0
+  for (i = 0; i < Number(priorityCount); i++) {
+    console.log('i:', i)
+    const daoContract = {
+      address: daoAddress,
+      abi: Sector3DAO.abi
+    }
+    contracts[i] = {
+      ...daoContract,
+      functionName: 'priorities',
+      args: [i]
+    }
+  }
+  console.log('contracts:', contracts)
+
+  const { data, isError, isLoading } = useContractReads({
+    contracts: contracts
+  })
+  console.log('data:', data)
+
+  let priorityAddresses: any = null
+  if (data != undefined) {
+    priorityAddresses = data
+  }
   console.log('priorityAddresses:', priorityAddresses)
 
-  if (!useIsMounted() || (priorityAddresses.length == 0)) {
+  if (!useIsMounted() || !priorityAddresses) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -186,7 +235,7 @@ function Priorities({ address }: any) {
   return (
     <div>
       <div className='container'>
-        <Link href={`${config.etherscanDomain}/address/${address}#writeContract#F1`} target='_blank'>
+        <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'>
           <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl disabled:text-gray-600 disabled:bg-gray-400' disabled={!isConnected}>+ Add Priority</button>
         </Link>
 
@@ -244,7 +293,7 @@ function Priority({ priorityAddress }: any ) {
   console.log('isError:', isError)
   console.log('isLoading:', isLoading)
 
-  if (priorityData == undefined) {
+  if (!useIsMounted() || (priorityData == undefined)) {
     return (
       <div className="mt-4 p-6 bg-gray-800 flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>

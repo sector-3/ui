@@ -122,8 +122,8 @@ function DAO({ address }: any) {
         />
       </div>
       <div className='w-5/6 pl-6'>
-        <h2 className='text-xl font-bold'>{dao.name}</h2>
-        <p className='text-gray-400 pb-6 md:pb-0'>Purpose: {dao.purpose}</p>
+        <h2 className='text-xl font-bold'><>{dao.name}</></h2>
+        <p className='text-gray-400 pb-6 md:pb-0'><>Purpose: {dao.purpose}</></p>
       </div>
     </div>
   )
@@ -167,79 +167,10 @@ function Priorities({ address }: any) {
   const { isConnected } = useAccount();
   console.log('isConnected:', isConnected)
 
-  let priorityAddresses: any[] = []
+  let priorityAddresses: any[] = ['0x90568B9Ba334b992707E0580505260BFdA4F8C67', '0xd7aC7a02F171DDA4435Df9d4556AC92F388130Cb', '0xE52Ce0Ac083627c4232763148245b22d63227A2b']
+  console.log('priorityAddresses:', priorityAddresses)
 
-  const priorityCount: Number = 3 // TODO
-  console.log('priorityCount:', priorityCount)
-  let priorityIndex = 0;
-  while (priorityIndex < priorityCount) {
-    console.log('priorityIndex:', priorityIndex)
-
-    const { data: priorityData, isError, isLoading } = useContractRead({
-      address: address,
-      abi: Sector3DAO.abi,
-      functionName: 'priorities',
-      args: [priorityIndex]
-    })
-    console.log('priorityData:', priorityData)
-    priorityAddresses[priorityIndex] = priorityData
-
-    priorityIndex++
-  }
-
-  let priorities = []
-  for (const priorityAddress of priorityAddresses) {
-    console.log('priorityAddress:', priorityAddress)
-
-    const priorityContract = {
-      address: priorityAddress,
-      abi: Sector3DAOPriority.abi
-    }
-
-    const { data: priorityData, isError, isLoading } = useContractReads({
-      contracts: [
-        {
-          ...priorityContract,
-          functionName: 'title'
-        },
-        {
-          ...priorityContract,
-          functionName: 'rewardToken'
-        },
-        {
-          ...priorityContract,
-          functionName: 'startTime'
-        },
-        {
-          ...priorityContract,
-          functionName: 'epochDuration'
-        },
-        {
-          ...priorityContract,
-          functionName: 'epochBudget'
-        }
-      ]
-    })
-    console.log('priorityData:', priorityData)
-    console.log('isError:', isError)
-    console.log('isLoading:', isLoading)
-
-    
-    if (priorityData != undefined) {
-      const priority: any = {
-        address: priorityAddress,
-        title: priorityData[0],
-        rewardToken: priorityData[1],
-        startDate: new Date(Number(priorityData[2]) * 1_000).toISOString().substring(0, 10),
-        epochDuration: priorityData[3],
-        epochBudget: ethers.utils.formatUnits(String(priorityData[4]))
-      }
-      priorities[priorities.length] = priority
-    }
-  }
-
-
-  if (priorities.length == 0) {
+  if (priorityAddresses.length == 0) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -252,7 +183,7 @@ function Priorities({ address }: any) {
     <div>
       <div className='container'>
         <Link href={`${config.etherscanDomain}/address/${address}#writeContract#F1`} target='_blank'>
-          <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl disabled:text-gray-600 disabled:bg-gray-400' disabled={!isConnected}>Add Priority</button>
+          <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl disabled:text-gray-600 disabled:bg-gray-400' disabled={!isConnected}>+ Add Priority</button>
         </Link>
 
         <h2 className="text-2xl text-gray-400">🎯 Priorities:</h2>
@@ -260,20 +191,81 @@ function Priorities({ address }: any) {
 
       <div className='container'>
         {
-          priorities.map((priority: any, index: number) => (
-            <div key={index} className='mt-4 p-6 bg-gray-800 rounded-xl'>
-              Title: <b>{priority.title}</b><br />
-              Reward token: <code>{priority.rewardToken}</code><br />
-              Epoch budget: {priority.epochBudget} per {priority.epochDuration} days<br />
-              Start date: {priority.startDate}<br />
-
-              <Link href={`/priorities/${priority.address}`}>
-                <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>View Epochs ⏱️</button>
-              </Link>
+          priorityAddresses.map((priorityAddress: any) => (
+            <div key={priorityAddress}>
+              <Priority priorityAddress={priorityAddress} />
             </div>
           ))
         }
       </div>
+    </div>
+  )
+}
+
+function Priority({ priorityAddress }: any ) {
+  console.log('Priority')
+
+  console.log('priorityAddress:', priorityAddress)
+
+  const priorityContract = {
+    address: priorityAddress,
+    abi: Sector3DAOPriority.abi
+  }
+
+  const { data: priorityData, isError, isLoading } = useContractReads({
+    contracts: [
+      {
+        ...priorityContract,
+        functionName: 'title'
+      },
+      {
+        ...priorityContract,
+        functionName: 'rewardToken'
+      },
+      {
+        ...priorityContract,
+        functionName: 'startTime'
+      },
+      {
+        ...priorityContract,
+        functionName: 'epochDuration'
+      },
+      {
+        ...priorityContract,
+        functionName: 'epochBudget'
+      }
+    ]
+  })
+  console.log('priorityData:', priorityData)
+  console.log('isError:', isError)
+  console.log('isLoading:', isLoading)
+
+  if (priorityData != undefined) {
+    const priority: any = {
+      address: priorityAddress,
+      title: priorityData[0],
+      rewardToken: priorityData[1],
+      startDate: new Date(Number(priorityData[2]) * 1_000).toISOString().substring(0, 10),
+      epochDuration: priorityData[3],
+      epochBudget: ethers.utils.formatUnits(String(priorityData[4]))
+    }
+    return (
+      <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
+        Title: <b>{priority.title}</b><br />
+        Reward token: <code>{priority.rewardToken}</code><br />
+        Epoch budget: {priority.epochBudget} per {priority.epochDuration} days<br />
+        Start date: {priority.startDate}<br />
+  
+        <Link href={`/priorities/${priority.address}`}>
+          <button className='mt-4 px-4 py-2 text-gray-200 font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏱️ View Epochs</button>
+        </Link>
+      </div>
+    )
+  }
+  return (
+    <div className="mt-4 p-6 bg-gray-800 flex items-center text-gray-400">
+      <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+      &nbsp;Loading...
     </div>
   )
 }

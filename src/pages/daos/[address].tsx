@@ -10,6 +10,8 @@ import Sector3DAO from '../../../abis/Sector3DAO.json'
 import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useIsMounted } from '@/hooks/useIsMounted'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -23,9 +25,11 @@ const client = createClient({
   provider
 })
 
-export default function Page({ address }: any) {
+export default function Page() {
   console.log('Page')
 
+  const router = useRouter()
+  const address = router.query.address
   console.log('address:', address)
 
   return (
@@ -102,6 +106,12 @@ function DAO({ address }: any) {
     purpose: purpose
   }
 
+  const isMounted = useIsMounted()
+  console.log('isMounted:', isMounted)
+  if (!isMounted) {
+    return null
+  }
+
   if (!dao.name) {
     return (
       <div className="flex items-center justify-center text-gray-400 pb-6 md:pb-0">
@@ -138,6 +148,12 @@ function EthereumAccount() {
   })
   const { disconnect } = useDisconnect()
 
+  const isMounted = useIsMounted()
+  console.log('isMounted:', isMounted)
+  if (!isMounted) {
+    return null
+  }
+
   if (!isConnected) {
     return (
       <button onClick={() => connect()} className='rounded-xl text-xl font-bold bg-indigo-800 hover:bg-indigo-700 px-4 py-2'>
@@ -169,6 +185,12 @@ function Priorities({ address }: any) {
 
   let priorityAddresses: any[] = ['0x90568B9Ba334b992707E0580505260BFdA4F8C67', '0xd7aC7a02F171DDA4435Df9d4556AC92F388130Cb', '0xE52Ce0Ac083627c4232763148245b22d63227A2b']
   console.log('priorityAddresses:', priorityAddresses)
+
+  const isMounted = useIsMounted()
+  console.log('isMounted:', isMounted)
+  if (!isMounted) {
+    return null
+  }
 
   if (priorityAddresses.length == 0) {
     return (
@@ -240,57 +262,33 @@ function Priority({ priorityAddress }: any ) {
   console.log('isError:', isError)
   console.log('isLoading:', isLoading)
 
-  if (priorityData != undefined) {
-    const priority: any = {
-      address: priorityAddress,
-      title: priorityData[0],
-      rewardToken: priorityData[1],
-      startDate: new Date(Number(priorityData[2]) * 1_000).toISOString().substring(0, 10),
-      epochDuration: priorityData[3],
-      epochBudget: ethers.utils.formatUnits(String(priorityData[4]))
-    }
+  if (priorityData == undefined) {
     return (
-      <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
-        Title: <b>{priority.title}</b><br />
-        Reward token: <code>{priority.rewardToken}</code><br />
-        Epoch budget: {priority.epochBudget} per {priority.epochDuration} days<br />
-        Start date: {priority.startDate}<br />
-  
-        <Link href={`/priorities/${priority.address}`}>
-          <button className='mt-4 px-4 py-2 text-gray-200 font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏱️ View Epochs</button>
-        </Link>
+      <div className="mt-4 p-6 bg-gray-800 flex items-center text-gray-400">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+        &nbsp;Loading...
       </div>
     )
   }
+  
+  const priority: any = {
+    address: priorityAddress,
+    title: priorityData[0],
+    rewardToken: priorityData[1],
+    startDate: new Date(Number(priorityData[2]) * 1_000).toISOString().substring(0, 10),
+    epochDuration: priorityData[3],
+    epochBudget: ethers.utils.formatUnits(String(priorityData[4]))
+  }
   return (
-    <div className="mt-4 p-6 bg-gray-800 flex items-center text-gray-400">
-      <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-      &nbsp;Loading...
+    <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
+      Title: <b>{priority.title}</b><br />
+      Reward token: <code>{priority.rewardToken}</code><br />
+      Epoch budget: {priority.epochBudget} per {priority.epochDuration} days<br />
+      Start date: {priority.startDate}<br />
+
+      <Link href={`/priorities/${priority.address}`}>
+        <button className='mt-4 px-4 py-2 text-gray-200 font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏱️ View Epochs</button>
+      </Link>
     </div>
   )
-}
-
-export async function getStaticPaths() {
-  console.log('getStaticPaths')
-
-  return {
-    paths: [
-      // { params: { address: '0x66E6Aed398d2BD699214c4580EC6A5D65C223176' } }
-    ],
-    fallback: 'blocking'
-  }
-}
-
-export async function getStaticProps(context: any) {
-  console.log('getStaticProps')
-
-  const address = context.params.address
-  console.log('address:', address)
-
-  return {
-    props: {
-      address: address
-    },
-    revalidate: 60
-  }
 }

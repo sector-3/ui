@@ -46,7 +46,7 @@ export default function Page() {
       </video>
 
       <main className='p-2 sm:p-4 md:p-8 lg:p-16 xl:p-32 2xl:p-64'>
-        <div id='header' className='md:flex p-6 bg-black rounded-xl'>
+        <div id='header' className='md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
           <div className='md:w-2/3 flex'>
             <DAO address={address} />
           </div>
@@ -239,7 +239,7 @@ function Priorities({ daoAddress, priorityCount }: any) {
           <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl disabled:text-gray-600 disabled:bg-gray-400' disabled={!isConnected}>+ Add Priority</button>
         </Link>
 
-        <h2 className="text-2xl text-gray-400">🎯 Priorities:</h2>
+        <h2 className="text-2xl text-gray-400">Priorities</h2>
       </div>
 
       <div className='container'>
@@ -312,7 +312,7 @@ function Priority({ priorityAddress }: any ) {
   }
   return (
     <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
-      Title: <b>{priority.title}</b><br />
+      <h3 className='text-xl font-bold mb-2'>{priority.title}</h3>
       Reward token: <code>{priority.rewardToken}</code><br />
       Epoch budget: {priority.epochBudget} per {priority.epochDuration} days<br />
       Start date: {priority.startDate}<br />

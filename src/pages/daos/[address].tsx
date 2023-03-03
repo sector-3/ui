@@ -197,8 +197,7 @@ function Priorities({ daoAddress, priorityCount }: any) {
   console.log('isConnected:', isConnected)
 
   let contracts: any = [priorityCount]
-  let i = 0
-  for (i = 0; i < Number(priorityCount); i++) {
+  for (let i = 0; i < Number(priorityCount); i++) {
     console.log('i:', i)
     const daoContract = {
       address: daoAddress,
@@ -236,7 +235,7 @@ function Priorities({ daoAddress, priorityCount }: any) {
     <div>
       <div className='container'>
         <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'>
-          <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl disabled:text-gray-600 disabled:bg-gray-400' disabled={!isConnected}>+ Add Priority</button>
+          <button disabled={!isConnected} className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>+ Add Priority</button>
         </Link>
 
         <h2 className="text-2xl text-gray-400">Priorities</h2>

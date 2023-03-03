@@ -56,7 +56,7 @@ export default function PriorityPage() {
           </div>
         </div>
 
-        <div id='priority' className='sticky top-0 md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
+        <div id='priority' className='md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
           <Priority address={address} />
         </div>
 
@@ -369,7 +369,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
     }
   }
 
-  if (epochs.length == 0) {
+  if (!useIsMounted() || (epochs.length == 0)) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>

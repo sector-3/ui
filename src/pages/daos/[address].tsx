@@ -25,8 +25,8 @@ const client = createClient({
   provider
 })
 
-export default function Page() {
-  console.log('Page')
+export default function DaoPage() {
+  console.log('DaoPage')
 
   const router = useRouter()
   const address = router.query.address
@@ -117,7 +117,7 @@ function DAO({ address }: any) {
     <div className='flex'>
       <div className='w-1/6'>
         <Image
-          alt="DAO token"
+          alt="DAO token logo"
           width={100}
           height={100}
           src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198/logo.png"
@@ -314,7 +314,7 @@ function Priority({ priorityAddress }: any ) {
     <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
       <h3 className='text-xl font-bold mb-2'>{priority.title}</h3>
       Reward token: <code>{priority.rewardToken}</code><br />
-      Epoch budget: {priority.epochBudget} per {priority.epochDuration} days<br />
+      Epoch budget: {priority.epochBudget} <code>$TOKEN_NAME</code> per {priority.epochDuration} days<br />
       Start date: {priority.startDate}<br />
 
       <Link href={`/priorities/${priority.address}`}>

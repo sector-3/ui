@@ -13,6 +13,8 @@ import Link from 'next/link'
 import { config } from '@/utils/Config'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
+import ContributionDialog from '@/components/ContributionDialog'
+import { useState } from 'react'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -65,7 +67,7 @@ export default function EpochPage() {
           Epoch #{Number(epochIndex) + 1}
         </div>
 
-        <div id='content' className='mt-4'>
+        <div id='content' className='mt-8'>
           <ContributionCount priorityAddress={address} epochIndex={epochIndex} />
         </div>
       </main>
@@ -307,6 +309,12 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
   console.log('epochIndex:', epochIndex)
   console.log('contributionCount:', contributionCount)
 
+  const { isConnected } = useAccount()
+  console.log('isConnected:', isConnected)
+
+  const [isReportButtonClicked, setReportButtonClicked] = useState(false)
+  console.log('isReportButtonClicked:', isReportButtonClicked)
+
   let contracts: any = [contributionCount]
   let i = 0
   for (i = 0; i < Number(contributionCount); i++) {
@@ -368,10 +376,18 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
     <>
       <div className='container mt-8'>
         {/* {(epoch.index == priority.epochIndex) ? ( */}
-          <Link href={`${config.etherscanDomain}/address/${priorityAddress}#writeContract#F1`} target='_blank'>
-            <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>+ Add Contribution</button>
-          </Link>
+          {/* <Link href={`${config.etherscanDomain}/address/${priorityAddress}#writeContract#F1`} target='_blank'> */}
+            <button disabled={!isConnected} 
+                    className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+                    onClick={() => setReportButtonClicked(true)}>
+              + Report Contribution
+            </button>
+          {/* </Link> */}
         {/* ) : null} */}
+
+        {isReportButtonClicked && (
+          <ContributionDialog />
+        )}
 
         <h2 className="text-2xl text-gray-400">Contributions</h2>
       </div>

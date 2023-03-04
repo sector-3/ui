@@ -193,7 +193,7 @@ function Priorities({ daoAddress, priorityCount }: any) {
   console.log('daoAddress:', daoAddress)
   console.log('priorityCount:', priorityCount)
 
-  const { isConnected } = useAccount();
+  const { isConnected } = useAccount()
   console.log('isConnected:', isConnected)
 
   let contracts: any = [priorityCount]

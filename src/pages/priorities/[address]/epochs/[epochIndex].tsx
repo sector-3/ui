@@ -3,13 +3,16 @@ import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import { chainUtils } from '@/utils/ChainUtils'
-import { configureChains, createClient, readContract, readContracts } from '@wagmi/core'
+import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
+import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAO from '../../../../../abis/Sector3DAO.json'
 import Sector3DAOPriority from '../../../../../abis/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 import { config } from '@/utils/Config'
+import { useRouter } from 'next/router'
+import { useIsMounted } from '@/hooks/useIsMounted'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -23,27 +26,19 @@ const client = createClient({
   provider
 })
 
-export default function Priority({ dao, priority, epoch, contributions, allocationPercentages }: any) {
-  console.log('Priority')
+export default function EpochPage() {
+  console.log('EpochPage')
 
-  console.log('dao:', dao)
-  console.log('priority:', priority)
-  console.log('epoch:', epoch)
-  console.log('contributions:', contributions)
-  console.log('allocationPercentages:', allocationPercentages)
+  const router = useRouter()
+  const { address, epochIndex } = router.query
+  console.log('address:', address)
+  console.log('epochIndex:', epochIndex)
 
-  const headTitle = 'Sector#3 / ' + dao.name + ' / ' + priority.title + ' / Epoch ' + epoch.index
-  const headDescription = 'Epoch ' + epoch.index
-
-  const alignmentValues = ['None ☆☆☆☆☆', 'Barely ★☆☆☆☆', 'Moderately ★★☆☆☆', 'Mostly ★★★☆☆', 'Perfectly ★★★★★']
-  const alignmentTextColors = ['text-red-400', 'text-orange-400', 'text-amber-400', 'text-lime-400', 'text-emerald-400' ]
-  const alignmentBorderColors = ['border-l-red-400', 'border-l-orange-400', 'border-l-amber-400', 'border-l-lime-400', 'border-l-emerald-400' ]
-  
   return (
-    <>
+    <WagmiConfig client={client}>
       <Head>
-        <title>{headTitle}</title>
-        <meta name="description" content={headDescription} />
+        <title>Sector#3</title>
+        <meta name="description" content="Do DAOs Dream of Electric Sheep? ⚡️🐑" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -52,135 +47,168 @@ export default function Priority({ dao, priority, epoch, contributions, allocati
         {/* <source src="https://video.twimg.com/tweet_video/FpM9CcwagAIiRD7.mp4" type="video/mp4" /> */}
       </video>
 
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            <Image
-              alt="Logo"
-              width={64}
-              height={64}
-              src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
-            /> <b>{dao.name}</b> {dao.purpose}
-          </p>
-          <p>
-            Priority: <b>{priority.title}</b><br />
-            Reward token: <code>{priority.rewardToken}</code><br />
-            Epoch budget: {priority.epochBudget} per {priority.epochDuration} days<br />
-            Start date: {priority.startDate}
-          </p>
-          {(epoch.index == priority.epochIndex) ? (
-            <p>
-              Current Epoch: From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b>
-            </p>
-          ) : (
-            <p>
-              Past Epoch: From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b>
-            </p>
-          )}
+      <main className='p-2 sm:p-4 md:p-8 lg:p-16 xl:p-32 2xl:p-64'>
+        <div id='header' className='md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
+          <div className='md:w-2/3 flex'>
+            <DAOAddress priorityAddress={address} />
+          </div>
+          <div className='text-center md:text-right md:w-1/3'>
+            <EthereumAccount />
+          </div>
         </div>
 
-        <div className='container mt-4'>
-          {(epoch.index == priority.epochIndex) ? (
-            <Link href={`${config.etherscanDomain}/address/${priority.address}#writeContract#F1`} target='_blank'>
-              <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>Add Contribution</button>
-            </Link>
-          ) : null}
-
-          <h2 className="text-2xl text-gray-400">Contributions:</h2>
+        <div id='priority' className='md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
+          <Priority address={address} />
         </div>
 
-        <div className='container'>
-          {(contributions.length == 0) ? (
-            <div className='text-gray-400'>
-              No data
-            </div>
-          ) : (
-            contributions.map((contribution: any, index: number) => (
-              <div key={index} className={`mt-4 p-6 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignment]}`}>
-                <div className='flex'>
-                  Contributor:&nbsp;
-                  <img
-                    className="h-6 w-6 bg-gray-700 rounded-full"
-                    src={`https://cdn.stamp.fyi/avatar/eth:${contribution.contributor}?s=128`}
-                  />&nbsp;
-                  <code>{contribution.contributor.substring(0, 6)}...{contribution.contributor.slice(-4)}</code><br />
-                </div>
-                Description: <b>&quot;{contribution.description}&quot;</b><br />
-                Alignment with priority: <span className={`font-bold ${alignmentTextColors[contribution.alignment]}`}>{alignmentValues[contribution.alignment]}</span><br />
-                Hours spent: <code>{contribution.hoursSpent}h</code>
-              </div>
-            ))
-          )}
+        <div id='epoch' className='md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
+          Epoch #{Number(epochIndex) + 1}
         </div>
 
-        <div className='container mt-8'>
-          <h2 className="text-2xl text-gray-400">Reward Allocation per Contributor:</h2>
-        </div>
-
-        <div className='container'>
-          { (Object.keys(allocationPercentages).length == 0) ? (
-            <div className='text-gray-400'>
-              No data
-            </div>
-          ) : (
-            <div className='mt-4 p-6 pb-2 bg-gray-800 rounded-xl'>
-              {Object.keys(allocationPercentages).map((contributor) => (
-                <div key={contributor} className='flex mb-4'>
-                  <img
-                    className="h-6 w-6 bg-gray-700 rounded-full"
-                    src={`https://cdn.stamp.fyi/avatar/eth:${contributor}?s=128`}
-                  />&nbsp;
-                  <code>{contributor.substring(0, 6)}...{contributor.slice(-4)}</code>&nbsp;
-                  <div className="ml-10 h-6 w-full bg-indigo-400 rounded-full">
-                    <div className={`w-[${allocationPercentages[contributor]}%] h-full text-center text-white bg-indigo-600 rounded-full`}>
-                      {(allocationPercentages[contributor] * priority.epochBudget / 100).toFixed(2)} {/*<code>$TOKEN_NAME</code>*/}
-                    </div>
-                  </div>&nbsp;
-                  <div className='w-1/6 text-right'>{(allocationPercentages[contributor]).toFixed(2)}%</div>
-                </div>
-              ))}
-            </div>
-          )}
+        <div id='content' className='mt-4'>
+          <ContributionCount priorityAddress={address} epochIndex={epochIndex} />
         </div>
       </main>
-    </>
+    </WagmiConfig>
   )
 }
 
-export async function getStaticPaths() {
-  console.log('getStaticPaths')
+function DAOAddress({ priorityAddress }: any) {
+  console.log('DAO')
 
-  return {
-    paths: [
-      // { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67', epochIndex: '0' } },
-      // { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67', epochIndex: '1' } },
-      // { params: { address: '0x90568B9Ba334b992707E0580505260BFdA4F8C67', epochIndex: '2' } },
-      // { params: { address: '0xd7aC7a02F171DDA4435Df9d4556AC92F388130Cb', epochIndex: '0' } }
-    ],
-    fallback: 'blocking'
+  console.log('DAOAddress:', DAOAddress)
+
+  const { data, isError, isLoading } = useContractRead({
+    address: priorityAddress,
+    abi: Sector3DAOPriority.abi,
+    functionName: 'dao'
+  })
+  console.log('data:', data)
+
+  let daoAddress = null
+  if (data) {
+    daoAddress = data
   }
+
+  if (!useIsMounted() || !daoAddress) {
+    return (
+      <div className="flex items-center text-gray-400">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+        &nbsp;Loading...
+      </div>
+    )
+  }
+  return <DAO address={daoAddress} />
 }
 
-export async function getStaticProps(context: any) {
-  console.log('getStaticProps')
+function DAO({ address }: any) {
+  console.log('DAO')
 
-  const address = context.params.address
   console.log('address:', address)
 
-  const epochIndex = context.params.epochIndex
-  console.log('epochIndex:', epochIndex)
+  const daoContract = {
+    address: address,
+    abi: Sector3DAO.abi
+  }
+
+  const { data: daoData, isError, isLoading } = useContractReads({
+    contracts: [
+      {
+        ...daoContract,
+        functionName: 'name'
+      },
+      {
+        ...daoContract,
+        functionName: 'purpose'
+      },
+      {
+        ...daoContract,
+        functionName: 'getPriorityCount'
+      }
+    ]
+  })
+  console.log('daoData:', daoData)
+  console.log('isError:', isError)
+  console.log('isLoading:', isLoading)
+
+  let dao = null
+  if (daoData != undefined) {
+    const name = daoData[0]
+    const purpose = daoData[1]
+    dao = {
+      address: address,
+      name: name,
+      purpose: purpose
+    }
+  }
+
+  if (!useIsMounted() || !dao) {
+    return (
+      <div className="flex items-center justify-center text-gray-400 pb-6 md:pb-0">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+        &nbsp;Loading...
+      </div>
+    )
+  }
+
+  return (
+    <div className='flex'>
+      <div className='w-1/6'>
+        <Image
+          alt="DAO token logo"
+          width={100}
+          height={100}
+          src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198/logo.png"
+        />
+      </div>
+      <div className='w-5/6 pl-6'>
+        <h2 className='text-xl font-bold'><>{dao.name}</></h2>
+        <p className='text-gray-400 pb-6 md:pb-0'><>Purpose: {dao.purpose}</></p>
+      </div>
+    </div>
+  )
+}
+
+function EthereumAccount() {
+  console.log('EthereumAccount')
+
+  const { address, isConnected } = useAccount();
+  const { connect } = useConnect({
+    connector: new InjectedConnector()
+  })
+  const { disconnect } = useDisconnect()
+
+  if (!useIsMounted() || !isConnected) {
+    return (
+      <button onClick={() => connect()} className='rounded-xl text-xl font-bold bg-indigo-800 hover:bg-indigo-700 px-4 py-2'>
+        <div className='flex'>
+          <Image alt='Ethereum' src='/ethereum.svg' width={24} height={24} />
+          &nbsp;Connect
+        </div>
+      </button>
+    )
+  }
+
+  return (
+    <button onClick={() => disconnect()} className='rounded-xl text-xl font-bold bg-gray-800 hover:bg-gray-700 px-4 py-2'>
+      <div className='flex'>
+        <img src={`https://cdn.stamp.fyi/avatar/eth:${address}?s=128`} className="h-7 w-7 bg-gray-700 rounded-full" />
+        &nbsp;<code>{address?.substring(0, 6)}...{address?.slice(-4)}</code>
+      </div>
+    </button>
+  )
+}
+
+function Priority({ address }: any) {
+  console.log('Priority')
 
   const priorityContract = {
     address: address,
     abi: Sector3DAOPriority.abi
   }
 
-  const priorityData = await readContracts({
+  const { data, isError, isLoading } = useContractReads({
     contracts: [
-      {
-        ...priorityContract,
-        functionName: 'dao'
-      },
       {
         ...priorityContract,
         functionName: 'title'
@@ -200,120 +228,285 @@ export async function getStaticProps(context: any) {
       {
         ...priorityContract,
         functionName: 'epochBudget'
-      },
-      {
-        ...priorityContract,
-        functionName: 'getEpochIndex'
-      },
-      {
-        ...priorityContract,
-        functionName: 'getContributionCount'
       }
     ]
   })
-  console.log('priorityData:', priorityData)
+  console.log('data:', data)
 
-  const priority: any = {
-    address: address,
-    dao: priorityData[0],
-    title: priorityData[1],
-    rewardToken: priorityData[2],
-    startTime: Number(priorityData[3]),
-    startDate: new Date(Number(priorityData[3]) * 1_000).toISOString().substring(0, 10),
-    epochDuration: priorityData[4],
-    epochBudget: ethers.utils.formatUnits(String(priorityData[5])),
-    epochIndex: priorityData[6],
-    contributionCount: priorityData[7]
+  let priority = null
+  if (data) {
+    priority = {
+      title: data[0],
+      rewardToken: data[1],
+      startDate: new Date(Number(data[2]) * 1_000).toISOString().substring(0, 10),
+      epochDuration: data[3],
+      epochBudget: ethers.utils.formatUnits(String(data[4]))
+    }
   }
+  console.log('priority:', priority)
 
-  const daoContract = {
-    address: priority.dao,
-    abi: Sector3DAO.abi
+  if (!useIsMounted() || !priority) {
+    return (
+      <div className="flex items-center text-gray-400">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+        &nbsp;Loading...
+      </div>
+    )
   }
+  return (
+    <>
+      <div className='md:w-1/3'>
+        <label className='text-gray-400'>Priority</label><br />
+        <>{priority.title}</>
+      </div>
+      <div className='md:w-1/3 pt-4 md:pt-0 md:px-4'>
+        <label className='text-gray-400'>Start date</label><br />
+        {priority.startDate}
+      </div>
+      <div className='md:w-1/3 pt-4 md:pt-0'>
+        <label className='text-gray-400'>Budget</label><br />
+        <>{priority.epochBudget} <code>$TOKEN_NAME</code> per {priority.epochDuration} days</>
+      </div>
+    </>
+  )
+}
 
-  const daoData = await readContracts({
-    contracts: [
-      {
-        ...daoContract,
-        functionName: 'name'
-      },
-      {
-        ...daoContract,
-        functionName: 'purpose'
-      },
-      {
-        ...daoContract,
-        functionName: 'getPriorityCount'
-      }
-    ]
+function ContributionCount({ priorityAddress, epochIndex }: any) {
+  console.log('ContributionCount')
+
+  console.log('priorityAddress:', priorityAddress)
+  console.log('epochIndex:', epochIndex)
+
+  const { data, isError, isLoading } = useContractRead({
+    address: priorityAddress,
+    abi: Sector3DAOPriority.abi,
+    functionName: 'getContributionCount'
   })
-  console.log('daoData:', daoData)
+  console.log('data:', data)
 
-  const dao = {
-    name: daoData[0],
-    purpose: daoData[1],
-    address: address
+  let contributionCount = null
+  if (data) {
+    contributionCount = data
   }
 
-  const epoch = {
-    index: Number(epochIndex),
-    startTime: priority.startTime + (epochIndex * priority.epochDuration * 24*60*60),
-    startDate: new Date(Number(priority.startTime + (epochIndex * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
-    endTime: priority.startTime + ((epochIndex + 1) * priority.epochDuration * 24*60*60),
-    endDate: new Date(Number(priority.startTime + ((epochIndex + 1) * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
+  if (!useIsMounted() || !contributionCount) {
+    return (
+      <div className="flex items-center text-gray-400">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+        &nbsp;Loading...
+      </div>
+    )
   }
+  return <Contributions priorityAddress={priorityAddress} epochIndex={epochIndex} contributionCount={contributionCount} />
+}
 
-  let contributions: any[] = []
-  let contributionIndex = priority.contributionCount - 1
-  while (contributionIndex >= 0) {
-    console.log('contributionIndex:', contributionIndex)
+function Contributions({ priorityAddress, epochIndex, contributionCount }: any) {
+  console.log('Contributions')
 
-    const contributionData: any = await readContract({
-      address: address,
-      abi: Sector3DAOPriority.abi,
+  console.log('priorityAddress:', priorityAddress)
+  console.log('epochIndex:', epochIndex)
+  console.log('contributionCount:', contributionCount)
+
+  let contracts: any = [contributionCount]
+  let i = 0
+  for (i = 0; i < Number(contributionCount); i++) {
+    console.log('i:', i)
+    const priorityContract = {
+      address: priorityAddress,
+      abi: Sector3DAOPriority.abi
+    }
+    contracts[i] = {
+      ...priorityContract,
       functionName: 'getContribution',
-      args: [contributionIndex]
-    })
-    console.log('contributionData:', contributionData)
-    if (contributionData.epochIndex == epochIndex) {
-      const contribution = {
-        contributor: contributionData.contributor,
-        description: contributionData.description,
-        alignment: contributionData.alignment,
-        hoursSpent: contributionData.hoursSpent
+      args: [i]
+    }
+  }
+  console.log('contracts:', contracts)
+
+  const { data: contributionsData, isError, isLoading } = useContractReads({
+    contracts: contracts
+  })
+  console.log('contributionsData:', contributionsData)
+
+  let contributions: any = null
+  if (contributionsData != undefined) {
+    contributions = []
+    let contributionIndex = contributionCount - 1
+    while (contributionIndex >= 0) {
+      console.log('contributionIndex:', contributionIndex)
+
+      const contributionData: any = contributionsData[contributionIndex]
+      console.log('contributionData:', contributionData)
+      if (contributionData.epochIndex == epochIndex) {
+        const contribution = {
+          contributor: contributionData.contributor,
+          description: contributionData.description,
+          alignment: contributionData.alignment,
+          hoursSpent: contributionData.hoursSpent
+        }
+        contributions[contributions.length] = contribution
       }
-      contributions[contributions.length] = contribution
-    }
 
-    contributionIndex--
-  }
-
-  let allocationPercentages: any = {}
-  for (const contribution of contributions) {
-    if (!allocationPercentages[contribution.contributor]) {
-      allocationPercentages[contribution.contributor] = 0
+      contributionIndex--
     }
   }
-  for (const contributor in allocationPercentages) {
+  console.log('contributions:', contributions)
+
+  if (!useIsMounted() || !contributions) {
+    return (
+      <div className="flex items-center text-gray-400">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+        &nbsp;Loading...
+      </div>
+    )
+  }
+
+  const alignmentValues = ['None ☆☆☆☆☆', 'Barely ★☆☆☆☆', 'Moderately ★★☆☆☆', 'Mostly ★★★☆☆', 'Perfectly ★★★★★']
+  const alignmentTextColors = ['text-red-400', 'text-orange-400', 'text-amber-400', 'text-lime-400', 'text-emerald-400' ]
+  const alignmentBorderColors = ['border-l-red-400', 'border-l-orange-400', 'border-l-amber-400', 'border-l-lime-400', 'border-l-emerald-400' ]
+  return (
+    <>
+      <div className='container mt-8'>
+        {/* {(epoch.index == priority.epochIndex) ? ( */}
+          <Link href={`${config.etherscanDomain}/address/${priorityAddress}#writeContract#F1`} target='_blank'>
+            <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>+ Add Contribution</button>
+          </Link>
+        {/* ) : null} */}
+
+        <h2 className="text-2xl text-gray-400">Contributions</h2>
+      </div>
+
+      <div className='container'>
+        {(contributions.length == 0) ? (
+          <div className='text-gray-400 mt-4'>
+            No data
+          </div>
+        ) : (
+          contributions.map((contribution: any, index: number) => (
+            <div key={index} className={`mt-4 p-6 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignment]}`}>
+              <div className='flex'>
+                Contributor:&nbsp;
+                <img
+                  className="h-6 w-6 bg-gray-700 rounded-full"
+                  src={`https://cdn.stamp.fyi/avatar/eth:${contribution.contributor}?s=128`}
+                />&nbsp;
+                <code>{contribution.contributor.substring(0, 6)}...{contribution.contributor.slice(-4)}</code><br />
+              </div>
+              Description: <b>&quot;{contribution.description}&quot;</b><br />
+              Alignment with priority: <span className={`font-bold ${alignmentTextColors[contribution.alignment]}`}>{alignmentValues[contribution.alignment]}</span><br />
+              Hours spent: <code>{contribution.hoursSpent}h</code>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className='container mt-8'>
+        <h2 className="text-2xl text-gray-400">Reward Allocation per Contributor</h2>
+      </div>
+
+      <div className='container'>
+        {(contributions.length == 0) ? (
+          <div className='text-gray-400 mt-4'>
+            No data
+          </div>
+        ) : (
+          <Allocations priorityAddress={priorityAddress} epochIndex={epochIndex} contributions={contributions} />
+        )}
+      </div>
+    </>
+  )
+}
+
+function Allocations({ priorityAddress, epochIndex, contributions }: any) {
+  console.log('Allocations')
+
+  console.log('priorityAddress:', priorityAddress)
+  console.log('epochIndex:', epochIndex)
+  console.log('contributions:', contributions)
+
+  let allocationPercentages: any = null
+
+  // Add unique contributors
+  if (contributions.length > 0) {
+    allocationPercentages = {}
+    for (const contribution of contributions) {
+      if (!allocationPercentages[contribution.contributor]) {
+        allocationPercentages[contribution.contributor] = 0
+      }
+    }
+  }
+  console.log('allocationPercentages:', allocationPercentages)
+  const allocationPercentagesKeys = Object.keys(allocationPercentages)
+  console.log('allocationPercentagesKeys:', allocationPercentagesKeys)
+
+  let contracts: any = [allocationPercentagesKeys.length]
+  for (let i = 0; i < allocationPercentagesKeys.length; i++) {
+    console.log('i:', i)
+    console.log('epochIndex:', epochIndex)
+    const contributor = allocationPercentagesKeys[i]
     console.log('contributor:', contributor)
-    const allocationPercentageData = await readContract({
-      address: address,
-      abi: Sector3DAOPriority.abi,
+    const priorityContract = {
+      address: priorityAddress,
+      abi: Sector3DAOPriority.abi
+    }
+    contracts[i] = {
+      ...priorityContract,
       functionName: 'getAllocationPercentage',
       args: [epochIndex, contributor]
-    })
-    console.log('allocationPercentageData:', allocationPercentageData)
-    allocationPercentages[contributor] = allocationPercentageData
+    }
+  }
+  console.log('contracts:', contracts)
+
+  const { data, isError, isLoading } = useContractReads({
+    contracts: contracts
+  })
+  console.log('data:', data)
+
+  if (data != undefined) {
+    for (let i = 0; i < allocationPercentagesKeys.length; i++) {
+      const contributor = allocationPercentagesKeys[i]
+      console.log('contributor:', contributor)
+      const allocationPercentage = data[i]
+      console.log('allocationPercentage:', allocationPercentage)
+      allocationPercentages[contributor] = allocationPercentage
+    }
+    console.log('allocationPercentages (after contract call):', allocationPercentages)
   }
 
-  return {
-    props: {
-      dao: dao,
-      priority: priority,
-      epoch: epoch,
-      contributions: contributions,
-      allocationPercentages: allocationPercentages
-    },
-    revalidate: 60
+  if (!useIsMounted() || !allocationPercentages) {
+    return (
+      <div className="flex items-center text-gray-400">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+        &nbsp;Loading...
+      </div>
+    )
   }
+
+  return (
+    <div className='container'>
+      {(Object.keys(allocationPercentages).length == 0) ? (
+        <div className='text-gray-400'>
+          No data
+        </div>
+      ) : (
+        <div className='mt-4 p-6 pb-2 bg-gray-800 rounded-xl'>
+          {Object.keys(allocationPercentages).map((contributor) => (
+            <div key={contributor} className='flex mb-4'>
+              <img
+                className="h-6 w-6 bg-gray-700 rounded-full"
+                src={`https://cdn.stamp.fyi/avatar/eth:${contributor}?s=128`}
+              />&nbsp;
+              <code>{contributor.substring(0, 6)}...{contributor.slice(-4)}</code>&nbsp;
+              <div className="ml-10 h-6 w-full bg-indigo-400 rounded-full">
+                <div className={`w-[${allocationPercentages[contributor]}%] h-full text-center text-white bg-indigo-600 rounded-full`}>
+                  {/* {(allocationPercentages[contributor] * priority.epochBudget / 100).toFixed(2)} <code>$TOKEN_NAME</code> */}
+                </div>
+              </div>&nbsp;
+              <div className='w-1/6 text-right'>{(allocationPercentages[contributor]).toFixed(2)}%</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }

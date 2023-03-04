@@ -1,4 +1,4 @@
-import { mainnet, goerli, localhost } from '@wagmi/chains'
+import { mainnet, goerli, localhost } from 'wagmi/chains'
 import { config } from '@/utils/Config'
 
 const chains = [mainnet, goerli, localhost]

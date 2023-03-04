@@ -7,6 +7,11 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'raw.githubusercontent.com',
         pathname: '/trustwallet/assets/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.stamp.fyi',
+        pathname: '/avatar/**'
       }
     ]
   }

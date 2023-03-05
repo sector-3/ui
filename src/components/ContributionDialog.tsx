@@ -1,8 +1,9 @@
 import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { InformationCircleIcon } from '@heroicons/react/24/outline'
-import { usePrepareContractWrite } from 'wagmi'
+import { usePrepareContractWrite, useContractWrite, useAccount } from 'wagmi'
 import { useRouter } from 'next/router'
+import Sector3DAOPriority from '../../abis/Sector3DAOPriority.json'
 
 export default function ContributionDialog({ priorityTitle }: any) {
   console.log('ContributionDialog')
@@ -40,15 +41,40 @@ export default function ContributionDialog({ priorityTitle }: any) {
     setAlignment(event.target.value)
   }
 
+  const { address: contributorAddress, isConnected } = useAccount()
+
+  const contribution = {
+    epochIndex: Number(epochIndex),
+    contributor: contributorAddress,
+    description: description,
+    alignment: Number(alignment),
+    hoursSpent: Number(hoursSpent)
+  }
+
+  const { config, error } = usePrepareContractWrite({
+    address: address,
+    abi: Sector3DAOPriority.abi,
+    functionName: 'addContribution',
+    args: [contribution]
+  })
+  console.log('config:', config)
+  console.log('error:', error)
+  const { data: transactionData, isLoading, isSuccess, write } = useContractWrite(config)
+  console.log('transactionData:', transactionData)
+  console.log('isLoading:', isLoading)
+  console.log('isSuccess:', isSuccess)
+  console.log('write:', write)
+
   const handleSubmit = (event: any) => {
     console.log('handleSubmit')
     event.preventDefault()
-    console.log('description:', description)
-    console.log('proofURL:', proofURL)
-    console.log('hoursSpent:', hoursSpent)
-    console.log('alignment:', alignment)
-    // setOpen(false)
+    console.log('contribution:', contribution)
+    write()
   }
+
+  // if (isSuccess) {
+  //   setOpen(false)
+  // }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -76,9 +102,9 @@ export default function ContributionDialog({ priorityTitle }: any) {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-xl bg-black text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <form action="#" method="POST" onSubmit={handleSubmit}>
-                  <div className="bg-black p-4">
+                  <div className="bg-black p-6">
                     <div className="sm:flex sm:items-start">
                       <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-800 sm:mx-0 sm:h-10 sm:w-10">
                         <InformationCircleIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
@@ -107,7 +133,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
                               name="description"
                               onChange={handleDescriptionChange}
                               rows={3}
-                              className="mt-1 block w-full rounded-md border-0 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
+                              className="block w-full rounded-md border-0 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
                               placeholder="E.g. 'Implemented a bug fix'"
                               defaultValue={''}
                               required
@@ -252,12 +278,22 @@ export default function ContributionDialog({ priorityTitle }: any) {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-gray-900 p-4 sm:flex sm:flex-row-reverse">
+                  <div className="bg-gray-900 p-6 sm:flex sm:flex-row-reverse">
                     <button
                         type="submit"
-                        className="inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:ml-3 sm:w-auto"
+                        disabled={isLoading}
+                        className="disabled:text-gray-600 disabled:bg-gray-400 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:ml-3 sm:w-auto"
                     >
-                      Confirm
+                      {!isLoading ? (
+                        <>
+                          Confirm        
+                        </>                
+                      ) : (
+                        <>
+                          <div className="mr-2 inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                          Confirming...
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>

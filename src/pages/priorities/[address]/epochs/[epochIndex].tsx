@@ -174,7 +174,7 @@ function DAO({ address }: any) {
 function EthereumAccount() {
   console.log('EthereumAccount')
 
-  const { address, isConnected } = useAccount();
+  const { address, isConnected } = useAccount()
   const { connect } = useConnect({
     connector: new InjectedConnector()
   })
@@ -381,9 +381,9 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
     )
   }
 
-  const alignmentValues = ['None ☆☆☆☆☆', 'Barely ★☆☆☆☆', 'Moderately ★★☆☆☆', 'Mostly ★★★☆☆', 'Perfectly ★★★★★']
-  const alignmentTextColors = ['text-red-400', 'text-orange-400', 'text-amber-400', 'text-lime-400', 'text-emerald-400' ]
-  const alignmentBorderColors = ['border-l-red-400', 'border-l-orange-400', 'border-l-amber-400', 'border-l-lime-400', 'border-l-emerald-400' ]
+  const alignmentValues = ['☆☆☆☆☆ None', '★☆☆☆☆ Barely', '★★☆☆☆ Moderately', '★★★☆☆ Mostly', '★★★★☆ Highly', '★★★★★ Perfectly']
+  const alignmentTextColors = ['text-red-400', 'text-orange-400', 'text-amber-400', 'text-lime-400', 'text-emerald-400', 'text-cyan-400' ]
+  const alignmentBorderColors = ['border-l-red-400', 'border-l-orange-400', 'border-l-amber-400', 'border-l-lime-400', 'border-l-emerald-400', 'border-l-cyan-400' ]
   return (
     <>
       <div className='container mt-8'>
@@ -411,18 +411,42 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
           </div>
         ) : (
           contributions.map((contribution: any, index: number) => (
-            <div key={index} className={`mt-4 p-6 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignment]}`}>
-              <div className='flex'>
-                Contributor:&nbsp;
-                <img
-                  className="h-6 w-6 bg-gray-700 rounded-full"
-                  src={`https://cdn.stamp.fyi/avatar/eth:${contribution.contributor}?s=128`}
-                />&nbsp;
-                <code>{contribution.contributor.substring(0, 6)}...{contribution.contributor.slice(-4)}</code><br />
+            <div key={index} className={`md:flex md:space-x-6 p-6 mt-4 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignment]}`}>
+              <div className='md:w-1/2'>
+                <div>
+                  <label className='text-gray-400'>Contributor</label>
+                  <div className='flex'>
+                    <img
+                      className="h-6 w-6 bg-gray-700 rounded-full"
+                      src={`https://cdn.stamp.fyi/avatar/eth:${contribution.contributor}?s=128`}
+                    />&nbsp;
+                    <code>{contribution.contributor.substring(0, 6)}...{contribution.contributor.slice(-4)}</code><br />
+                  </div>
+                </div>
+
+                <div className='mt-4'>
+                  <label className='text-gray-400'>Proof of contribution URL</label><br />
+                  <code>// coming</code>
+                </div>
+
+                <div className='mt-4'>
+                  <label className='text-gray-400'>Alignment with priority</label><br />
+                  <span className={`font-bold ${alignmentTextColors[contribution.alignment]}`}>{alignmentValues[contribution.alignment]}</span><br />
+                </div>
               </div>
-              Description: <b>&quot;{contribution.description}&quot;</b><br />
-              Alignment with priority: <span className={`font-bold ${alignmentTextColors[contribution.alignment]}`}>{alignmentValues[contribution.alignment]}</span><br />
-              Hours spent: <code>{contribution.hoursSpent}h</code>
+              <div className='md:w-1/2'>
+                <div className='mt-4 md:mt-0'>
+                  <label className='text-gray-400'>Description</label>
+                  <blockquote className={`p-4 border-l-2 ${alignmentBorderColors[contribution.alignment]} bg-gray-700 rounded-lg`}>
+                    {contribution.description}
+                  </blockquote>
+                </div>
+
+                <div className='mt-4'>
+                  <label className='text-gray-400'>Hours spent</label><br />
+                  <code>{contribution.hoursSpent}h</code>
+                </div>
+              </div>
             </div>
           ))
         )}

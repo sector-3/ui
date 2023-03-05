@@ -104,7 +104,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
                               How well does your contribution align with this DAO priority?
                             </p>
                             <blockquote className='mt-2 pl-2 border-l-2 border-indigo-200'>
-                              "{priorityTitle}"
+                              &quot;{priorityTitle}&quot;
                             </blockquote>
                             <div className="mt-2 space-y-2">
                               <div className="flex items-center">

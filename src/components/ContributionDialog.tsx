@@ -2,14 +2,16 @@ import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { InformationCircleIcon } from '@heroicons/react/24/outline'
 
-export default function Example() {
-  const [open, setOpen] = useState(true)
+export default function ContributionDialog({ priorityTitle }: any) {
+  console.log('ContributionDialog')
 
-  const cancelButtonRef = useRef(null)
+  console.log('priorityTitle:', priorityTitle)
+
+  const [open, setOpen] = useState(true)
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
+      <Dialog as="div" className="relative z-10" onClose={setOpen}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -53,34 +55,131 @@ export default function Example() {
                         
                         <div className='mt-4'>
                           <div>
-                            <label htmlFor="about" className='font-bold text-indigo-200'>
+                            <label htmlFor="description" className='font-bold text-indigo-200'>
                               Description
                             </label>
                             <textarea
-                              id="about"
-                              name="about"
+                              id="description"
+                              name="description"
                               rows={3}
-                              className="mt-1 block w-full rounded-md border-0 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
-                              placeholder="you@example.com"
+                              className="mt-1 block w-full rounded-md border-0 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
+                              placeholder="E.g. 'Implemented a bug fix'"
                               defaultValue={''}
                             />
                           </div>
                         </div>
                         
-                        {/* <div className='mt-4'>
-                          <label htmlFor="company-website" className='font-bold text-indigo-200'>
+                        <div className='mt-4'>
+                          <label htmlFor="proofUrl" className='font-bold text-indigo-200'>
                             Proof of contribution URL
                           </label>
                           <input
-                            type="text"
-                            name="company-website"
-                            id="company-website"
-                            className="block w-full flex-1 rounded-md border-0 ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
-                            placeholder="https://github.com/org/repo/pull/123"
+                            type="url"
+                            name="proofUrl"
+                            id="proofUrl"
+                            className="block w-full flex-1 rounded-md border-0 ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
+                            placeholder="E.g. 'https://github.com/org/repo/pull/123'"
                           />
-                        </div> */}
+                        </div>
 
-                        
+                        <div className='mt-4'>
+                          <label htmlFor="hoursSpent" className='font-bold text-indigo-200'>
+                            Hours spent
+                          </label>
+                          <input
+                            type="number"
+                            name="hoursSpent"
+                            id="hoursSpent"
+                            className="block w-full flex-1 rounded-md border-0 ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
+                            placeholder="E.g. '8'"
+                          />
+                        </div>
+
+                        <div className='mt-4'>
+                          <fieldset>
+                            <legend className="font-bold text-indigo-200">
+                              Priority alignment
+                            </legend>
+                            <p className="text-sm text-gray-400">
+                              How well does your contribution align with this DAO priority?
+                            </p>
+                            <blockquote className='mt-2 pl-2 border-l-2 border-indigo-200'>
+                              "{priorityTitle}"
+                            </blockquote>
+                            <div className="mt-2 space-y-2">
+                              <div className="flex items-center">
+                                <input
+                                  id="alignment_0"
+                                  name="alignment"
+                                  type="radio"
+                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                />
+                                <label
+                                  htmlFor="alignment_0"
+                                  className="ml-3 block text-sm font-medium leading-6 text-red-400"
+                                >
+                                  ☆☆☆☆☆ None
+                                </label>
+                              </div>
+                              <div className="flex items-center">
+                                <input
+                                  id="alignment_1"
+                                  name="alignment"
+                                  type="radio"
+                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                />
+                                <label
+                                  htmlFor="alignment_1"
+                                  className="ml-3 block text-sm font-medium leading-6 text-orange-400"
+                                >
+                                  ★☆☆☆☆ Barely
+                                </label>
+                              </div>
+                              <div className="flex items-center">
+                                <input
+                                  id="alignment_2"
+                                  name="alignment"
+                                  type="radio"
+                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                />
+                                <label
+                                  htmlFor="alignment_2"
+                                  className="ml-3 block text-sm font-medium leading-6 text-amber-400"
+                                >
+                                  ★★☆☆☆ Moderately
+                                </label>
+                              </div>
+                              <div className="flex items-center">
+                                <input
+                                  id="alignment_3"
+                                  name="alignment"
+                                  type="radio"
+                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                />
+                                <label
+                                  htmlFor="alignment_3"
+                                  className="ml-3 block text-sm font-medium leading-6 text-lime-400"
+                                >
+                                  ★★★☆☆ Mostly
+                                </label>
+                              </div>
+                              <div className="flex items-center">
+                                <input
+                                  id="alignment_4"
+                                  name="alignment"
+                                  type="radio"
+                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                />
+                                <label
+                                  htmlFor="alignment_4"
+                                  className="ml-3 block text-sm font-medium leading-6 text-emerald-400"
+                                >
+                                  ★★★★★ Perfectly
+                                </label>
+                              </div>
+                            </div>
+                          </fieldset>
+                        </div>
                       </div>
                     </div>
                   </div>

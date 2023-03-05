@@ -315,14 +315,26 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
   const [isReportButtonClicked, setReportButtonClicked] = useState(false)
   console.log('isReportButtonClicked:', isReportButtonClicked)
 
+  const priorityContract = {
+    address: priorityAddress,
+    abi: Sector3DAOPriority.abi
+  }
+
+  const { data: priorityTitleData } = useContractRead({
+    ...priorityContract,
+    functionName: 'title'
+  })
+  console.log('priorityTitleData:', priorityTitleData)
+  let priorityTitle: any = null
+  if (priorityTitleData != undefined) {
+    priorityTitle = priorityTitleData
+  }
+  console.log('priorityTitle:', priorityTitle)
+
   let contracts: any = [contributionCount]
   let i = 0
   for (i = 0; i < Number(contributionCount); i++) {
     console.log('i:', i)
-    const priorityContract = {
-      address: priorityAddress,
-      abi: Sector3DAOPriority.abi
-    }
     contracts[i] = {
       ...priorityContract,
       functionName: 'getContribution',
@@ -360,7 +372,7 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
   }
   console.log('contributions:', contributions)
 
-  if (!useIsMounted() || !contributions) {
+  if (!useIsMounted() || !contributions || !priorityTitle) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -386,7 +398,7 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
         {/* ) : null} */}
 
         {isReportButtonClicked && (
-          <ContributionDialog />
+          <ContributionDialog priorityTitle={priorityTitle} />
         )}
 
         <h2 className="text-2xl text-gray-400">Contributions</h2>

@@ -426,7 +426,7 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
 
                 <div className='mt-4'>
                   <label className='text-gray-400'>Proof of contribution URL</label><br />
-                  <code>// coming</code>
+                  <code>&lt;coming&gt;</code>
                 </div>
 
                 <div className='mt-4'>

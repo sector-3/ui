@@ -13,6 +13,8 @@ import Link from 'next/link'
 import { config } from '@/utils/Config'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
+import ContributionDialog from '@/components/ContributionDialog'
+import { useState } from 'react'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -65,7 +67,7 @@ export default function EpochPage() {
           Epoch #{Number(epochIndex) + 1}
         </div>
 
-        <div id='content' className='mt-4'>
+        <div id='content' className='mt-8'>
           <ContributionCount priorityAddress={address} epochIndex={epochIndex} />
         </div>
       </main>
@@ -172,7 +174,7 @@ function DAO({ address }: any) {
 function EthereumAccount() {
   console.log('EthereumAccount')
 
-  const { address, isConnected } = useAccount();
+  const { address, isConnected } = useAccount()
   const { connect } = useConnect({
     connector: new InjectedConnector()
   })
@@ -307,14 +309,32 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
   console.log('epochIndex:', epochIndex)
   console.log('contributionCount:', contributionCount)
 
+  const { isConnected } = useAccount()
+  console.log('isConnected:', isConnected)
+
+  const [isReportButtonClicked, setReportButtonClicked] = useState(false)
+  console.log('isReportButtonClicked:', isReportButtonClicked)
+
+  const priorityContract = {
+    address: priorityAddress,
+    abi: Sector3DAOPriority.abi
+  }
+
+  const { data: priorityTitleData } = useContractRead({
+    ...priorityContract,
+    functionName: 'title'
+  })
+  console.log('priorityTitleData:', priorityTitleData)
+  let priorityTitle: any = null
+  if (priorityTitleData != undefined) {
+    priorityTitle = priorityTitleData
+  }
+  console.log('priorityTitle:', priorityTitle)
+
   let contracts: any = [contributionCount]
   let i = 0
   for (i = 0; i < Number(contributionCount); i++) {
     console.log('i:', i)
-    const priorityContract = {
-      address: priorityAddress,
-      abi: Sector3DAOPriority.abi
-    }
     contracts[i] = {
       ...priorityContract,
       functionName: 'getContribution',
@@ -352,7 +372,7 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
   }
   console.log('contributions:', contributions)
 
-  if (!useIsMounted() || !contributions) {
+  if (!useIsMounted() || !contributions || !priorityTitle) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -361,17 +381,25 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
     )
   }
 
-  const alignmentValues = ['None ☆☆☆☆☆', 'Barely ★☆☆☆☆', 'Moderately ★★☆☆☆', 'Mostly ★★★☆☆', 'Perfectly ★★★★★']
-  const alignmentTextColors = ['text-red-400', 'text-orange-400', 'text-amber-400', 'text-lime-400', 'text-emerald-400' ]
-  const alignmentBorderColors = ['border-l-red-400', 'border-l-orange-400', 'border-l-amber-400', 'border-l-lime-400', 'border-l-emerald-400' ]
+  const alignmentValues = ['☆☆☆☆☆ None', '★☆☆☆☆ Barely', '★★☆☆☆ Moderately', '★★★☆☆ Mostly', '★★★★☆ Highly', '★★★★★ Perfectly']
+  const alignmentTextColors = ['text-red-400', 'text-orange-400', 'text-amber-400', 'text-lime-400', 'text-emerald-400', 'text-cyan-400' ]
+  const alignmentBorderColors = ['border-l-red-400', 'border-l-orange-400', 'border-l-amber-400', 'border-l-lime-400', 'border-l-emerald-400', 'border-l-cyan-400' ]
   return (
     <>
       <div className='container mt-8'>
         {/* {(epoch.index == priority.epochIndex) ? ( */}
-          <Link href={`${config.etherscanDomain}/address/${priorityAddress}#writeContract#F1`} target='_blank'>
-            <button className='float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>+ Add Contribution</button>
-          </Link>
+          {/* <Link href={`${config.etherscanDomain}/address/${priorityAddress}#writeContract#F1`} target='_blank'> */}
+            <button disabled={!isConnected} 
+                    className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+                    onClick={() => setReportButtonClicked(true)}>
+              + Report Contribution
+            </button>
+          {/* </Link> */}
         {/* ) : null} */}
+
+        {isReportButtonClicked && (
+          <ContributionDialog priorityTitle={priorityTitle} />
+        )}
 
         <h2 className="text-2xl text-gray-400">Contributions</h2>
       </div>
@@ -383,18 +411,42 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
           </div>
         ) : (
           contributions.map((contribution: any, index: number) => (
-            <div key={index} className={`mt-4 p-6 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignment]}`}>
-              <div className='flex'>
-                Contributor:&nbsp;
-                <img
-                  className="h-6 w-6 bg-gray-700 rounded-full"
-                  src={`https://cdn.stamp.fyi/avatar/eth:${contribution.contributor}?s=128`}
-                />&nbsp;
-                <code>{contribution.contributor.substring(0, 6)}...{contribution.contributor.slice(-4)}</code><br />
+            <div key={index} className={`md:flex md:space-x-6 p-6 mt-4 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignment]}`}>
+              <div className='md:w-1/2'>
+                <div>
+                  <label className='text-gray-400'>Contributor</label>
+                  <div className='flex'>
+                    <img
+                      className="h-6 w-6 bg-gray-700 rounded-full"
+                      src={`https://cdn.stamp.fyi/avatar/eth:${contribution.contributor}?s=128`}
+                    />&nbsp;
+                    <code>{contribution.contributor.substring(0, 6)}...{contribution.contributor.slice(-4)}</code><br />
+                  </div>
+                </div>
+
+                <div className='mt-4'>
+                  <label className='text-gray-400'>Proof of contribution URL</label><br />
+                  <code>&lt;coming&gt;</code>
+                </div>
+
+                <div className='mt-4'>
+                  <label className='text-gray-400'>Alignment with priority</label><br />
+                  <span className={`font-bold ${alignmentTextColors[contribution.alignment]}`}>{alignmentValues[contribution.alignment]}</span><br />
+                </div>
               </div>
-              Description: <b>&quot;{contribution.description}&quot;</b><br />
-              Alignment with priority: <span className={`font-bold ${alignmentTextColors[contribution.alignment]}`}>{alignmentValues[contribution.alignment]}</span><br />
-              Hours spent: <code>{contribution.hoursSpent}h</code>
+              <div className='md:w-1/2'>
+                <div className='mt-4 md:mt-0'>
+                  <label className='text-gray-400'>Description</label>
+                  <blockquote className={`p-4 border-l-2 ${alignmentBorderColors[contribution.alignment]} bg-gray-700 rounded-lg`}>
+                    {contribution.description}
+                  </blockquote>
+                </div>
+
+                <div className='mt-4'>
+                  <label className='text-gray-400'>Hours spent</label><br />
+                  <code>{contribution.hoursSpent}h</code>
+                </div>
+              </div>
             </div>
           ))
         )}

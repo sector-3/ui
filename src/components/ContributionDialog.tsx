@@ -1,7 +1,7 @@
 import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { InformationCircleIcon } from '@heroicons/react/24/outline'
-import { usePrepareContractWrite, useContractWrite, useAccount } from 'wagmi'
+import { usePrepareContractWrite, useContractWrite, useAccount, Address } from 'wagmi'
 import { useRouter } from 'next/router'
 import Sector3DAOPriority from '../../abis/Sector3DAOPriority.json'
 
@@ -52,7 +52,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
   }
 
   const { config, error } = usePrepareContractWrite({
-    address: address,
+    address: address as Address,
     abi: Sector3DAOPriority.abi,
     functionName: 'addContribution',
     args: [contribution]
@@ -69,7 +69,9 @@ export default function ContributionDialog({ priorityTitle }: any) {
     console.log('handleSubmit')
     event.preventDefault()
     console.log('contribution:', contribution)
-    write()
+    if (write != undefined) {
+      write()
+    }
   }
 
   // if (isSuccess) {

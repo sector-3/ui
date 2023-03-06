@@ -43,21 +43,11 @@ export default function ContributionDialog({ priorityTitle }: any) {
     setAlignment(event.target.value)
   }
 
-  const { address: contributorAddress, isConnected } = useAccount()
-
-  const contribution = {
-    epochIndex: Number(epochIndex),
-    contributor: contributorAddress,
-    description: description,
-    alignment: Number(alignment),
-    hoursSpent: Number(hoursSpent)
-  }
-
   const { config: writeConfig, error } = usePrepareContractWrite({
     address: address as Address,
     abi: Sector3DAOPriority.abi,
-    functionName: 'addContribution',
-    args: [contribution]
+    functionName: 'addContribution2',
+    args: [description, proofURL, Number(hoursSpent), Number(alignment)]
   })
   console.log('writeConfig:', writeConfig)
   console.log('error:', error)
@@ -76,7 +66,6 @@ export default function ContributionDialog({ priorityTitle }: any) {
   const handleSubmit = (event: any) => {
     console.log('handleSubmit')
     event.preventDefault()
-    console.log('contribution:', contribution)
     if (write != undefined) {
       write()
     }

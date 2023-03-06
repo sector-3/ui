@@ -85,7 +85,7 @@ function DAO({ address }: any) {
       },
       {
         ...daoContract,
-        functionName: 'getPriorityCount'
+        functionName: 'token'
       }
     ]
   })
@@ -97,10 +97,12 @@ function DAO({ address }: any) {
   if (daoData != undefined) {
     const name = daoData[0]
     const purpose = daoData[1]
+    const token = daoData[2]
     dao = {
       address: address,
       name: name,
-      purpose: purpose
+      purpose: purpose,
+      token: token
     }
   }
 
@@ -120,7 +122,7 @@ function DAO({ address }: any) {
           alt="DAO token logo"
           width={100}
           height={100}
-          src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198/logo.png"
+          src={`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${dao.token}/logo.png`}
         />
       </div>
       <div className='w-5/6 pl-6'>

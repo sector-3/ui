@@ -8,6 +8,10 @@
 			"internalType": "string",
 			"name": "purpose_",
 			"type": "string"
+		}, {
+			"internalType": "address",
+			"name": "token_",
+			"type": "address"
 		}],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -30,8 +34,22 @@
 			"type": "uint256"
 		}],
 		"name": "deployPriority",
-		"outputs": [],
+		"outputs": [{
+			"internalType": "contract Sector3DAOPriority",
+			"name": "",
+			"type": "address"
+		}],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	}, {
+		"inputs": [],
+		"name": "getPriorities",
+		"outputs": [{
+			"internalType": "contract Sector3DAOPriority[]",
+			"name": "",
+			"type": "address[]"
+		}],
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"inputs": [],
@@ -89,6 +107,16 @@
 		"type": "function"
 	}, {
 		"inputs": [{
+			"internalType": "contract Sector3DAOPriority",
+			"name": "priority",
+			"type": "address"
+		}],
+		"name": "removePriority",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}, {
+		"inputs": [{
 			"internalType": "string",
 			"name": "name_",
 			"type": "string"
@@ -106,6 +134,26 @@
 		"name": "setPurpose",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	}, {
+		"inputs": [{
+			"internalType": "address",
+			"name": "token_",
+			"type": "address"
+		}],
+		"name": "setToken",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}, {
+		"inputs": [],
+		"name": "token",
+		"outputs": [{
+			"internalType": "address",
+			"name": "",
+			"type": "address"
+		}],
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"inputs": [],

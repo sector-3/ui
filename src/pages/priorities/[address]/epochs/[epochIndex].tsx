@@ -125,7 +125,7 @@ function DAO({ address }: any) {
       },
       {
         ...daoContract,
-        functionName: 'getPriorityCount'
+        functionName: 'token'
       }
     ]
   })
@@ -137,10 +137,12 @@ function DAO({ address }: any) {
   if (daoData != undefined) {
     const name = daoData[0]
     const purpose = daoData[1]
+    const token = daoData[2]
     dao = {
       address: address,
       name: name,
-      purpose: purpose
+      purpose: purpose,
+      token: token
     }
   }
 
@@ -160,7 +162,7 @@ function DAO({ address }: any) {
           alt="DAO token logo"
           width={100}
           height={100}
-          src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198/logo.png"
+          src={`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${dao.token}/logo.png`}
         />
       </div>
       <div className='w-5/6 pl-6'>
@@ -279,19 +281,14 @@ function ContributionCount({ priorityAddress, epochIndex }: any) {
   console.log('priorityAddress:', priorityAddress)
   console.log('epochIndex:', epochIndex)
 
-  const { data, isError, isLoading } = useContractRead({
+  const { data: contributionCount, isError, isLoading } = useContractRead({
     address: priorityAddress,
     abi: Sector3DAOPriority.abi,
     functionName: 'getContributionCount'
   })
-  console.log('data:', data)
+  console.log('contributionCount:', contributionCount)
 
-  let contributionCount = null
-  if (data) {
-    contributionCount = data
-  }
-
-  if (!useIsMounted() || !contributionCount) {
+  if (!useIsMounted() || (contributionCount == undefined)) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -349,25 +346,30 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
   console.log('contributionsData:', contributionsData)
 
   let contributions: any = null
-  if (contributionsData != undefined) {
+  if (contributionCount == 0) {
     contributions = []
-    let contributionIndex = contributionCount - 1
-    while (contributionIndex >= 0) {
-      console.log('contributionIndex:', contributionIndex)
+  } else {
+    if (contributionsData != undefined) {
+      contributions = []
+      let contributionIndex = contributionCount - 1
+      while (contributionIndex >= 0) {
+        console.log('contributionIndex:', contributionIndex)
 
-      const contributionData: any = contributionsData[contributionIndex]
-      console.log('contributionData:', contributionData)
-      if (contributionData.epochIndex == epochIndex) {
-        const contribution = {
-          contributor: contributionData.contributor,
-          description: contributionData.description,
-          alignment: contributionData.alignment,
-          hoursSpent: contributionData.hoursSpent
+        const contributionData: any = contributionsData[contributionIndex]
+        console.log('contributionData:', contributionData)
+        if (contributionData.epochIndex == epochIndex) {
+          const contribution = {
+            contributor: contributionData.contributor,
+            description: contributionData.description,
+            proofURL: contributionData.proofURL,
+            alignment: contributionData.alignment,
+            hoursSpent: contributionData.hoursSpent
+          }
+          contributions[contributions.length] = contribution
         }
-        contributions[contributions.length] = contribution
-      }
 
-      contributionIndex--
+        contributionIndex--
+      }
     }
   }
   console.log('contributions:', contributions)
@@ -424,9 +426,11 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
                   </div>
                 </div>
 
-                <div className='mt-4'>
+                <div className='mt-4 text-ellipsis overflow-hidden'>
                   <label className='text-gray-400'>Proof of contribution URL</label><br />
-                  <code>&lt;coming&gt;</code>
+                  <Link href={contribution.proofURL} target='_blank' className='text-indigo-400'>
+                    {contribution.proofURL}
+                  </Link>
                 </div>
 
                 <div className='mt-4'>

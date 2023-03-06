@@ -118,7 +118,7 @@ function DAO({ address }: any) {
       },
       {
         ...daoContract,
-        functionName: 'getPriorityCount'
+        functionName: 'token'
       }
     ]
   })
@@ -130,10 +130,12 @@ function DAO({ address }: any) {
   if (daoData != undefined) {
     const name = daoData[0]
     const purpose = daoData[1]
+    const token = daoData[2]
     dao = {
       address: address,
       name: name,
-      purpose: purpose
+      purpose: purpose,
+      token: token
     }
   }
 
@@ -153,7 +155,7 @@ function DAO({ address }: any) {
           alt="DAO token logo"
           width={100}
           height={100}
-          src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198/logo.png"
+          src={`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${dao.token}/logo.png`}
         />
       </div>
       <div className='w-5/6 pl-6'>
@@ -269,19 +271,14 @@ function Priority({ address }: any) {
 function EpochIndex({ priorityAddress }: any) {
   console.log('EpochIndex')
 
-  const { data, isError, isLoading } = useContractRead({
+  const { data: epochIndex, isError, isLoading } = useContractRead({
     address: priorityAddress,
     abi: Sector3DAOPriority.abi,
     functionName: 'getEpochIndex'
   })
-  console.log('data:', data)
+  console.log('epochIndex:', epochIndex)
 
-  let epochIndex = null
-  if (data) {
-    epochIndex = data
-  }
-
-  if (!useIsMounted() || !epochIndex) {
+  if (!useIsMounted() || (epochIndex == undefined)) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -390,7 +387,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
           From <b>{epochs[0].startDate}</b> to <b>{epochs[0].endDate}</b><br />
 
           <Link href={`/priorities/${priority.address}/epochs/${priority.epochIndex}`}>
-            <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏳ View Contributions</button>
+            <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏳ Report Contributions</button>
           </Link>
         </div>
       </div>

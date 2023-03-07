@@ -365,6 +365,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
       index--
     }
   }
+  console.log('epochs:', epochs)
 
   if (!useIsMounted() || (epochs.length == 0)) {
     return (

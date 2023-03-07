@@ -12,6 +12,7 @@ import { ethers } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
+import DAO from '@/components/DAO'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -55,81 +56,11 @@ export default function DaoPage() {
           </div>
         </div>
 
-        <div id='content' className='mt-4'>
+        <div id='content' className='mt-8'>
           <PriorityCount daoAddress={address} />
         </div>
       </main>
     </WagmiConfig>
-  )
-}
-
-function DAO({ address }: any) {
-  console.log('DAO')
-
-  console.log('address:', address)
-
-  const daoContract = {
-    address: address,
-    abi: Sector3DAO.abi
-  }
-
-  const { data: daoData, isError, isLoading } = useContractReads({
-    contracts: [
-      {
-        ...daoContract,
-        functionName: 'name'
-      },
-      {
-        ...daoContract,
-        functionName: 'purpose'
-      },
-      {
-        ...daoContract,
-        functionName: 'token'
-      }
-    ]
-  })
-  console.log('daoData:', daoData)
-  console.log('isError:', isError)
-  console.log('isLoading:', isLoading)
-
-  let dao = null
-  if (daoData != undefined) {
-    const name = daoData[0]
-    const purpose = daoData[1]
-    const token = daoData[2]
-    dao = {
-      address: address,
-      name: name,
-      purpose: purpose,
-      token: token
-    }
-  }
-
-  if (!useIsMounted() || !dao) {
-    return (
-      <div className="flex items-center justify-center text-gray-400 pb-6 md:pb-0">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-        &nbsp;Loading...
-      </div>
-    )
-  }
-
-  return (
-    <div className='flex'>
-      <div className='w-1/6'>
-        <Image
-          alt="DAO token logo"
-          width={100}
-          height={100}
-          src={`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${dao.token}/logo.png`}
-        />
-      </div>
-      <div className='w-5/6 pl-6'>
-        <h2 className='text-xl font-bold'><>{dao.name}</></h2>
-        <p className='text-gray-400 pb-6 md:pb-0'><>Purpose: {dao.purpose}</></p>
-      </div>
-    </div>
   )
 }
 
@@ -166,24 +97,40 @@ function EthereumAccount() {
 function PriorityCount({ daoAddress }: any) {
   console.log('PriorityCount')
 
-  const { data, isError, isLoading } = useContractRead({
+  const { isConnected } = useAccount()
+  console.log('isConnected:', isConnected)
+
+  const { data: priorityCount, isError, isLoading } = useContractRead({
     address: daoAddress,
     abi: Sector3DAO.abi,
     functionName: 'getPriorityCount'
   })
-  console.log('data:', data)
+  console.log('priorityCount:', priorityCount)
 
-  let priorityCount = null
-  if (data) {
-    priorityCount = data
-  }
-
-  if (!useIsMounted() || !priorityCount) {
+  if (!useIsMounted() || (priorityCount == undefined)) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
         &nbsp;Loading...
       </div>
+    )
+  } else if (priorityCount == 0) {
+    return (
+      <>
+        <div className='container'>
+          <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'>
+            <button disabled={!isConnected} className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>+ Add Priority</button>
+          </Link>
+
+          <h2 className="text-2xl text-gray-400">Priorities</h2>
+        </div>
+
+        <div className='container'>
+          <div className='text-gray-400 mt-4'>
+            No data
+          </div>
+        </div>
+      </>
     )
   }
   return <Priorities daoAddress={daoAddress} priorityCount={priorityCount} />

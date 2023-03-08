@@ -170,7 +170,7 @@ export default function PriorityDialog() {
                         <InformationCircleIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
                       </div>
                       <p className="ml-2 text-sm text-gray-400">
-                        Add a priority that aligns well with this DAO's <i>purpose</i>.
+                        Add a priority that aligns well with this DAO <i>purpose</i>.
                       </p>
                     </div>
                     <form onSubmit={handleSubmit}>

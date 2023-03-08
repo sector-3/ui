@@ -33,7 +33,7 @@ export default function DAO({ address }: any) {
   console.log('isError:', isError)
   console.log('isLoading:', isLoading)
 
-  let dao = null
+  let dao: any = null
   if (daoData != undefined) {
     const name = daoData[0]
     const purpose = daoData[1]

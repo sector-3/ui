@@ -51,6 +51,9 @@ export default function EpochPage() {
       </video>
 
       <main className='p-2 sm:p-4 md:p-8 lg:p-16 xl:p-32 2xl:p-64'>
+        <button className='py-5' onClick={()=>router.back()}>
+          <Image alt='back' src='/arrow-left.svg' width={48} height={48} />
+        </button>
         <div id='header' className='md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
           <div className='md:w-2/3 flex'>
             <DAOAddress priorityAddress={address} />

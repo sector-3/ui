@@ -1,4 +1,4 @@
-import Sector3DAO from '../../abis/Sector3DAO.json'
+import Sector3DAO from '../../../abis/v0/Sector3DAO.json'
 import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { useIsMounted } from '@/hooks/useIsMounted'
 import Image from 'next/image'

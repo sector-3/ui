@@ -315,7 +315,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
 
       <div className='container'>
         <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
-        <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochIndex + 1}</h3>
+          <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochIndex + 1}</h3>
           From <b>{epochs[0].startDate}</b> to <b>{epochs[0].endDate}</b><br />
 
           <Link href={`/v0/priorities/${priority.address}/epochs/${priority.epochIndex}`}>
@@ -330,7 +330,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
 
       <div className='container'>
         {(epochs.length < 2) ? (
-          <div className='text-gray-400'>
+          <div className='mt-4 text-gray-400'>
             No data
           </div>
         ) : (

@@ -43,6 +43,6 @@ npm run build
 
 ## Routes
 
-- DAO: `/daos/<address>`
-- Priority: `/priorities/<address>`
-- Epoch: `/priorities/<address>/epochs/<epochIndex>`
+- DAO: `/v0/daos/<address>`
+- Priority: `/v0/priorities/<address>`
+- Epoch: `/v0/priorities/<address>/epochs/<epochIndex>`

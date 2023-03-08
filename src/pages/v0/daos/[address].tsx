@@ -6,15 +6,15 @@ import { chainUtils } from '@/utils/ChainUtils'
 import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
-import Sector3DAO from '../../../abis/Sector3DAO.json'
-import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
+import Sector3DAO from '../../../../abis/v0/Sector3DAO.json'
+import Sector3DAOPriority from '../../../../abis/v0/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
-import DAO from '@/components/DAO'
+import DAO from '@/components/v0/DAO'
 import { useState } from 'react'
-import PriorityDialog from '@/components/PriorityDialog'
+import PriorityDialog from '@/components/v0/PriorityDialog'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -293,7 +293,7 @@ function Priority({ priorityAddress }: any ) {
       Epoch budget: {priority.epochBudget} <code>$TOKEN_NAME</code> per {priority.epochDuration} days<br />
       Start date: {priority.startDate}<br />
 
-      <Link href={`/priorities/${priority.address}`}>
+      <Link href={`/v0/priorities/${priority.address}`}>
         <button className='mt-4 px-4 py-2 text-gray-200 font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏱️ View Epochs</button>
       </Link>
     </div>

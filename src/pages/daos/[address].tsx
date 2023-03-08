@@ -13,6 +13,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
 import DAO from '@/components/DAO'
+import { useState } from 'react'
+import PriorityDialog from '@/components/PriorityDialog'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -100,6 +102,9 @@ function PriorityCount({ daoAddress }: any) {
   const { isConnected } = useAccount()
   console.log('isConnected:', isConnected)
 
+  const [isPriorityButtonClicked, setPriorityButtonClicked] = useState(false)
+  console.log('isPriorityButtonClicked:', isPriorityButtonClicked)
+
   const { data: priorityCount, isError, isLoading } = useContractRead({
     address: daoAddress,
     abi: Sector3DAO.abi,
@@ -118,9 +123,19 @@ function PriorityCount({ daoAddress }: any) {
     return (
       <>
         <div className='container'>
-          <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'>
-            <button disabled={!isConnected} className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>+ Add Priority</button>
-          </Link>
+          {/* <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'> */}
+            <button disabled={!isConnected} 
+              className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+              onClick={() => setPriorityButtonClicked(true)}
+            >
+              + Add Priority
+            </button>
+          {/* </Link> */}
+
+
+          {isPriorityButtonClicked && (
+            <PriorityDialog />
+          )}
 
           <h2 className="text-2xl text-gray-400">Priorities</h2>
         </div>
@@ -144,6 +159,9 @@ function Priorities({ daoAddress, priorityCount }: any) {
 
   const { isConnected } = useAccount()
   console.log('isConnected:', isConnected)
+
+  const [isPriorityButtonClicked, setPriorityButtonClicked] = useState(false)
+  console.log('isPriorityButtonClicked:', isPriorityButtonClicked)
 
   let contracts: any = [priorityCount]
   for (let i = 0; i < Number(priorityCount); i++) {
@@ -183,9 +201,19 @@ function Priorities({ daoAddress, priorityCount }: any) {
   return (
     <div>
       <div className='container'>
-        <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'>
-          <button disabled={!isConnected} className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>+ Add Priority</button>
-        </Link>
+        {/* <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'> */}
+          <button disabled={!isConnected} 
+            className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+            onClick={() => setPriorityButtonClicked(true)}
+          >
+            + Add Priority
+          </button>
+        {/* </Link> */}
+
+
+        {isPriorityButtonClicked && (
+          <PriorityDialog />
+        )}
 
         <h2 className="text-2xl text-gray-400">Priorities</h2>
       </div>

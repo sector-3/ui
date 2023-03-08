@@ -51,6 +51,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
   })
   console.log('writeConfig:', writeConfig)
   console.log('error:', error)
+  
   const { data: transactionData, isLoading, isSuccess, write } = useContractWrite(writeConfig)
   console.log('transactionData:', transactionData)
   console.log('isLoading:', isLoading)
@@ -99,7 +100,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-xl bg-black text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 {isSuccess ? (
-                  <div className='p-16 text-center'>
+                  <div className='p-12 text-center'>
                     {isTransactionLoading ? (
                       <>
                         <div>
@@ -122,13 +123,13 @@ export default function ContributionDialog({ priorityTitle }: any) {
                           <CheckBadgeIcon className="h-16 w-16 text-green-400" />
                         </p>
                         <p className='mt-4'>
-                          Successfully added your contribution!
+                          Successfully added your DAO contribution!
                         </p>
                         <p className='mt-4'>
                           <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
                             className='text-indigo-400'
                           >
-                            View on Etherscan
+                            View transaction on Etherscan
                           </Link>
                         </p>
                         <button
@@ -325,8 +326,8 @@ export default function ContributionDialog({ priorityTitle }: any) {
                       >
                         {!isLoading ? (
                           <>
-                            Confirm        
-                          </>                
+                            Confirm
+                          </>
                         ) : (
                           <>
                             <div className="mr-2 inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>

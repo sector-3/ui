@@ -38,7 +38,7 @@ export default function PriorityDialog() {
   }
   console.log('epochDuration:', epochDuration)
 
-  const [epochBudget, setEpochBudget] = useState('0')
+  const [epochBudget, setEpochBudget] = useState(0)
   const [epochBudgetWei, setEpochBudgetWei] = useState('0')
   const handleEpochBudgetChange = (event: any) => {
     console.log('handleEpochBudgetChange')
@@ -233,7 +233,7 @@ export default function PriorityDialog() {
                           onChange={handleEpochBudgetChange}
                           className="w-1/2 p-2 bg-stone-700 rounded-md ring-1 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                           placeholder="E.g. '2,049'"
-                          defaultValue={''}
+                          defaultValue={0}
                           required
                           min={0}
                         />

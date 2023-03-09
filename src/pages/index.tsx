@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import Link from 'next/link'
+import { config } from '@/utils/Config'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -59,7 +60,7 @@ export default function Home() {
           </Link>
 
           <Link
-            href="/new-dao"
+            href={`${config.etherscanDomain}/address/${config.daoFactoryAddress}#writeContract`}
             className={styles.card}
           >
             <h2 className="text-2xl">

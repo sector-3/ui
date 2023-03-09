@@ -64,6 +64,7 @@ export default function DAO({ address }: any) {
     if (customTokenLogos.includes(dao.token)) {
       tokenLogoPath = `/token-logos/${dao.token}.png`
     }
+    console.log('tokenLogoPath:', tokenLogoPath)
     
     return tokenLogoPath
   }
@@ -75,7 +76,7 @@ export default function DAO({ address }: any) {
           alt="DAO token logo"
           width={100}
           height={100}
-          className='rounded-full'
+          className='rounded-full bg-gray-800'
           src={`/token-logos/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2.png`}
           loader={tokenLogoLoader}
         />

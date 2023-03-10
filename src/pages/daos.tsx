@@ -87,7 +87,7 @@ function DAOContainer() {
     return (
       <div className='container mt-4 grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-4'>
         {
-          daoAddresses.map((daoAddress: any) => (
+          daoAddresses.slice(0).reverse().map((daoAddress: any) => (
             <DAOPreview key={daoAddress} address={daoAddress} />
           ))
         }
@@ -159,7 +159,8 @@ function DAOPreview({ address }: any) {
       let tokenLogoPath = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${dao.token}/logo.png`
       
       const customTokenLogos = [
-        '0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1' // Sector#3
+        '0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1', // Sector#3 DAO
+        '0x333A4823466879eeF910A04D473505da62142069' // Nation3
       ]
       if (customTokenLogos.includes(dao.token)) {
         tokenLogoPath = `/token-logos/${dao.token}.png`
@@ -170,7 +171,8 @@ function DAOPreview({ address }: any) {
     }
 
     return (
-      <Link href={`/v${dao.protocolVersion}/daos/${dao.address}`}>
+      // <Link href={`/v${dao.protocolVersion}/daos/${dao.address}`}>
+      <Link href={`/v0/daos/${dao.address}`}>
         <div className='p-6 bg-black rounded-xl border-4 border-black hover:border-gray-700 border-l-gray-700 border-r-gray-700'>
           <div className='flex'>
             <div className='w-1/6'>

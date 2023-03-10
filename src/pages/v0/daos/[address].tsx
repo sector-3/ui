@@ -220,7 +220,7 @@ function Priorities({ daoAddress, priorityCount }: any) {
 
       <div className='container'>
         {
-          priorityAddresses.map((priorityAddress: any) => (
+          priorityAddresses.slice(0).reverse().map((priorityAddress: any) => (
             <div key={priorityAddress}>
               <Priority priorityAddress={priorityAddress} />
             </div>

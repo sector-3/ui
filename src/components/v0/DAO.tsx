@@ -59,11 +59,13 @@ export default function DAO({ address }: any) {
     let tokenLogoPath = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${dao.token}/logo.png`
     
     const customTokenLogos = [
-      '0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1' // Sector#3
+      '0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1', // Sector#3
+      '0x333A4823466879eeF910A04D473505da62142069' // Nation3
     ]
     if (customTokenLogos.includes(dao.token)) {
       tokenLogoPath = `/token-logos/${dao.token}.png`
     }
+    console.log('tokenLogoPath:', tokenLogoPath)
     
     return tokenLogoPath
   }
@@ -75,7 +77,7 @@ export default function DAO({ address }: any) {
           alt="DAO token logo"
           width={100}
           height={100}
-          className='rounded-full'
+          className='rounded-full bg-gray-800'
           src={`/token-logos/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2.png`}
           loader={tokenLogoLoader}
         />

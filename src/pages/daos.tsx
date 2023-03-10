@@ -39,7 +39,7 @@ export default function DAOsPage() {
 
         <div id='content'>
           <div className='container'>
-            <Link href={`${config.etherscanDomain}/address/${config.daoFactoryAddress}#writeContract`} target='_blank'>
+            <Link href={`${config.etherscanDomain}/address/${config.daoFactoryAddress}#writeContract#F1`} target='_blank'>
               <button
                 className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 text-sm font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
               >

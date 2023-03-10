@@ -60,7 +60,7 @@ export default function Home() {
           </Link>
 
           <Link
-            href={`${config.etherscanDomain}/address/${config.daoFactoryAddress}#writeContract`}
+            href={`${config.etherscanDomain}/address/${config.daoFactoryAddress}#writeContract#F1`}
             className={styles.card}
           >
             <h2 className="text-2xl">

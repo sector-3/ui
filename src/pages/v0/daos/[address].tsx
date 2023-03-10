@@ -6,12 +6,15 @@ import { chainUtils } from '@/utils/ChainUtils'
 import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
-import Sector3DAO from '../../../abis/Sector3DAO.json'
-import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
+import Sector3DAO from '../../../../abis/v0/Sector3DAO.json'
+import Sector3DAOPriority from '../../../../abis/v0/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
+import DAO from '@/components/v0/DAO'
+import { useState } from 'react'
+import PriorityDialog from '@/components/v0/PriorityDialog'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -55,79 +58,11 @@ export default function DaoPage() {
           </div>
         </div>
 
-        <div id='content' className='mt-4'>
+        <div id='content' className='mt-8'>
           <PriorityCount daoAddress={address} />
         </div>
       </main>
     </WagmiConfig>
-  )
-}
-
-function DAO({ address }: any) {
-  console.log('DAO')
-
-  console.log('address:', address)
-
-  const daoContract = {
-    address: address,
-    abi: Sector3DAO.abi
-  }
-
-  const { data: daoData, isError, isLoading } = useContractReads({
-    contracts: [
-      {
-        ...daoContract,
-        functionName: 'name'
-      },
-      {
-        ...daoContract,
-        functionName: 'purpose'
-      },
-      {
-        ...daoContract,
-        functionName: 'getPriorityCount'
-      }
-    ]
-  })
-  console.log('daoData:', daoData)
-  console.log('isError:', isError)
-  console.log('isLoading:', isLoading)
-
-  let dao = null
-  if (daoData != undefined) {
-    const name = daoData[0]
-    const purpose = daoData[1]
-    dao = {
-      address: address,
-      name: name,
-      purpose: purpose
-    }
-  }
-
-  if (!useIsMounted() || !dao) {
-    return (
-      <div className="flex items-center justify-center text-gray-400 pb-6 md:pb-0">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-        &nbsp;Loading...
-      </div>
-    )
-  }
-
-  return (
-    <div className='flex'>
-      <div className='w-1/6'>
-        <Image
-          alt="DAO token logo"
-          width={100}
-          height={100}
-          src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198/logo.png"
-        />
-      </div>
-      <div className='w-5/6 pl-6'>
-        <h2 className='text-xl font-bold'><>{dao.name}</></h2>
-        <p className='text-gray-400 pb-6 md:pb-0'><>Purpose: {dao.purpose}</></p>
-      </div>
-    </div>
   )
 }
 
@@ -164,24 +99,53 @@ function EthereumAccount() {
 function PriorityCount({ daoAddress }: any) {
   console.log('PriorityCount')
 
-  const { data, isError, isLoading } = useContractRead({
+  const { isConnected } = useAccount()
+  console.log('isConnected:', isConnected)
+
+  const [isPriorityButtonClicked, setPriorityButtonClicked] = useState(false)
+  console.log('isPriorityButtonClicked:', isPriorityButtonClicked)
+
+  const { data: priorityCount, isError, isLoading } = useContractRead({
     address: daoAddress,
     abi: Sector3DAO.abi,
     functionName: 'getPriorityCount'
   })
-  console.log('data:', data)
+  console.log('priorityCount:', priorityCount)
 
-  let priorityCount = null
-  if (data) {
-    priorityCount = data
-  }
-
-  if (!useIsMounted() || !priorityCount) {
+  if (!useIsMounted() || (priorityCount == undefined)) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
         &nbsp;Loading...
       </div>
+    )
+  } else if (priorityCount == 0) {
+    return (
+      <>
+        <div className='container'>
+          {/* <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'> */}
+            <button disabled={!isConnected} 
+              className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+              onClick={() => setPriorityButtonClicked(true)}
+            >
+              + Add Priority
+            </button>
+          {/* </Link> */}
+
+
+          {isPriorityButtonClicked && (
+            <PriorityDialog />
+          )}
+
+          <h2 className="text-2xl text-gray-400">Priorities</h2>
+        </div>
+
+        <div className='container'>
+          <div className='text-gray-400 mt-4'>
+            No data
+          </div>
+        </div>
+      </>
     )
   }
   return <Priorities daoAddress={daoAddress} priorityCount={priorityCount} />
@@ -195,6 +159,9 @@ function Priorities({ daoAddress, priorityCount }: any) {
 
   const { isConnected } = useAccount()
   console.log('isConnected:', isConnected)
+
+  const [isPriorityButtonClicked, setPriorityButtonClicked] = useState(false)
+  console.log('isPriorityButtonClicked:', isPriorityButtonClicked)
 
   let contracts: any = [priorityCount]
   for (let i = 0; i < Number(priorityCount); i++) {
@@ -234,16 +201,26 @@ function Priorities({ daoAddress, priorityCount }: any) {
   return (
     <div>
       <div className='container'>
-        <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'>
-          <button disabled={!isConnected} className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'>+ Add Priority</button>
-        </Link>
+        {/* <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'> */}
+          <button disabled={!isConnected} 
+            className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+            onClick={() => setPriorityButtonClicked(true)}
+          >
+            + Add Priority
+          </button>
+        {/* </Link> */}
+
+
+        {isPriorityButtonClicked && (
+          <PriorityDialog />
+        )}
 
         <h2 className="text-2xl text-gray-400">Priorities</h2>
       </div>
 
       <div className='container'>
         {
-          priorityAddresses.map((priorityAddress: any) => (
+          priorityAddresses.slice(0).reverse().map((priorityAddress: any) => (
             <div key={priorityAddress}>
               <Priority priorityAddress={priorityAddress} />
             </div>
@@ -316,7 +293,7 @@ function Priority({ priorityAddress }: any ) {
       Epoch budget: {priority.epochBudget} <code>$TOKEN_NAME</code> per {priority.epochDuration} days<br />
       Start date: {priority.startDate}<br />
 
-      <Link href={`/priorities/${priority.address}`}>
+      <Link href={`/v0/priorities/${priority.address}`}>
         <button className='mt-4 px-4 py-2 text-gray-200 font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏱️ View Epochs</button>
       </Link>
     </div>

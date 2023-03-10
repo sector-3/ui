@@ -35,6 +35,10 @@
 		"anonymous": false,
 		"inputs": [{
 			"components": [{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}, {
 				"internalType": "uint16",
 				"name": "epochIndex",
 				"type": "uint16"
@@ -47,8 +51,16 @@
 				"name": "description",
 				"type": "string"
 			}, {
+				"internalType": "string",
+				"name": "proofURL",
+				"type": "string"
+			}, {
 				"internalType": "enum Alignment",
 				"name": "alignment",
+				"type": "uint8"
+			}, {
+				"internalType": "uint8",
+				"name": "alignmentPercentage",
 				"type": "uint8"
 			}, {
 				"internalType": "uint8",
@@ -85,6 +97,10 @@
 	}, {
 		"inputs": [{
 			"components": [{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}, {
 				"internalType": "uint16",
 				"name": "epochIndex",
 				"type": "uint16"
@@ -97,8 +113,16 @@
 				"name": "description",
 				"type": "string"
 			}, {
+				"internalType": "string",
+				"name": "proofURL",
+				"type": "string"
+			}, {
 				"internalType": "enum Alignment",
 				"name": "alignment",
+				"type": "uint8"
+			}, {
+				"internalType": "uint8",
+				"name": "alignmentPercentage",
 				"type": "uint8"
 			}, {
 				"internalType": "uint8",
@@ -110,6 +134,28 @@
 			"type": "tuple"
 		}],
 		"name": "addContribution",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}, {
+		"inputs": [{
+			"internalType": "string",
+			"name": "description",
+			"type": "string"
+		}, {
+			"internalType": "string",
+			"name": "proofURL",
+			"type": "string"
+		}, {
+			"internalType": "uint8",
+			"name": "hoursSpent",
+			"type": "uint8"
+		}, {
+			"internalType": "enum Alignment",
+			"name": "alignment",
+			"type": "uint8"
+		}],
+		"name": "addContribution2",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -180,6 +226,10 @@
 		"name": "getContribution",
 		"outputs": [{
 			"components": [{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}, {
 				"internalType": "uint16",
 				"name": "epochIndex",
 				"type": "uint16"
@@ -192,8 +242,16 @@
 				"name": "description",
 				"type": "string"
 			}, {
+				"internalType": "string",
+				"name": "proofURL",
+				"type": "string"
+			}, {
 				"internalType": "enum Alignment",
 				"name": "alignment",
+				"type": "uint8"
+			}, {
+				"internalType": "uint8",
+				"name": "alignmentPercentage",
 				"type": "uint8"
 			}, {
 				"internalType": "uint8",
@@ -213,6 +271,49 @@
 			"internalType": "uint16",
 			"name": "",
 			"type": "uint16"
+		}],
+		"stateMutability": "view",
+		"type": "function"
+	}, {
+		"inputs": [],
+		"name": "getContributions",
+		"outputs": [{
+			"components": [{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}, {
+				"internalType": "uint16",
+				"name": "epochIndex",
+				"type": "uint16"
+			}, {
+				"internalType": "address",
+				"name": "contributor",
+				"type": "address"
+			}, {
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			}, {
+				"internalType": "string",
+				"name": "proofURL",
+				"type": "string"
+			}, {
+				"internalType": "enum Alignment",
+				"name": "alignment",
+				"type": "uint8"
+			}, {
+				"internalType": "uint8",
+				"name": "alignmentPercentage",
+				"type": "uint8"
+			}, {
+				"internalType": "uint8",
+				"name": "hoursSpent",
+				"type": "uint8"
+			}],
+			"internalType": "struct Contribution[]",
+			"name": "",
+			"type": "tuple[]"
 		}],
 		"stateMutability": "view",
 		"type": "function"

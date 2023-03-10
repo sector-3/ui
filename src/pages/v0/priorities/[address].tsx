@@ -7,12 +7,13 @@ import { chainUtils } from '@/utils/ChainUtils'
 import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
-import Sector3DAO from '../../../abis/Sector3DAO.json'
-import Sector3DAOPriority from '../../../abis/Sector3DAOPriority.json'
+import Sector3DAO from '../../../../abis/v0/Sector3DAO.json'
+import Sector3DAOPriority from '../../../../abis/v0/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
+import DAO from '@/components/v0/DAO'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -47,6 +48,9 @@ export default function PriorityPage() {
       </video>
 
       <main className='p-2 sm:p-4 md:p-8 lg:p-16 xl:p-32 2xl:p-64'>
+        <button className='py-5' onClick={()=>router.back()}>
+          <Image alt='back' src='/arrow-left.svg' width={48} height={48} />
+        </button>
         <div id='header' className='md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
           <div className='md:w-2/3 flex'>
             <DAOAddress priorityAddress={address} />
@@ -94,74 +98,6 @@ function DAOAddress({ priorityAddress }: any) {
     )
   }
   return <DAO address={daoAddress} />
-}
-
-function DAO({ address }: any) {
-  console.log('DAO')
-
-  console.log('address:', address)
-
-  const daoContract = {
-    address: address,
-    abi: Sector3DAO.abi
-  }
-
-  const { data: daoData, isError, isLoading } = useContractReads({
-    contracts: [
-      {
-        ...daoContract,
-        functionName: 'name'
-      },
-      {
-        ...daoContract,
-        functionName: 'purpose'
-      },
-      {
-        ...daoContract,
-        functionName: 'getPriorityCount'
-      }
-    ]
-  })
-  console.log('daoData:', daoData)
-  console.log('isError:', isError)
-  console.log('isLoading:', isLoading)
-
-  let dao = null
-  if (daoData != undefined) {
-    const name = daoData[0]
-    const purpose = daoData[1]
-    dao = {
-      address: address,
-      name: name,
-      purpose: purpose
-    }
-  }
-
-  if (!useIsMounted() || !dao) {
-    return (
-      <div className="flex items-center justify-center text-gray-400 pb-6 md:pb-0">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-        &nbsp;Loading...
-      </div>
-    )
-  }
-
-  return (
-    <div className='flex'>
-      <div className='w-1/6'>
-        <Image
-          alt="DAO token logo"
-          width={100}
-          height={100}
-          src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198/logo.png"
-        />
-      </div>
-      <div className='w-5/6 pl-6'>
-        <h2 className='text-xl font-bold'><>{dao.name}</></h2>
-        <p className='text-gray-400 pb-6 md:pb-0'><>Purpose: {dao.purpose}</></p>
-      </div>
-    </div>
-  )
 }
 
 function EthereumAccount() {
@@ -269,19 +205,14 @@ function Priority({ address }: any) {
 function EpochIndex({ priorityAddress }: any) {
   console.log('EpochIndex')
 
-  const { data, isError, isLoading } = useContractRead({
+  const { data: epochIndex, isError, isLoading } = useContractRead({
     address: priorityAddress,
     abi: Sector3DAOPriority.abi,
     functionName: 'getEpochIndex'
   })
-  console.log('data:', data)
+  console.log('epochIndex:', epochIndex)
 
-  let epochIndex = null
-  if (data) {
-    epochIndex = data
-  }
-
-  if (!useIsMounted() || !epochIndex) {
+  if (!useIsMounted() || (epochIndex == undefined)) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -368,6 +299,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
       index--
     }
   }
+  console.log('epochs:', epochs)
 
   if (!useIsMounted() || (epochs.length == 0)) {
     return (
@@ -386,11 +318,11 @@ function Epochs({ priorityAddress, epochIndex }: any) {
 
       <div className='container'>
         <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
-        <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochIndex + 1}</h3>
+          <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochIndex + 1}</h3>
           From <b>{epochs[0].startDate}</b> to <b>{epochs[0].endDate}</b><br />
 
-          <Link href={`/priorities/${priority.address}/epochs/${priority.epochIndex}`}>
-            <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏳ View Contributions</button>
+          <Link href={`/v0/priorities/${priority.address}/epochs/${priority.epochIndex}`}>
+            <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏳ Report Contributions</button>
           </Link>
         </div>
       </div>
@@ -401,7 +333,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
 
       <div className='container'>
         {(epochs.length < 2) ? (
-          <div className='text-gray-400'>
+          <div className='mt-4 text-gray-400'>
             No data
           </div>
         ) : (
@@ -414,7 +346,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
                 <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochIndex + 1 - index}</h3>
                 From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b><br />
 
-                <Link href={`/priorities/${priority.address}/epochs/${priority.epochIndex - index}`}>
+                <Link href={`/v0/priorities/${priority.address}/epochs/${priority.epochIndex - index}`}>
                   <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⌛️ View Contributions</button>
                 </Link>
               </div>

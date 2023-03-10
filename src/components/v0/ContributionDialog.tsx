@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { InformationCircleIcon, CheckBadgeIcon } from '@heroicons/react/24/outline'
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount, Address } from 'wagmi'
 import { useRouter } from 'next/router'
-import Sector3DAOPriority from '../../abis/Sector3DAOPriority.json'
+import Sector3DAOPriority from '../../../abis/v0/Sector3DAOPriority.json'
 import Link from 'next/link'
 import { config } from '@/utils/Config'
 
@@ -43,24 +43,15 @@ export default function ContributionDialog({ priorityTitle }: any) {
     setAlignment(event.target.value)
   }
 
-  const { address: contributorAddress, isConnected } = useAccount()
-
-  const contribution = {
-    epochIndex: Number(epochIndex),
-    contributor: contributorAddress,
-    description: description,
-    alignment: Number(alignment),
-    hoursSpent: Number(hoursSpent)
-  }
-
   const { config: writeConfig, error } = usePrepareContractWrite({
     address: address as Address,
     abi: Sector3DAOPriority.abi,
-    functionName: 'addContribution',
-    args: [contribution]
+    functionName: 'addContribution2',
+    args: [description, proofURL, Number(hoursSpent), Number(alignment)]
   })
   console.log('writeConfig:', writeConfig)
   console.log('error:', error)
+  
   const { data: transactionData, isLoading, isSuccess, write } = useContractWrite(writeConfig)
   console.log('transactionData:', transactionData)
   console.log('isLoading:', isLoading)
@@ -76,7 +67,6 @@ export default function ContributionDialog({ priorityTitle }: any) {
   const handleSubmit = (event: any) => {
     console.log('handleSubmit')
     event.preventDefault()
-    console.log('contribution:', contribution)
     if (write != undefined) {
       write()
     }
@@ -110,7 +100,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-xl bg-black text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 {isSuccess ? (
-                  <div className='p-16 text-center'>
+                  <div className='p-12 text-center'>
                     {isTransactionLoading ? (
                       <>
                         <div>
@@ -133,13 +123,13 @@ export default function ContributionDialog({ priorityTitle }: any) {
                           <CheckBadgeIcon className="h-16 w-16 text-green-400" />
                         </p>
                         <p className='mt-4'>
-                          Successfully added your contribution!
+                          Successfully added your DAO contribution!
                         </p>
                         <p className='mt-4'>
                           <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
                             className='text-indigo-400'
                           >
-                            View on Etherscan
+                            View transaction on Etherscan
                           </Link>
                         </p>
                         <button
@@ -336,8 +326,8 @@ export default function ContributionDialog({ priorityTitle }: any) {
                       >
                         {!isLoading ? (
                           <>
-                            Confirm        
-                          </>                
+                            Confirm
+                          </>
                         ) : (
                           <>
                             <div className="mr-2 inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>

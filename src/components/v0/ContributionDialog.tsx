@@ -1,6 +1,6 @@
 import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { InformationCircleIcon, CheckBadgeIcon } from '@heroicons/react/24/outline'
+import { InformationCircleIcon, CheckBadgeIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount, Address } from 'wagmi'
 import { useRouter } from 'next/router'
 import Sector3DAOPriority from '../../../abis/v0/Sector3DAOPriority.json'
@@ -119,26 +119,56 @@ export default function ContributionDialog({ priorityTitle }: any) {
                       </>
                     ) : (
                       <>
-                        <p className='flex justify-center'>
-                          <CheckBadgeIcon className="h-16 w-16 text-green-400" />
-                        </p>
-                        <p className='mt-4'>
-                          Successfully added your DAO contribution!
-                        </p>
-                        <p className='mt-4'>
-                          <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
-                            className='text-indigo-400'
-                          >
-                            View transaction on Etherscan
-                          </Link>
-                        </p>
-                        <button
-                          type="button"
-                          className="mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
-                          onClick={() => setOpen(false)}
-                        >
-                          Close
-                        </button>
+                        {(!isTransactionSuccess) ? (
+                          <p>
+                            <>
+                              <p className='flex justify-center'>
+                                <ExclamationTriangleIcon className="h-16 w-16 text-orange-400" />
+                              </p>
+                              <p className='mt-4 text-orange-400'>
+                                Transaction failed
+                              </p>
+                              <p className='mt-4'>
+                                <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
+                                  className='text-indigo-400'
+                                >
+                                  View transaction on Etherscan
+                                </Link>
+                              </p>
+                              <button
+                                type="button"
+                                className="mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
+                                onClick={() => setOpen(false)}
+                              >
+                                Close
+                              </button>
+                            </>
+                          </p>
+                          
+                        ) : (
+                          <>
+                            <p className='flex justify-center'>
+                              <CheckBadgeIcon className="h-16 w-16 text-green-400" />
+                            </p>
+                            <p className='mt-4'>
+                              Successfully added your DAO contribution!
+                            </p>
+                            <p className='mt-4'>
+                              <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
+                                className='text-indigo-400'
+                              >
+                                View transaction on Etherscan
+                              </Link>
+                            </p>
+                            <button
+                              type="button"
+                              className="mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
+                              onClick={() => setOpen(false)}
+                            >
+                              Close
+                            </button>
+                          </>
+                        )}
                       </>
                     )}
                   </div>

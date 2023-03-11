@@ -72,7 +72,7 @@ export default function EpochPage() {
         </div>
 
         <div id='content' className='mt-8'>
-          <ContributionCount priorityAddress={address} epochIndex={epochIndex} />
+          <Contributions priorityAddress={address} epochIndex={epochIndex} />
         </div>
       </main>
     </WagmiConfig>
@@ -209,36 +209,11 @@ function Priority({ address }: any) {
   )
 }
 
-function ContributionCount({ priorityAddress, epochIndex }: any) {
-  console.log('ContributionCount')
-
-  console.log('priorityAddress:', priorityAddress)
-  console.log('epochIndex:', epochIndex)
-
-  const { data: contributionCount, isError, isLoading } = useContractRead({
-    address: priorityAddress,
-    abi: Sector3DAOPriority.abi,
-    functionName: 'getContributionCount'
-  })
-  console.log('contributionCount:', contributionCount)
-
-  if (!useIsMounted() || (contributionCount == undefined)) {
-    return (
-      <div className="flex items-center text-gray-400">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-        &nbsp;Loading...
-      </div>
-    )
-  }
-  return <Contributions priorityAddress={priorityAddress} epochIndex={epochIndex} contributionCount={contributionCount} />
-}
-
-function Contributions({ priorityAddress, epochIndex, contributionCount }: any) {
+function Contributions({ priorityAddress, epochIndex }: any) {
   console.log('Contributions')
 
   console.log('priorityAddress:', priorityAddress)
   console.log('epochIndex:', epochIndex)
-  console.log('contributionCount:', contributionCount)
 
   const { isConnected } = useAccount()
   console.log('isConnected:', isConnected)
@@ -262,49 +237,15 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
   }
   console.log('priorityTitle:', priorityTitle)
 
-  let contracts: any = [contributionCount]
-  let i = 0
-  for (i = 0; i < Number(contributionCount); i++) {
-    console.log('i:', i)
-    contracts[i] = {
-      ...priorityContract,
-      functionName: 'getContribution',
-      args: [i]
-    }
-  }
-  console.log('contracts:', contracts)
-
-  const { data: contributionsData, isError, isLoading } = useContractReads({
-    contracts: contracts
+  const { data: contributionsData, isError, isLoading } = useContractRead({
+    ...priorityContract,
+    functionName: 'getContributions'
   })
   console.log('contributionsData:', contributionsData)
 
   let contributions: any = null
-  if (contributionCount == 0) {
-    contributions = []
-  } else {
-    if (contributionsData != undefined) {
-      contributions = []
-      let contributionIndex = contributionCount - 1
-      while (contributionIndex >= 0) {
-        console.log('contributionIndex:', contributionIndex)
-
-        const contributionData: any = contributionsData[contributionIndex]
-        console.log('contributionData:', contributionData)
-        if (contributionData.epochIndex == epochIndex) {
-          const contribution = {
-            contributor: contributionData.contributor,
-            description: contributionData.description,
-            proofURL: contributionData.proofURL,
-            alignment: contributionData.alignment,
-            hoursSpent: contributionData.hoursSpent
-          }
-          contributions[contributions.length] = contribution
-        }
-
-        contributionIndex--
-      }
-    }
+  if (contributionsData != undefined) {
+    contributions = contributionsData
   }
   console.log('contributions:', contributions)
 
@@ -346,7 +287,7 @@ function Contributions({ priorityAddress, epochIndex, contributionCount }: any) 
             No data
           </div>
         ) : (
-          contributions.map((contribution: any, index: number) => (
+          contributions.slice(0).reverse().map((contribution: any, index: number) => (
             <div key={index} className={`md:flex md:space-x-6 p-6 mt-4 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignment]}`}>
               <div className='md:w-1/2'>
                 <div>

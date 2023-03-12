@@ -172,7 +172,7 @@ function DAOPreview({ address }: any) {
 
     return (
       // <Link href={`/v${dao.protocolVersion}/daos/${dao.address}`}>
-      <Link href={`/v0/daos/${dao.address}`}>
+      <Link href={`/v${dao.protocolVersion}/daos/${dao.address}`}>
         <div className='p-6 bg-black rounded-xl border-4 border-black hover:border-gray-700 border-l-gray-700 border-r-gray-700'>
           <div className='flex'>
             <div className='w-1/6'>

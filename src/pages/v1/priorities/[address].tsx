@@ -7,13 +7,13 @@ import { chainUtils } from '@/utils/ChainUtils'
 import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
-import Sector3DAO from '../../../../abis/v0/Sector3DAO.json'
-import Sector3DAOPriority from '../../../../abis/v0/Sector3DAOPriority.json'
+import Sector3DAO from '../../../../abis/v1/Sector3DAO.json'
+import Sector3DAOPriority from '../../../../abis/v1/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
-import DAO from '@/components/v0/DAO'
+import DAO from '@/components/v1/DAO'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -321,7 +321,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
           <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochIndex + 1}</h3>
           From <b>{epochs[0].startDate}</b> to <b>{epochs[0].endDate}</b><br />
 
-          <Link href={`/v0/priorities/${priority.address}/epochs/${priority.epochIndex}`}>
+          <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochIndex}`}>
             <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏳ Report Contributions</button>
           </Link>
         </div>
@@ -346,7 +346,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
                 <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochIndex + 1 - index}</h3>
                 From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b><br />
 
-                <Link href={`/v0/priorities/${priority.address}/epochs/${priority.epochIndex - index}`}>
+                <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochIndex - index}`}>
                   <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⌛️ View Contributions</button>
                 </Link>
               </div>

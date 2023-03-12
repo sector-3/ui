@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { InformationCircleIcon, CheckBadgeIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount, Address } from 'wagmi'
 import { useRouter } from 'next/router'
-import Sector3DAOPriority from '../../../abis/v0/Sector3DAOPriority.json'
+import Sector3DAOPriority from '../../../abis/v1/Sector3DAOPriority.json'
 import Link from 'next/link'
 import { config } from '@/utils/Config'
 

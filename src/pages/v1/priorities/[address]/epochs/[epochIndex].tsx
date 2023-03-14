@@ -6,16 +6,16 @@ import { chainUtils } from '@/utils/ChainUtils'
 import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
-import Sector3DAO from '../../../../../../abis/v0/Sector3DAO.json'
-import Sector3DAOPriority from '../../../../../../abis/v0/Sector3DAOPriority.json'
+import Sector3DAO from '../../../../../../abis/v1/Sector3DAO.json'
+import Sector3DAOPriority from '../../../../../../abis/v1/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 import { config } from '@/utils/Config'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
-import ContributionDialog from '@/components/v0/ContributionDialog'
+import ContributionDialog from '@/components/v1/ContributionDialog'
 import { useState } from 'react'
-import DAO from '@/components/v0/DAO'
+import DAO from '@/components/v1/DAO'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -288,7 +288,7 @@ function Contributions({ priorityAddress, epochIndex }: any) {
           </div>
         ) : (
           contributions.slice(0).reverse().map((contribution: any, index: number) => (
-            <div key={index} className={`md:flex md:space-x-6 p-6 mt-4 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignment]}`}>
+            <div key={index} className={`md:flex md:space-x-6 p-6 mt-4 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignmentPercentage / 20]}`}>
               <div className='md:w-1/2'>
                 <div>
                   <label className='text-gray-400'>Contributor</label>
@@ -310,13 +310,13 @@ function Contributions({ priorityAddress, epochIndex }: any) {
 
                 <div className='mt-4'>
                   <label className='text-gray-400'>Alignment with priority</label><br />
-                  <span className={`font-bold ${alignmentTextColors[contribution.alignment]}`}>{alignmentValues[contribution.alignment]}</span><br />
+                  <span className={`font-bold ${alignmentTextColors[contribution.alignmentPercentage / 20]}`}>{alignmentValues[contribution.alignmentPercentage / 20]}</span><br />
                 </div>
               </div>
               <div className='md:w-1/2'>
                 <div className='mt-4 md:mt-0'>
                   <label className='text-gray-400'>Description</label>
-                  <blockquote className={`p-4 border-l-2 ${alignmentBorderColors[contribution.alignment]} bg-gray-700 rounded-lg`}>
+                  <blockquote className={`p-4 border-l-2 ${alignmentBorderColors[contribution.alignmentPercentage / 20]} bg-gray-700 rounded-lg`}>
                     {contribution.description}
                   </blockquote>
                 </div>

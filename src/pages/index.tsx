@@ -61,6 +61,7 @@ export default function Home() {
 
           <Link
             href={`${config.etherscanDomain}/address/${config.daoFactoryAddress}#writeContract#F1`}
+            target="_blank"
             className={styles.card}
           >
             <h2 className="text-2xl">

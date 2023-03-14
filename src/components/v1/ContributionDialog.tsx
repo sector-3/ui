@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { InformationCircleIcon, CheckBadgeIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount, Address } from 'wagmi'
 import { useRouter } from 'next/router'
-import Sector3DAOPriority from '../../../abis/v0/Sector3DAOPriority.json'
+import Sector3DAOPriority from '../../../abis/v1/Sector3DAOPriority.json'
 import Link from 'next/link'
 import { config } from '@/utils/Config'
 
@@ -24,30 +24,34 @@ export default function ContributionDialog({ priorityTitle }: any) {
     console.log('handleDescriptionChange')
     setDescription(event.target.value)
   }
+  console.log('description:', description)
 
   const [proofURL, setProofURL] = useState('')
   const handleProofURLChange = (event: any) => {
     console.log('handleProofURLChange')
     setProofURL(event.target.value)
   }
+  console.log('proofURL:', proofURL)
 
   const [hoursSpent, setHoursSpent] = useState(0)
   const handleHoursSpentChange = (event: any) => {
     console.log('handleHoursSpentChange')
     setHoursSpent(event.target.value)
   }
+  console.log('hoursSpent:', hoursSpent)
 
-  const [alignment, setAlignment] = useState(0)
-  const handleAlignmentChange = (event: any) => {
-    console.log('handleAlignmentChange')
-    setAlignment(event.target.value)
+  const [alignmentPercentage, setAlignmentPercentage] = useState(0)
+  const handleAlignmentPercentageChange = (event: any) => {
+    console.log('handleAlignmentPercentageChange')
+    setAlignmentPercentage(event.target.value)
   }
+  console.log('alignmentPercentage:', alignmentPercentage)
 
   const { config: writeConfig, error } = usePrepareContractWrite({
     address: address as Address,
     abi: Sector3DAOPriority.abi,
-    functionName: 'addContribution2',
-    args: [description, proofURL, Number(hoursSpent), Number(alignment)]
+    functionName: 'addContribution',
+    args: [description, proofURL, Number(hoursSpent), Number(alignmentPercentage)]
   })
   console.log('writeConfig:', writeConfig)
   console.log('error:', error)
@@ -118,58 +122,53 @@ export default function ContributionDialog({ priorityTitle }: any) {
                         </p>
                       </>
                     ) : (
-                      <>
-                        {(!isTransactionSuccess) ? (
-                          <p>
-                            <>
-                              <p className='flex justify-center'>
-                                <ExclamationTriangleIcon className="h-16 w-16 text-orange-400" />
-                              </p>
-                              <p className='mt-4 text-orange-400'>
-                                Transaction failed
-                              </p>
-                              <p className='mt-4'>
-                                <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
-                                  className='text-indigo-400'
-                                >
-                                  View transaction on Etherscan
-                                </Link>
-                              </p>
-                              <button
-                                type="button"
-                                className="mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
-                                onClick={() => setOpen(false)}
-                              >
-                                Close
-                              </button>
-                            </>
+                      !isTransactionSuccess ? (
+                        <>
+                          <p className='flex justify-center'>
+                            <ExclamationTriangleIcon className="h-16 w-16 text-orange-400" />
                           </p>
-                          
-                        ) : (
-                          <>
-                            <p className='flex justify-center'>
-                              <CheckBadgeIcon className="h-16 w-16 text-green-400" />
-                            </p>
-                            <p className='mt-4'>
-                              Successfully added your DAO contribution!
-                            </p>
-                            <p className='mt-4'>
-                              <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
-                                className='text-indigo-400'
-                              >
-                                View transaction on Etherscan
-                              </Link>
-                            </p>
-                            <button
-                              type="button"
-                              className="mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
-                              onClick={() => setOpen(false)}
+                          <p className='mt-4 text-orange-400'>
+                            Transaction failed
+                          </p>
+                          <p className='mt-4'>
+                            <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
+                              className='text-indigo-400'
                             >
-                              Close
-                            </button>
-                          </>
-                        )}
-                      </>
+                              View transaction on Etherscan
+                            </Link>
+                          </p>
+                          <button
+                            type="button"
+                            className="mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
+                            onClick={() => setOpen(false)}
+                          >
+                            Close
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <p className='flex justify-center'>
+                            <CheckBadgeIcon className="h-16 w-16 text-green-400" />
+                          </p>
+                          <p className='mt-4'>
+                            Successfully added your DAO contribution!
+                          </p>
+                          <p className='mt-4'>
+                            <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
+                              className='text-indigo-400'
+                            >
+                              View transaction on Etherscan
+                            </Link>
+                          </p>
+                          <button
+                            type="button"
+                            className="mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
+                            onClick={() => setOpen(false)}
+                          >
+                            Close
+                          </button>
+                        </>
+                      )
                     )}
                   </div>
                 ) : (
@@ -243,7 +242,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
                           </div>
 
                           <div className='mt-4'>
-                            <fieldset onChange={handleAlignmentChange}>
+                            <fieldset onChange={handleAlignmentPercentageChange}>
                               <legend className="font-bold text-indigo-200">
                                 Priority alignment
                               </legend>
@@ -272,7 +271,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
                                     type="radio"
                                     name="alignment"
                                     id="alignment-barely"
-                                    value="1"
+                                    value="20"
                                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                   />
                                   <label
@@ -287,7 +286,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
                                     type="radio"
                                     name="alignment"
                                     id="alignment-moderately"
-                                    value="2"
+                                    value="40"
                                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                   />
                                   <label
@@ -302,7 +301,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
                                     type="radio"
                                     name="alignment"
                                     id="alignment-mostly"
-                                    value="3"
+                                    value="60"
                                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                   />
                                   <label
@@ -317,7 +316,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
                                     type="radio"
                                     name="alignment"
                                     id="alignment-highly"
-                                    value="4"
+                                    value="80"
                                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                   />
                                   <label
@@ -332,7 +331,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
                                     type="radio"
                                     name="alignment"
                                     id="alignment-perfectly"
-                                    value="5"
+                                    value="100"
                                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                   />
                                   <label

@@ -1,6 +1,6 @@
 # Sector#3 UI
 
-- Goerli: https://goerli.sector3.xyz
+- Sepolia: https://sepolia.sector3.xyz
 - Mainnet: https://sector3.xyz
 
 ## Getting Started
@@ -43,6 +43,7 @@ npm run build
 
 ## Routes
 
-- DAO: `/v0/daos/<address>`
-- Priority: `/v0/priorities/<address>`
-- Epoch: `/v0/priorities/<address>/epochs/<epochIndex>`
+- DAOs: `/daos`
+- DAO: `/v1/daos/<address>`
+- Priority: `/v1/priorities/<address>`
+- Epoch: `/v1/priorities/<address>/epochs/<epochIndex>`

@@ -16,6 +16,6 @@
 
 ## Sector#3 Contribution
 
-<!--- Please add this pull request as a DAO contribution on Sector#3:  https://goerli.sector3.xyz/daos -->
+<!--- Please add this pull request as a DAO contribution on Sector#3:  https://sepolia.sector3.xyz -->
 
-- [ ] Reported contribution at https://goerli.sector3.xyz/v0/priorities/0x1B26F77D9bA9cbe4134E2F435C508eCcf5351093
+- [ ] Reported contribution at https://sepolia.sector3.xyz/v1/daos/0xB1932B5ba9Dfd0a2dCFa08140eb272DC60804699

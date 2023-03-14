@@ -1,6 +1,6 @@
 import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { InformationCircleIcon, CheckBadgeIcon } from '@heroicons/react/24/outline'
+import { InformationCircleIcon, CheckBadgeIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount, Address } from 'wagmi'
 import { useRouter } from 'next/router'
 import Sector3DAO from '../../../abis/v1/Sector3DAO.json'
@@ -55,11 +55,18 @@ export default function PriorityDialog() {
   console.log('epochBudget:', epochBudget)
   console.log('epochBudgetWei:', epochBudgetWei)
 
+  const [gatingNFT, setGatingNFT] = useState(ethers.constants.AddressZero)
+  const handleGatingNFTChange = (event: any) => {
+    console.log('handleGatingNFTChange')
+    setGatingNFT(event.target.value)
+  }
+  console.log('gatingNFT:', gatingNFT)
+
   const { config: writeConfig, error } = usePrepareContractWrite({
     address: address as Address,
     abi: Sector3DAO.abi,
     functionName: 'deployPriority',
-    args: [title, rewardToken, epochDuration, epochBudgetWei]
+    args: [title, rewardToken, epochDuration, epochBudgetWei, gatingNFT]
   })
   console.log('writeConfig:', writeConfig)
   console.log('error:', error)
@@ -130,34 +137,59 @@ export default function PriorityDialog() {
                         </p>
                       </>
                     ) : (
-                      <>
-                        <p className='flex justify-center'>
-                          <CheckBadgeIcon className="h-16 w-16 text-green-400" />
-                        </p>
-                        <p className='mt-4'>
-                          Successfully added your DAO priority!
-                        </p>
-                        <p className='mt-4'>
-                          <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
-                            className='text-indigo-400'
+                      !isTransactionSuccess ? (
+                        <>
+                          <p className='flex justify-center'>
+                            <ExclamationTriangleIcon className="h-16 w-16 text-orange-400" />
+                          </p>
+                          <p className='mt-4 text-orange-400'>
+                            Transaction failed
+                          </p>
+                          <p className='mt-4'>
+                            <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
+                              className='text-indigo-400'
+                            >
+                              View transaction on Etherscan
+                            </Link>
+                          </p>
+                          <button
+                            type="button"
+                            className="mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
+                            onClick={() => setOpen(false)}
                           >
-                            View transaction on Etherscan
-                          </Link>
-                        </p>
-                        <p className='mt-4 border-t-2 border-gray-800 pt-4'>
-                          To fund the priority, make a token transfer to its smart contract address.
-                        </p>
-                        <p className='mt-2 text-sm text-gray-400'>
-                          (You can find the address in the URL by clicking the priority: <code>/priorities/&lt;address&gt;</code>)
-                        </p>
-                        <button
-                          type="button"
-                          className="mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
-                          onClick={() => setOpen(false)}
-                        >
-                          Close
-                        </button>
-                      </>
+                            Close
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <p className='flex justify-center'>
+                            <CheckBadgeIcon className="h-16 w-16 text-green-400" />
+                          </p>
+                          <p className='mt-4'>
+                            Successfully added your DAO priority!
+                          </p>
+                          <p className='mt-4'>
+                            <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
+                              className='text-indigo-400'
+                            >
+                              View transaction on Etherscan
+                            </Link>
+                          </p>
+                          <p className='mt-4 border-t-2 border-gray-800 pt-4'>
+                            To fund the priority, make a token transfer to its smart contract address.
+                          </p>
+                          <p className='mt-2 text-sm text-gray-400'>
+                            (You can find the address in the URL by clicking the priority: <code>/priorities/&lt;address&gt;</code>)
+                          </p>
+                          <button
+                            type="button"
+                            className="mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
+                            onClick={() => setOpen(false)}
+                          >
+                            Close
+                          </button>
+                        </>
+                      )
                     )}
                   </div>
                 ) : (
@@ -227,7 +259,7 @@ export default function PriorityDialog() {
                         </label><br />
                         <input
                           type="number"
-                          step={0.01}
+                          step={0.00001}
                           id="epochBudget"
                           name="epochBudget"
                           onChange={handleEpochBudgetChange}
@@ -237,13 +269,7 @@ export default function PriorityDialog() {
                           required
                           min={0}
                         />
-                      </div>
-
-                      <div className='mt-4 mt-4 border-t-2 border-gray-800 pt-4'>
-                        <p className="text-sm text-gray-400">
-                          Preview:
-                        </p>
-                        <p className="text-sm text-gray-400">
+                        <p className="mt-2 text-sm text-gray-400">
                           {new Intl.NumberFormat().format(epochBudget / epochDuration * 7)} tokens per week<br />
                           {new Intl.NumberFormat().format(epochBudget / epochDuration * 365 / 12)} tokens per month<br />
                           {new Intl.NumberFormat().format(epochBudget / epochDuration * 365 / 4)} tokens per quarter<br />
@@ -251,10 +277,26 @@ export default function PriorityDialog() {
                         </p>
                       </div>
 
+                      <div className='mt-4'>
+                        <label htmlFor="gatingNFT" className='font-bold text-indigo-200'>
+                          Gating NFT (ERC-721)
+                        </label>
+                        <input
+                          type="text"
+                          id="gatingNFT"
+                          name="gatingNFT"
+                          onChange={handleGatingNFTChange}
+                          className="w-full p-2 bg-stone-700 rounded-md ring-1 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                          placeholder="E.g. '0x84277bf3c0c8e1176c99f2b624d67041de885fc9'"
+                          defaultValue={ethers.constants.AddressZero}
+                          required
+                        />
+                      </div>
+
                       <button
                           type="submit"
                           disabled={!write || isLoading}
-                          className="disabled:text-gray-600 disabled:bg-gray-400 mt-4 w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
+                          className="disabled:text-gray-600 disabled:bg-gray-400 mt-4 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
                       >
                         {!isLoading ? (
                           <>

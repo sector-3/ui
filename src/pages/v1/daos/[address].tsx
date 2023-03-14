@@ -15,6 +15,7 @@ import { useIsMounted } from '@/hooks/useIsMounted'
 import DAO from '@/components/v1/DAO'
 import { useState } from 'react'
 import PriorityDialog from '@/components/v1/PriorityDialog'
+import { LockOpenIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -197,6 +198,10 @@ function Priority({ priorityAddress }: any ) {
       {
         ...priorityContract,
         functionName: 'epochBudget'
+      },
+      {
+        ...priorityContract,
+        functionName: 'gatingNFT'
       }
     ]
   })
@@ -219,10 +224,20 @@ function Priority({ priorityAddress }: any ) {
     rewardToken: priorityData[1],
     startDate: new Date(Number(priorityData[2]) * 1_000).toISOString().substring(0, 10),
     epochDuration: priorityData[3],
-    epochBudget: ethers.utils.formatUnits(String(priorityData[4]))
+    epochBudget: ethers.utils.formatUnits(String(priorityData[4])),
+    gatingNFT: priorityData[5]
   }
   return (
     <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
+      {(priority.gatingNFT == ethers.constants.AddressZero) ? (
+        <span className='float-right inline-flex bg-emerald-900 text-emerald-500 font-bold uppercase text-sm rounded-lg px-2 py-1'>
+          <LockOpenIcon className='h-5 w-5' /> Open to all
+        </span>
+      ) : (
+        <span className='float-right inline-flex bg-amber-900 text-amber-500 font-bold uppercase text-sm rounded-lg px-2 py-1'>
+          <ShieldCheckIcon className='h-5 w-5' /> NFT-gated
+        </span>
+      )}
       <h3 className='text-xl font-bold mb-2'>{priority.title}</h3>
       Reward token: <code>{priority.rewardToken}</code><br />
       Epoch budget: {priority.epochBudget} <code>$TOKEN_NAME</code> per {priority.epochDuration} days<br />

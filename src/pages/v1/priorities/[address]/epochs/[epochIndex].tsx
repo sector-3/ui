@@ -288,7 +288,7 @@ function Contributions({ priorityAddress, epochIndex }: any) {
           </div>
         ) : (
           contributions.slice(0).reverse().map((contribution: any, index: number) => (
-            <div key={index} className={`md:flex md:space-x-6 p-6 mt-4 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignment]}`}>
+            <div key={index} className={`md:flex md:space-x-6 p-6 mt-4 bg-gray-800 rounded-xl border-4 border-gray-800 ${alignmentBorderColors[contribution.alignmentPercentage / 20]}`}>
               <div className='md:w-1/2'>
                 <div>
                   <label className='text-gray-400'>Contributor</label>
@@ -310,13 +310,13 @@ function Contributions({ priorityAddress, epochIndex }: any) {
 
                 <div className='mt-4'>
                   <label className='text-gray-400'>Alignment with priority</label><br />
-                  <span className={`font-bold ${alignmentTextColors[contribution.alignment]}`}>{alignmentValues[contribution.alignment]}</span><br />
+                  <span className={`font-bold ${alignmentTextColors[contribution.alignmentPercentage / 20]}`}>{alignmentValues[contribution.alignmentPercentage / 20]}</span><br />
                 </div>
               </div>
               <div className='md:w-1/2'>
                 <div className='mt-4 md:mt-0'>
                   <label className='text-gray-400'>Description</label>
-                  <blockquote className={`p-4 border-l-2 ${alignmentBorderColors[contribution.alignment]} bg-gray-700 rounded-lg`}>
+                  <blockquote className={`p-4 border-l-2 ${alignmentBorderColors[contribution.alignmentPercentage / 20]} bg-gray-700 rounded-lg`}>
                     {contribution.description}
                   </blockquote>
                 </div>

@@ -179,7 +179,7 @@ export default function PriorityDialog() {
                             To fund the priority, make a token transfer to its smart contract address.
                           </p>
                           <p className='mt-2 text-sm text-gray-400'>
-                            (You can find the address in the URL by clicking the priority: <code>/priorities/&lt;address&gt;</code>)
+                            (You can find the address in the URL by clicking the priority: <code>/v1/priorities/&lt;address&gt;</code>)
                           </p>
                           <button
                             type="button"

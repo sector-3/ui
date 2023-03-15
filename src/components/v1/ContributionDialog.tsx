@@ -79,8 +79,8 @@ export default function ContributionDialog({ priorityTitle }: any) {
   const [discordNotificationSent, setDiscordNotificationSent] = useState(false)
   if (isSuccess && isTransactionSuccess) {
     if (!discordNotificationSent) {
-      setDiscordNotificationSent(true)
       sendDiscordNotification({ priorityTitle: priorityTitle, address: address, epochIndex: epochIndex, description: description })
+      setDiscordNotificationSent(true)
     }
   }
   console.log('discordNotificationSent:', discordNotificationSent)
@@ -385,13 +385,14 @@ export default function ContributionDialog({ priorityTitle }: any) {
   )
 }
 
-async function sendDiscordNotification({ priorityTitle, address, epochIndex, description }: any) {
+function sendDiscordNotification({ priorityTitle, address, epochIndex, description }: any) {
   console.log('sendDiscordNotification')
   
   const content: String = `Contribution added to Priority ("${priorityTitle}"): https://${config.chain}.sector3.xyz/v1/priorities/${address}/epochs/${epochIndex}\n> ${description}`
   console.log('content:', content)
 
   if (config.discordWebhookContributions) {
+    console.log('Sending...')
     fetch(config.discordWebhookContributions, {
       body: JSON.stringify({
         content: content

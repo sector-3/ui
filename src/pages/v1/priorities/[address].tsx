@@ -14,6 +14,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
 import DAO from '@/components/v1/DAO'
+import { ShieldCheckIcon } from '@heroicons/react/24/outline'
+import ERC721Details from '@/components/v1/ERC721Details'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -60,7 +62,7 @@ export default function PriorityPage() {
           </div>
         </div>
 
-        <div id='priority' className='md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
+        <div id='priority' className='p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
           <Priority address={address} />
         </div>
 
@@ -159,6 +161,10 @@ function Priority({ address }: any) {
       {
         ...priorityContract,
         functionName: 'epochBudget'
+      },
+      {
+        ...priorityContract,
+        functionName: 'gatingNFT'
       }
     ]
   })
@@ -171,7 +177,8 @@ function Priority({ address }: any) {
       rewardToken: data[1],
       startDate: new Date(Number(data[2]) * 1_000).toISOString().substring(0, 10),
       epochDuration: data[3],
-      epochBudget: ethers.utils.formatUnits(String(data[4]))
+      epochBudget: ethers.utils.formatUnits(String(data[4])),
+      gatingNFT: data[5]
     }
   }
   console.log('priority:', priority)
@@ -186,18 +193,27 @@ function Priority({ address }: any) {
   }
   return (
     <>
-      <div className='md:w-1/3'>
-        <label className='text-gray-400'>Priority</label><br />
-        <>{priority.title}</>
+      <div className='md:flex'>
+        <div className='md:w-1/3'>
+          <label className='text-gray-400'>Priority</label><br />
+          <>{priority.title}</>
+        </div>
+        <div className='md:w-1/3 pt-4 md:pt-0 md:px-4'>
+          <label className='text-gray-400'>Start date</label><br />
+          {priority.startDate}
+        </div>
+        <div className='md:w-1/3 pt-4 md:pt-0'>
+          <label className='text-gray-400'>Budget</label><br />
+          <>{priority.epochBudget} <code>$TOKEN_NAME</code> per {priority.epochDuration} days</>
+        </div>
       </div>
-      <div className='md:w-1/3 pt-4 md:pt-0 md:px-4'>
-        <label className='text-gray-400'>Start date</label><br />
-        {priority.startDate}
-      </div>
-      <div className='md:w-1/3 pt-4 md:pt-0'>
-        <label className='text-gray-400'>Budget</label><br />
-        <>{priority.epochBudget} <code>$TOKEN_NAME</code> per {priority.epochDuration} days</>
-      </div>
+
+      {(priority.gatingNFT != ethers.constants.AddressZero) && (
+        <div className='mt-4 border-2 border-amber-900 text-amber-600 rounded-lg p-2'>
+          <ShieldCheckIcon className='inline h-10 w-10' /> <b>Note:</b>  To contribute to this priority, you need to be 
+          the owner of an NFT: <ERC721Details address={priority.gatingNFT} />
+        </div>
+      )}
     </>
   )
 }

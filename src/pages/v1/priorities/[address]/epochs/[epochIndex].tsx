@@ -328,7 +328,17 @@ function Contributions({ priorityAddress, epochIndex }: any) {
                   <label className='text-gray-400'>Alignment with priority</label><br />
                   <span className={`font-bold ${alignmentTextColors[contribution.alignmentPercentage / 20]}`}>{alignmentValues[contribution.alignmentPercentage / 20]}</span><br />
                 </div>
+
+                <div className='mt-4'>
+                  <label className='text-gray-400'>Contribution date</label>
+                  <br />
+                  <span className='font-bold'>
+                    {new Date(contribution.timestamp.toNumber() * 1000).toISOString().substring(0, 10)}
+                  </span>
+                  <br />
+                </div>
               </div>
+
               <div className='md:w-1/2'>
                 <div className='mt-4 md:mt-0'>
                   <label className='text-gray-400'>Description</label>

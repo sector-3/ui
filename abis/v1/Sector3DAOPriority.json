@@ -73,7 +73,7 @@
             },
             {
               "internalType": "uint16",
-              "name": "epochIndex",
+              "name": "epochNumber",
               "type": "uint16"
             },
             {
@@ -117,7 +117,7 @@
         {
           "indexed": false,
           "internalType": "uint16",
-          "name": "epochIndex",
+          "name": "epochNumber",
           "type": "uint16"
         },
         {
@@ -168,7 +168,7 @@
       "inputs": [
         {
           "internalType": "uint16",
-          "name": "epochIndex",
+          "name": "epochNumber",
           "type": "uint16"
         }
       ],
@@ -246,7 +246,7 @@
       "inputs": [
         {
           "internalType": "uint16",
-          "name": "epochIndex",
+          "name": "epochNumber",
           "type": "uint16"
         },
         {
@@ -279,7 +279,7 @@
             },
             {
               "internalType": "uint16",
-              "name": "epochIndex",
+              "name": "epochNumber",
               "type": "uint16"
             },
             {
@@ -320,7 +320,7 @@
       "inputs": [
         {
           "internalType": "uint16",
-          "name": "epochIndex",
+          "name": "epochNumber",
           "type": "uint16"
         }
       ],
@@ -335,7 +335,7 @@
             },
             {
               "internalType": "uint16",
-              "name": "epochIndex",
+              "name": "epochNumber",
               "type": "uint16"
             },
             {
@@ -374,7 +374,7 @@
     },
     {
       "inputs": [],
-      "name": "getEpochIndex",
+      "name": "getEpochNumber",
       "outputs": [
         {
           "internalType": "uint16",
@@ -389,7 +389,7 @@
       "inputs": [
         {
           "internalType": "uint16",
-          "name": "epochIndex",
+          "name": "epochNumber",
           "type": "uint16"
         },
         {
@@ -413,7 +413,7 @@
       "inputs": [
         {
           "internalType": "uint16",
-          "name": "epochIndex",
+          "name": "epochNumber",
           "type": "uint16"
         }
       ],
@@ -432,7 +432,7 @@
       "inputs": [
         {
           "internalType": "uint16",
-          "name": "epochIndex",
+          "name": "epochNumber",
           "type": "uint16"
         },
         {

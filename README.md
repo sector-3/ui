@@ -46,4 +46,4 @@ npm run build
 - DAOs: `/daos`
 - DAO: `/v1/daos/<address>`
 - Priority: `/v1/priorities/<address>`
-- Epoch: `/v1/priorities/<address>/epochs/<epochIndex>`
+- Epoch: `/v1/priorities/<address>/epochs/<epochNumber>`

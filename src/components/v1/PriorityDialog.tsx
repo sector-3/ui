@@ -91,6 +91,15 @@ export default function PriorityDialog() {
     }
   }
 
+  const [discordNotificationSent, setDiscordNotificationSent] = useState(false)
+  if (isSuccess && isTransactionSuccess) {
+    if (!discordNotificationSent) {
+      sendDiscordNotification({ priorityTitle: title, address: address })
+      setDiscordNotificationSent(true)
+    }
+  }
+  console.log('discordNotificationSent:', discordNotificationSent)
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -202,7 +211,7 @@ export default function PriorityDialog() {
                         <InformationCircleIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
                       </div>
                       <p className="ml-2 text-sm text-gray-400">
-                        Add a priority that aligns well with this DAO <i>purpose</i>.
+                        Add a priority that aligns well with this <i>DAO purpose</i>.
                       </p>
                     </div>
                     <form onSubmit={handleSubmit}>
@@ -319,4 +328,28 @@ export default function PriorityDialog() {
       </Dialog>
     </Transition.Root>
   )
+}
+
+function sendDiscordNotification({ priorityTitle, address }: any) {
+  console.log('sendDiscordNotification')
+  
+  const content: String = `A new DAO Priority was added: https://${config.chain}.sector3.xyz/v1/priorities/${address}\n> "${priorityTitle}"`
+  console.log('content:', content)
+
+  if (config.discordWebhookPriorities) {
+    console.log('Sending...')
+    fetch(config.discordWebhookPriorities, {
+      body: JSON.stringify({
+        content: content
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST'
+    }).then((res) => {
+      console.log('then, res:', res)
+    }).catch((res) => {
+      console.log('catch, res:', res)
+    })
+  }
 }

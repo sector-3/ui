@@ -35,9 +35,9 @@ export default function EpochPage() {
   console.log('EpochPage')
 
   const router = useRouter()
-  const { address, epochIndex } = router.query
+  const { address, epochNumber } = router.query
   console.log('address:', address)
-  console.log('epochIndex:', epochIndex)
+  console.log('epochNumber:', epochNumber)
 
   return (
     <WagmiConfig client={client}>
@@ -70,11 +70,11 @@ export default function EpochPage() {
         </div>
 
         <div id='epoch' className='md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
-          Epoch #{Number(epochIndex) + 1}
+          Epoch #{Number(epochNumber)}
         </div>
 
         <div id='content' className='mt-8'>
-          <Contributions priorityAddress={address} epochIndex={epochIndex} />
+          <Contributions priorityAddress={address} epochNumber={epochNumber} />
         </div>
       </main>
     </WagmiConfig>
@@ -225,11 +225,11 @@ function Priority({ address }: any) {
   )
 }
 
-function Contributions({ priorityAddress, epochIndex }: any) {
+function Contributions({ priorityAddress, epochNumber }: any) {
   console.log('Contributions')
 
   console.log('priorityAddress:', priorityAddress)
-  console.log('epochIndex:', epochIndex)
+  console.log('epochNumber:', epochNumber)
 
   const { isConnected } = useAccount()
   console.log('isConnected:', isConnected)
@@ -280,15 +280,11 @@ function Contributions({ priorityAddress, epochIndex }: any) {
   return (
     <>
       <div className='container mt-8'>
-        {/* {(epoch.index == priority.epochIndex) ? ( */}
-          {/* <Link href={`${config.etherscanDomain}/address/${priorityAddress}#writeContract#F1`} target='_blank'> */}
-            <button disabled={!isConnected} 
-                    className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
-                    onClick={() => setReportButtonClicked(true)}>
-              + Report Contribution
-            </button>
-          {/* </Link> */}
-        {/* ) : null} */}
+        <button disabled={!isConnected} 
+                className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+                onClick={() => setReportButtonClicked(true)}>
+          + Report Contribution
+        </button>
 
         {isReportButtonClicked && (
           <ContributionDialog priorityTitle={priorityTitle} />
@@ -367,18 +363,18 @@ function Contributions({ priorityAddress, epochIndex }: any) {
             No data
           </div>
         ) : (
-          <Allocations priorityAddress={priorityAddress} epochIndex={epochIndex} contributions={contributions} />
+          <Allocations priorityAddress={priorityAddress} epochNumber={epochNumber} contributions={contributions} />
         )}
       </div>
     </>
   )
 }
 
-function Allocations({ priorityAddress, epochIndex, contributions }: any) {
+function Allocations({ priorityAddress, epochNumber, contributions }: any) {
   console.log('Allocations')
 
   console.log('priorityAddress:', priorityAddress)
-  console.log('epochIndex:', epochIndex)
+  console.log('epochNumber:', epochNumber)
   console.log('contributions:', contributions)
 
   let allocationPercentages: any = null
@@ -399,7 +395,7 @@ function Allocations({ priorityAddress, epochIndex, contributions }: any) {
   let contracts: any = [allocationPercentagesKeys.length]
   for (let i = 0; i < allocationPercentagesKeys.length; i++) {
     console.log('i:', i)
-    console.log('epochIndex:', epochIndex)
+    console.log('epochNumber:', epochNumber)
     const contributor = allocationPercentagesKeys[i]
     console.log('contributor:', contributor)
     const priorityContract = {
@@ -409,7 +405,7 @@ function Allocations({ priorityAddress, epochIndex, contributions }: any) {
     contracts[i] = {
       ...priorityContract,
       functionName: 'getAllocationPercentage',
-      args: [epochIndex, contributor]
+      args: [epochNumber, contributor]
     }
   }
   console.log('contracts:', contracts)

@@ -67,7 +67,7 @@ export default function PriorityPage() {
         </div>
 
         <div id='content' className='mt-4'>
-          <EpochIndex priorityAddress={address} />
+          <EpochNumber priorityAddress={address} />
         </div>
       </main>
     </WagmiConfig>
@@ -218,17 +218,17 @@ function Priority({ address }: any) {
   )
 }
 
-function EpochIndex({ priorityAddress }: any) {
-  console.log('EpochIndex')
+function EpochNumber({ priorityAddress }: any) {
+  console.log('EpochNumber')
 
-  const { data: epochIndex, isError, isLoading } = useContractRead({
+  const { data: epochNumber, isError, isLoading } = useContractRead({
     address: priorityAddress,
     abi: Sector3DAOPriority.abi,
-    functionName: 'getEpochIndex'
+    functionName: 'getEpochNumber'
   })
-  console.log('epochIndex:', epochIndex)
+  console.log('epochNumber:', epochNumber)
 
-  if (!useIsMounted() || (epochIndex == undefined)) {
+  if (!useIsMounted() || (epochNumber == undefined)) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -236,14 +236,14 @@ function EpochIndex({ priorityAddress }: any) {
       </div>
     )
   }
-  return <Epochs priorityAddress={priorityAddress} epochIndex={epochIndex} />
+  return <Epochs priorityAddress={priorityAddress} epochNumber={epochNumber} />
 }
 
-function Epochs({ priorityAddress, epochIndex }: any) {
+function Epochs({ priorityAddress, epochNumber }: any) {
   console.log('Epochs')
 
   console.log('priorityAddress:', priorityAddress)
-  console.log('epochIndex:', epochIndex)
+  console.log('epochNumber:', epochNumber)
 
   const priorityContract = {
     address: priorityAddress,
@@ -274,7 +274,7 @@ function Epochs({ priorityAddress, epochIndex }: any) {
       },
       {
         ...priorityContract,
-        functionName: 'getEpochIndex'
+        functionName: 'getEpochNumber'
       }
     ]
   })
@@ -290,29 +290,27 @@ function Epochs({ priorityAddress, epochIndex }: any) {
       startDate: new Date(Number(data[2]) * 1_000).toISOString().substring(0, 10),
       epochDuration: Number(data[3]),
       epochBudget: ethers.utils.formatUnits(String(data[4])),
-      epochIndex: data[5]
+      epochNumber: data[5]
     }
   }
   console.log('priority:', priority)
 
   let epochs: any[] = []
   if (priority) {
-    const epochCount: Number = epochIndex + 1
-    console.log('epochCount:', epochCount)
-    let index = epochIndex;
-    while (index >= 0) {
-      console.log('index:', index)
+    let i = epochNumber;
+    while (i >= 1) {
+      console.log('i:', i)
 
       const epoch = {
-        index: Number(index),
-        startTime: priority.startTime + (index * priority.epochDuration * 24*60*60),
-        startDate: new Date(Number(priority.startTime + (index * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
-        endTime: priority.startTime + ((index + 1) * priority.epochDuration * 24*60*60),
-        endDate: new Date(Number(priority.startTime + ((index + 1) * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
+        i: Number(i),
+        startTime: priority.startTime + (i * priority.epochDuration * 24*60*60),
+        startDate: new Date(Number(priority.startTime + (i * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
+        endTime: priority.startTime + ((i + 1) * priority.epochDuration * 24*60*60),
+        endDate: new Date(Number(priority.startTime + ((i + 1) * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
       }
       epochs[epochs.length] = epoch
 
-      index--
+      i--
     }
   }
   console.log('epochs:', epochs)
@@ -334,10 +332,10 @@ function Epochs({ priorityAddress, epochIndex }: any) {
 
       <div className='container'>
         <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
-          <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochIndex + 1}</h3>
+          <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochNumber}</h3>
           From <b>{epochs[0].startDate}</b> to <b>{epochs[0].endDate}</b><br />
 
-          <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochIndex}`}>
+          <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochNumber}`}>
             <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏳ Report Contributions</button>
           </Link>
         </div>
@@ -359,10 +357,10 @@ function Epochs({ priorityAddress, epochIndex }: any) {
               null
             ) : (
               <div key={index} className='mt-4 p-6 bg-gray-800 rounded-xl'>
-                <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochIndex + 1 - index}</h3>
+                <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochNumber - index}</h3>
                 From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b><br />
 
-                <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochIndex - index}`}>
+                <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochNumber - index}`}>
                   <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⌛️ View Contributions</button>
                 </Link>
               </div>

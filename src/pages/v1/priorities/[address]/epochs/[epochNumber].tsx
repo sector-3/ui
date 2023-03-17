@@ -377,6 +377,19 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
   console.log('epochNumber:', epochNumber)
   console.log('contributions:', contributions)
 
+  const priorityContract = {
+    address: priorityAddress,
+    abi: Sector3DAOPriority.abi
+  }
+
+  const { data: priorityBudget } = useContractRead({
+    ...priorityContract,
+    functionName: 'epochBudget'
+  })
+  console.log('priorityBudget:', priorityBudget)
+  const priorityBudgetInEther: String = ethers.utils.formatUnits(String(priorityBudget));
+  console.log('priorityBudgetInEther:', priorityBudgetInEther)
+
   let allocationPercentages: any = null
 
   // Add unique contributors
@@ -398,10 +411,6 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
     console.log('epochNumber:', epochNumber)
     const contributor = allocationPercentagesKeys[i]
     console.log('contributor:', contributor)
-    const priorityContract = {
-      address: priorityAddress,
-      abi: Sector3DAOPriority.abi
-    }
     contracts[i] = {
       ...priorityContract,
       functionName: 'getAllocationPercentage',
@@ -419,7 +428,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
     for (let i = 0; i < allocationPercentagesKeys.length; i++) {
       const contributor = allocationPercentagesKeys[i]
       console.log('contributor:', contributor)
-      const allocationPercentage = data[i]
+      const allocationPercentage = ethers.utils.formatUnits(String(data[i]))
       console.log('allocationPercentage:', allocationPercentage)
       allocationPercentages[contributor] = allocationPercentage
     }
@@ -451,11 +460,13 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
               />&nbsp;
               <code>{contributor.substring(0, 6)}...{contributor.slice(-4)}</code>&nbsp;
               <div className="ml-10 h-6 w-full bg-indigo-400 rounded-full">
-                <div className={`w-[${allocationPercentages[contributor]}%] h-full text-center text-white bg-indigo-600 rounded-full`}>
-                  {/* {(allocationPercentages[contributor] * priority.epochBudget / 100).toFixed(2)} <code>$TOKEN_NAME</code> */}
+                <div className={`w-[${Math.round(allocationPercentages[contributor])}%] h-full text-center text-white bg-indigo-600 rounded-full`}>
+                  {Number(allocationPercentages[contributor]).toFixed(2)}%
                 </div>
               </div>&nbsp;
-              <div className='w-1/6 text-right'>{(allocationPercentages[contributor]).toFixed(2)}%</div>
+              <div className='w-2/6 text-right'>
+                {(allocationPercentages[contributor] * Number(priorityBudgetInEther) / 100).toFixed(2)} <code>$TOKEN_NAME</code>
+              </div>
             </div>
           ))}
         </div>

@@ -22,6 +22,19 @@
       "type": "constructor"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "contract Sector3DAOPriority",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "PriorityDeployed",
+      "type": "event"
+    },
+    {
       "inputs": [
         {
           "internalType": "string",

@@ -63,6 +63,7 @@ body {
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: cover;
+  color: #d1d5db;
 }
 
 #background-video {
@@ -79,6 +80,9 @@ body {
 }
 
 a {
-  color: inherit;
+  color: #818cf8;
   text-decoration: none;
+}
+a:hover {
+  color: #a5b4fc;
 }

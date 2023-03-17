@@ -140,10 +140,8 @@ export default function ContributionDialog({ priorityTitle }: any) {
                             Transaction failed
                           </p>
                           <p className='mt-4'>
-                            <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
-                              className='text-indigo-400'
-                            >
-                              View transaction on Etherscan
+                            <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'>
+                              View on Etherscan
                             </Link>
                           </p>
                           <button
@@ -163,9 +161,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
                             Successfully added your DAO contribution!
                           </p>
                           <p className='mt-4'>
-                            <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
-                              className='text-indigo-400'
-                            >
+                            <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'>
                               View transaction on Etherscan
                             </Link>
                           </p>

@@ -56,6 +56,7 @@ export default function DAO({ address }: any) {
   }
 
   const tokenLogoLoader = () => {
+    console.log('tokenLogoLoader')
     let tokenLogoPath = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${dao.token}/logo.png`
     
     const customTokenLogos = [

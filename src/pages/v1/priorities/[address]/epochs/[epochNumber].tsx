@@ -18,6 +18,7 @@ import { useState } from 'react'
 import DAO from '@/components/v1/DAO'
 import { ShieldCheckIcon } from '@heroicons/react/24/outline'
 import ERC721Details from '@/components/v1/ERC721Details'
+import ERC20Details from '@/components/v1/ERC20Details'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -211,7 +212,7 @@ function Priority({ address }: any) {
         </div>
         <div className='md:w-1/3 pt-4 md:pt-0'>
           <label className='text-gray-400'>Budget</label><br />
-          <>{priority.epochBudget} <code>$TOKEN_NAME</code> per {priority.epochDuration} days</>
+          <>{priority.epochBudget} <ERC20Details address={priority.rewardToken} /> per {priority.epochDuration} days</>
         </div>
       </div>
 
@@ -281,7 +282,7 @@ function Contributions({ priorityAddress, epochNumber }: any) {
     <>
       <div className='container mt-8'>
         <button disabled={!isConnected} 
-                className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+                className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
                 onClick={() => setReportButtonClicked(true)}>
           + Report Contribution
         </button>
@@ -326,11 +327,8 @@ function Contributions({ priorityAddress, epochNumber }: any) {
                 </div>
 
                 <div className='mt-4'>
-                  <label className='text-gray-400'>Contribution date</label>
-                  <br />
-                  <span className='font-bold'>
-                    {new Date(contribution.timestamp.toNumber() * 1000).toISOString().substring(0, 10)}
-                  </span>
+                  <label className='text-gray-400'>Contribution date</label><br />
+                  {new Date(contribution.timestamp.toNumber() * 1000).toISOString().substring(0, 10)}
                   <br />
                 </div>
               </div>
@@ -427,16 +425,27 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
     console.log('allocationPercentages (after contract call):', allocationPercentages)
   }
 
-  const { data: priorityBudget } = useContractRead({
-    ...priorityContract,
-    functionName: 'epochBudget'
+  const { data: priorityData } = useContractReads({
+    contracts: [
+      {
+        ...priorityContract,
+        functionName: 'epochBudget'
+      },
+      {
+        ...priorityContract,
+        functionName: 'rewardToken'
+      }
+    ]
   })
-  console.log('priorityBudget:', priorityBudget)
+  console.log('priorityData:', priorityData)
   let priorityBudgetInEther: any = null;
-  if (priorityBudget) {
-    priorityBudgetInEther = ethers.utils.formatUnits(String(priorityBudget));
+  let priorityRewardToken: any = null;
+  if (priorityData) {
+    priorityBudgetInEther = ethers.utils.formatUnits(String(priorityData[0]));
+    priorityRewardToken = priorityData[1];
   }
   console.log('priorityBudgetInEther:', priorityBudgetInEther)
+  console.log('priorityRewardToken:', priorityRewardToken)
 
   if (!useIsMounted() || !allocationPercentages || !priorityBudgetInEther) {
     return (
@@ -462,13 +471,13 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
                 src={`https://cdn.stamp.fyi/avatar/eth:${contributor}?s=128`}
               />&nbsp;
               <code>{contributor.substring(0, 6)}...{contributor.slice(-4)}</code>&nbsp;
-              <div className="ml-10 h-6 w-full bg-indigo-400 rounded-full">
-                <div className={`w-[${Math.round(allocationPercentages[contributor])}%] h-full text-center text-white bg-indigo-600 rounded-full`}>
+              <div className="ml-10 h-6 w-full bg-gray-900 rounded-full">
+                <div className={`w-[${Math.round(allocationPercentages[contributor])}%] h-full text-right pr-2 bg-gradient-to-r from-indigo-900 to-indigo-700 rounded-full`}>
                   {Number(allocationPercentages[contributor]).toFixed(2)}%
                 </div>
               </div>&nbsp;
               <div className='w-2/6 text-right'>
-                {(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} <code>$TOKEN_NAME</code>
+                {(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} <ERC20Details address={priorityRewardToken} />
               </div>
             </div>
           ))}

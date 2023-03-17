@@ -186,7 +186,7 @@ function DAOPreview({ address }: any) {
               />
             </div>
             <div className='w-5/6 pl-6'>
-                <h2 className='text-xl font-bold'>{dao.name}</h2>
+              <h2 className='text-xl font-bold'>{dao.name}</h2>
               <p className='text-gray-400 pb-6 md:pb-0'>Purpose: {dao.purpose}</p>
             </div>
           </div>

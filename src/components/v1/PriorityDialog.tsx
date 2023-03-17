@@ -138,9 +138,7 @@ export default function PriorityDialog() {
                           Confirming transaction...
                         </p>
                         <p className='mt-4'>
-                          <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
-                            className='text-indigo-400'
-                          >
+                          <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'>
                             View on Etherscan
                           </Link>
                         </p>
@@ -155,10 +153,8 @@ export default function PriorityDialog() {
                             Transaction failed
                           </p>
                           <p className='mt-4'>
-                            <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'
-                              className='text-indigo-400'
-                            >
-                              View transaction on Etherscan
+                            <Link href={`${config.etherscanDomain}/tx/${transactionData?.hash}`} target='_blank'>
+                              View on Etherscan
                             </Link>
                           </p>
                           <button

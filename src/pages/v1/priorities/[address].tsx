@@ -16,6 +16,7 @@ import { useIsMounted } from '@/hooks/useIsMounted'
 import DAO from '@/components/v1/DAO'
 import { ShieldCheckIcon } from '@heroicons/react/24/outline'
 import ERC721Details from '@/components/v1/ERC721Details'
+import ERC20Details from '@/components/v1/ERC20Details'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -204,7 +205,7 @@ function Priority({ address }: any) {
         </div>
         <div className='md:w-1/3 pt-4 md:pt-0'>
           <label className='text-gray-400'>Budget</label><br />
-          <>{priority.epochBudget} <code>$TOKEN_NAME</code> per {priority.epochDuration} days</>
+          <>{priority.epochBudget} <ERC20Details address={priority.rewardToken} /> per {priority.epochDuration} days</>
         </div>
       </div>
 
@@ -336,7 +337,7 @@ function Epochs({ priorityAddress, epochNumber }: any) {
           From <b>{epochs[0].startDate}</b> to <b>{epochs[0].endDate}</b><br />
 
           <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochNumber}`}>
-            <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏳ Report Contributions</button>
+            <button className='mt-4 px-4 py-2 font-semibold rounded-xl bg-indigo-900 hover:bg-indigo-800'>⏳ Report Contributions</button>
           </Link>
         </div>
       </div>
@@ -361,7 +362,7 @@ function Epochs({ priorityAddress, epochNumber }: any) {
                 From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b><br />
 
                 <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochNumber - index}`}>
-                  <button className='mt-4 px-4 py-2 text-white font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⌛️ View Contributions</button>
+                  <button className='mt-4 px-4 py-2 font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⌛️ View Contributions</button>
                 </Link>
               </div>
             )

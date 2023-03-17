@@ -16,6 +16,7 @@ import DAO from '@/components/v1/DAO'
 import { useState } from 'react'
 import PriorityDialog from '@/components/v1/PriorityDialog'
 import { LockOpenIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
+import ERC20Details from '@/components/v1/ERC20Details'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -135,7 +136,7 @@ function Priorities({ daoAddress }: any) {
       <div className='container'>
         {/* <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'> */}
           <button disabled={!isConnected} 
-            className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold text-indigo-200 bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+            className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
             onClick={() => setPriorityButtonClicked(true)}
           >
             + Add Priority
@@ -239,12 +240,11 @@ function Priority({ priorityAddress }: any ) {
         </span>
       )}
       <h3 className='text-xl font-bold mb-2'>{priority.title}</h3>
-      Reward token: <code>{priority.rewardToken}</code><br />
-      Epoch budget: {priority.epochBudget} <code>$TOKEN_NAME</code> per {priority.epochDuration} days<br />
+      Budget: {priority.epochBudget} <ERC20Details address={priority.rewardToken} /> per {priority.epochDuration} days<br />
       Start date: {priority.startDate}<br />
 
       <Link href={`/v1/priorities/${priority.address}`}>
-        <button className='mt-4 px-4 py-2 text-gray-200 font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⏱️ View Epochs</button>
+        <button className='mt-4 px-4 py-2 font-semibold rounded-xl bg-indigo-900 hover:bg-indigo-800'>⏱️ View Epochs</button>
       </Link>
     </div>
   )

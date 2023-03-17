@@ -1,6 +1,6 @@
 # Sector#3 UI
 
-- Sepolia: https://sepolia.sector3.xyz
+- Testnet: https://sepolia.sector3.xyz
 - Mainnet: https://sector3.xyz
 
 ## Getting Started
@@ -24,8 +24,6 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-Note: Chain `localhost` does not support multicall.  Until fixed, use `goerli` or `mainnet` instead.
 
 ## Lint
 

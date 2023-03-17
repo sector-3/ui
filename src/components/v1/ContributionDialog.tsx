@@ -384,7 +384,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
 function sendDiscordNotification({ priorityTitle, address, epochIndex, description }: any) {
   console.log('sendDiscordNotification')
   
-  const content: String = `Contribution added to Priority ("${priorityTitle}"): https://${config.chain}.sector3.xyz/v1/priorities/${address}/epochs/${epochIndex}\n> ${description}`
+  const content: String = `A new DAO contribution was added: ${config.sector3Domain}/v1/priorities/${address}/epochs/${epochIndex}\n\`\`\`${description}\`\`\``
   console.log('content:', content)
 
   if (config.discordWebhookContributions) {

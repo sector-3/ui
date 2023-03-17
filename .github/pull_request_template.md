@@ -18,4 +18,4 @@
 
 <!--- Please add this pull request as a DAO contribution on Sector#3:  https://sepolia.sector3.xyz -->
 
-- [ ] Reported contribution at https://sepolia.sector3.xyz/v1/daos/0xB1932B5ba9Dfd0a2dCFa08140eb272DC60804699
+- [ ] Reported contribution at https://sepolia.sector3.xyz/v1/daos/0x3D7aAEad74d2c627d35f7c1eacfA3B2FCb778a97

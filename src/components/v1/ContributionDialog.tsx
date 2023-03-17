@@ -13,9 +13,9 @@ export default function ContributionDialog({ priorityTitle }: any) {
   console.log('priorityTitle:', priorityTitle)
 
   const router = useRouter()
-  const { address, epochIndex } = router.query
+  const { address, epochNumber } = router.query
   console.log('address:', address)
-  console.log('epochIndex:', epochIndex)
+  console.log('epochNumber:', epochNumber)
 
   const [open, setOpen] = useState(true)
 
@@ -79,7 +79,7 @@ export default function ContributionDialog({ priorityTitle }: any) {
   const [discordNotificationSent, setDiscordNotificationSent] = useState(false)
   if (isSuccess && isTransactionSuccess) {
     if (!discordNotificationSent) {
-      sendDiscordNotification({ priorityTitle: priorityTitle, address: address, epochIndex: epochIndex, description: description })
+      sendDiscordNotification({ priorityTitle: priorityTitle, address: address, epochNumber: epochNumber, description: description })
       setDiscordNotificationSent(true)
     }
   }
@@ -381,10 +381,10 @@ export default function ContributionDialog({ priorityTitle }: any) {
   )
 }
 
-function sendDiscordNotification({ priorityTitle, address, epochIndex, description }: any) {
+function sendDiscordNotification({ priorityTitle, address, epochNumber, description }: any) {
   console.log('sendDiscordNotification')
   
-  const content: String = `A new DAO contribution was added: ${config.sector3Domain}/v1/priorities/${address}/epochs/${epochIndex}\n\`\`\`${description}\`\`\``
+  const content: String = `A new DAO contribution was added: ${config.sector3Domain}/v1/priorities/${address}/epochs/${epochNumber}\n\`\`\`${description}\`\`\``
   console.log('content:', content)
 
   if (config.discordWebhookContributions) {

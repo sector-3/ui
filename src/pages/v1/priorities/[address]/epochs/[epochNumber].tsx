@@ -382,14 +382,6 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
     abi: Sector3DAOPriority.abi
   }
 
-  const { data: priorityBudget } = useContractRead({
-    ...priorityContract,
-    functionName: 'epochBudget'
-  })
-  console.log('priorityBudget:', priorityBudget)
-  const priorityBudgetInEther: String = ethers.utils.formatUnits(String(priorityBudget));
-  console.log('priorityBudgetInEther:', priorityBudgetInEther)
-
   let allocationPercentages: any = null
 
   // Add unique contributors
@@ -435,7 +427,18 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
     console.log('allocationPercentages (after contract call):', allocationPercentages)
   }
 
-  if (!useIsMounted() || !allocationPercentages) {
+  const { data: priorityBudget } = useContractRead({
+    ...priorityContract,
+    functionName: 'epochBudget'
+  })
+  console.log('priorityBudget:', priorityBudget)
+  let priorityBudgetInEther: any = null;
+  if (priorityBudget) {
+    priorityBudgetInEther = ethers.utils.formatUnits(String(priorityBudget));
+  }
+  console.log('priorityBudgetInEther:', priorityBudgetInEther)
+
+  if (!useIsMounted() || !allocationPercentages || !priorityBudgetInEther) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -465,7 +468,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
                 </div>
               </div>&nbsp;
               <div className='w-2/6 text-right'>
-                {(allocationPercentages[contributor] * Number(priorityBudgetInEther) / 100).toFixed(2)} <code>$TOKEN_NAME</code>
+                {(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} <code>$TOKEN_NAME</code>
               </div>
             </div>
           ))}

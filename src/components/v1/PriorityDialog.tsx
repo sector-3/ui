@@ -329,7 +329,7 @@ export default function PriorityDialog() {
 function sendDiscordNotification({ priorityTitle, address }: any) {
   console.log('sendDiscordNotification')
   
-  const content: String = `A new DAO Priority was added: https://${config.chain}.sector3.xyz/v1/priorities/${address}\n> "${priorityTitle}"`
+  const content: String = `A new DAO Priority was added: ${config.sector3Domain}/v1/priorities/${address}\n\`\`\`${priorityTitle}\`\`\``
   console.log('content:', content)
 
   if (config.discordWebhookPriorities) {

@@ -360,7 +360,7 @@ function Epochs({ priorityAddress, epochNumber }: any) {
                 From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b><br />
 
                 <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochNumber - index}`}>
-                  <button className='mt-4 px-4 py-2 font-semibold rounded-xl bg-gray-700 hover:bg-gray-600'>⌛️ View Contributions</button>
+                  <button className='mt-4 px-4 py-2 font-semibold rounded-xl bg-indigo-900 hover:bg-indigo-800'>⌛️ View Contributions</button>
                 </Link>
               </div>
             )

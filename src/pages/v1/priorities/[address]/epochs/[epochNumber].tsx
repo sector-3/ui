@@ -438,7 +438,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
       },
       {
         ...priorityContract,
-        functionName: 'epochNumber'
+        functionName: 'getEpochNumber'
       }
     ]
   })
@@ -457,7 +457,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
 
   if (!useIsMounted() || !allocationPercentages || !priorityBudgetInEther) {
     return (
-      <div className="flex items-center text-gray-400">
+      <div className="mt-4 flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
         &nbsp;Loading...
       </div>
@@ -465,7 +465,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
   }
 
   return (
-    <div className='container'>
+    <div className='mt-4 container'>
       {(Object.keys(allocationPercentages).length == 0) ? (
         <div className='text-gray-400'>
           No data

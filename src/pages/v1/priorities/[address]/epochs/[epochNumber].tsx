@@ -483,7 +483,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
                   </div>
                 </div>
               </div>
-              <div className='w-1/2 flex flex-col md:flex-row'>
+              <div className='w-1/2 flex flex-col md:flex-row text-right'>
                 <div className='md:w-1/2'>
                   {(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} <ERC20Details address={priorityRewardToken} />
                 </div>

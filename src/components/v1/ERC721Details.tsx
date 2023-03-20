@@ -44,8 +44,8 @@ export default function ERC721Details({ address }: any) {
       href={`${config.etherscanDomain}/token/${address}`}
       target="_blank"
     >
-      <span className='text-indigo-400 hover:text-indigo-300 bg-gray-800 hover:bg-gray-700 ring-1 ring-gray-700 hover:ring-gray-600 rounded-lg p-2'>
-          <code>{tokenDetails.name}</code>
+      <span className='inline-flex text-indigo-400 hover:text-indigo-300 bg-gray-800 hover:bg-gray-700 ring-1 ring-gray-700 hover:ring-gray-600 rounded-lg px-2 py-1'>
+        <code>{tokenDetails.name}</code>
       </span>
     </Link>
   )

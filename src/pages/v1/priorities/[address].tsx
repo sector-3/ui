@@ -209,8 +209,10 @@ function Priority({ address }: any) {
 
       {(priority.gatingNFT != ethers.constants.AddressZero) && (
         <div className='mt-4 border-2 border-amber-900 text-amber-600 rounded-lg p-2'>
-          <ShieldCheckIcon className='inline h-10 w-10' /> <b>Note:</b>  To contribute to this priority, you need to be 
-          the owner of an NFT: <ERC721Details address={priority.gatingNFT} />
+          <span className='mr-2 inline-flex bg-amber-900 text-amber-500 font-bold uppercase rounded-lg px-2 py-1'>
+            <ShieldCheckIcon className='h-5 w-5' /> NFT-gated
+          </span>
+          Contributing to this priority requires NFT ownership: <ERC721Details address={priority.gatingNFT} />
         </div>
       )}
     </>

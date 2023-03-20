@@ -53,7 +53,7 @@ export default function Epoch({ priorityAddress, epochNumber }: any) {
   
   return (
     <div>
-      <b>Epoch #{epoch.number}</b> (from <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b>)
+      Epoch #{epoch.number} ({epoch.startDate} ➜ {epoch.endDate})
     </div>
   )
 }

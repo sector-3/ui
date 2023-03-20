@@ -16,7 +16,7 @@ import { useIsMounted } from '@/hooks/useIsMounted'
 import ContributionDialog from '@/components/v1/ContributionDialog'
 import { useState } from 'react'
 import DAO from '@/components/v1/DAO'
-import { ShieldCheckIcon } from '@heroicons/react/24/outline'
+import { InformationCircleIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 import ERC721Details from '@/components/v1/ERC721Details'
 import ERC20Details from '@/components/v1/ERC20Details'
 import Epoch from '@/components/v1/Epoch'
@@ -217,8 +217,10 @@ function Priority({ address }: any) {
 
       {(priority.gatingNFT != ethers.constants.AddressZero) && (
         <div className='mt-4 border-2 border-amber-900 text-amber-600 rounded-lg p-2'>
-          <ShieldCheckIcon className='inline h-10 w-10' /> <b>Note:</b>  To contribute to this priority, you need to be 
-          the owner of an NFT: <ERC721Details address={priority.gatingNFT} />
+          <span className='mr-2 inline-flex bg-amber-900 text-amber-500 font-bold uppercase rounded-lg px-2 py-1'>
+            <ShieldCheckIcon className='h-5 w-5' /> NFT-gated
+          </span>
+          Contributing to this priority requires NFT ownership: <ERC721Details address={priority.gatingNFT} />
         </div>
       )}
     </>
@@ -324,12 +326,6 @@ function Contributions({ priorityAddress, epochNumber }: any) {
                   <label className='text-gray-400'>Alignment with priority</label><br />
                   <span className={`font-bold ${alignmentTextColors[contribution.alignmentPercentage / 20]}`}>{alignmentValues[contribution.alignmentPercentage / 20]}</span><br />
                 </div>
-
-                <div className='mt-4'>
-                  <label className='text-gray-400'>Contribution date</label><br />
-                  {new Date(contribution.timestamp.toNumber() * 1000).toISOString().substring(0, 10)}
-                  <br />
-                </div>
               </div>
 
               <div className='md:w-1/2'>
@@ -340,9 +336,15 @@ function Contributions({ priorityAddress, epochNumber }: any) {
                   </blockquote>
                 </div>
 
-                <div className='mt-4'>
-                  <label className='text-gray-400'>Hours spent</label><br />
-                  <code>{contribution.hoursSpent}h</code>
+                <div className='mt-4 flex'>
+                  <div className='w-1/2'>
+                    <label className='text-gray-400'>Hours spent</label><br />
+                    <code>{contribution.hoursSpent}h</code>
+                  </div>
+                  <div className='w-1/2'>
+                    <label className='text-gray-400'>Date reported</label><br />
+                    {new Date(contribution.timestamp.toNumber() * 1000).toISOString().substring(0, 10)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -433,18 +435,25 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
       {
         ...priorityContract,
         functionName: 'rewardToken'
+      },
+      {
+        ...priorityContract,
+        functionName: 'epochNumber'
       }
     ]
   })
   console.log('priorityData:', priorityData)
-  let priorityBudgetInEther: any = null;
-  let priorityRewardToken: any = null;
+  let priorityBudgetInEther: any = null
+  let priorityRewardToken: any = null
+  let priorityEpochNumber: any = null
   if (priorityData) {
-    priorityBudgetInEther = ethers.utils.formatUnits(String(priorityData[0]));
-    priorityRewardToken = priorityData[1];
+    priorityBudgetInEther = ethers.utils.formatUnits(String(priorityData[0]))
+    priorityRewardToken = priorityData[1]
+    priorityEpochNumber = priorityData[2]
   }
   console.log('priorityBudgetInEther:', priorityBudgetInEther)
   console.log('priorityRewardToken:', priorityRewardToken)
+  console.log('priorityEpochNumber:', priorityEpochNumber)
 
   if (!useIsMounted() || !allocationPercentages || !priorityBudgetInEther) {
     return (
@@ -462,7 +471,13 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
           No data
         </div>
       ) : (
-        <div className='mt-4 p-6 pb-2 bg-gray-800 rounded-xl'>
+        <div className='mb-4 p-6 pb-2 bg-gray-800 rounded-xl'>
+          {(priorityEpochNumber <= epochNumber) && (
+            <div className='mb-6 border-2 border-gray-700 text-gray-400 rounded-lg p-2'>
+              <InformationCircleIcon className='h-6 w-6 inline-flex mr-2' />
+              Rewards can be claimed <i>after</i> this epoch has ended.
+            </div>
+          )}
           {Object.keys(allocationPercentages).map((contributor) => (
             <div key={contributor} className='flex mb-4 text-center'>
               <div className='w-1/2 flex flex-col md:flex-row'>

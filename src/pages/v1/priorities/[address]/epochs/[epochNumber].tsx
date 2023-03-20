@@ -19,6 +19,7 @@ import DAO from '@/components/v1/DAO'
 import { ShieldCheckIcon } from '@heroicons/react/24/outline'
 import ERC721Details from '@/components/v1/ERC721Details'
 import ERC20Details from '@/components/v1/ERC20Details'
+import Epoch from '@/components/v1/Epoch'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -71,7 +72,7 @@ export default function EpochPage() {
         </div>
 
         <div id='epoch' className='md:flex p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
-          Epoch #{Number(epochNumber)}
+          <Epoch priorityAddress={address} epochNumber={epochNumber} />
         </div>
 
         <div id='content' className='mt-8'>
@@ -472,7 +473,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
               />&nbsp;
               <code>{contributor.substring(0, 6)}...{contributor.slice(-4)}</code>&nbsp;
               <div className="ml-10 h-6 w-full bg-gray-900 rounded-full">
-                <div className={`w-[${Math.round(allocationPercentages[contributor])}%] h-full text-right pr-2 bg-gradient-to-r from-indigo-900 to-indigo-700 rounded-full`}>
+                <div className={`w-[${Math.round(allocationPercentages[contributor])}%] h-full text-right px-2 bg-gradient-to-r from-indigo-900 to-indigo-700 rounded-full`}>
                   {Number(allocationPercentages[contributor]).toFixed(2)}%
                 </div>
               </div>&nbsp;

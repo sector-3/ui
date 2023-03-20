@@ -298,16 +298,14 @@ function Epochs({ priorityAddress, epochNumber }: any) {
 
   let epochs: any[] = []
   if (priority) {
-    let i = epochNumber;
-    while (i >= 1) {
+    let i = epochNumber - 1;
+    while (i >= 0) {
       console.log('i:', i)
 
       const epoch = {
         i: Number(i),
-        startTime: priority.startTime + (i * priority.epochDuration * 24*60*60),
         startDate: new Date(Number(priority.startTime + (i * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
-        endTime: priority.startTime + ((i + 1) * priority.epochDuration * 24*60*60),
-        endDate: new Date(Number(priority.startTime + ((i + 1) * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
+        endDate: new Date(Number(priority.startTime + ((i + 1) * priority.epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10)
       }
       epochs[epochs.length] = epoch
 

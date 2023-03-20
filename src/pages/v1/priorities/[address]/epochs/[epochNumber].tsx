@@ -466,19 +466,33 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
       ) : (
         <div className='mt-4 p-6 pb-2 bg-gray-800 rounded-xl'>
           {Object.keys(allocationPercentages).map((contributor) => (
-            <div key={contributor} className='flex mb-4'>
-              <img
-                className="h-6 w-6 bg-gray-700 rounded-full"
-                src={`https://cdn.stamp.fyi/avatar/eth:${contributor}?s=128`}
-              />&nbsp;
-              <code>{contributor.substring(0, 6)}...{contributor.slice(-4)}</code>&nbsp;
-              <div className="ml-10 h-6 w-full bg-gray-900 rounded-full">
-                <div className={`w-[${Math.round(allocationPercentages[contributor])}%] h-full text-right px-2 bg-gradient-to-r from-indigo-900 to-indigo-700 rounded-full`}>
-                  {Number(allocationPercentages[contributor]).toFixed(2)}%
+            <div key={contributor} className='flex mb-4 text-center'>
+              <div className='w-1/2 flex flex-col md:flex-row'>
+                <div className='md:w-1/2 flex'>
+                  <img
+                    className="h-6 w-6 bg-gray-700 rounded-full"
+                    src={`https://cdn.stamp.fyi/avatar/eth:${contributor}?s=128`}
+                  />&nbsp;
+                  <code>{contributor.substring(0, 6)}...{contributor.slice(-4)}</code>
                 </div>
-              </div>&nbsp;
-              <div className='w-2/6 text-right'>
-                {(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} <ERC20Details address={priorityRewardToken} />
+                <div className='md:w-1/2'>
+                  <div className="h-6 bg-gray-900 rounded-full">
+                    <div className={`w-[${Math.round(allocationPercentages[contributor])}%] h-full text-right px-2 bg-gradient-to-r from-indigo-900 to-indigo-700 rounded-full`}>
+                      {Number(allocationPercentages[contributor]).toFixed(2)}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='w-1/2 flex flex-col md:flex-row'>
+                <div className='md:w-1/2'>
+                  {(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} <ERC20Details address={priorityRewardToken} />
+                </div>
+                <div className='md:w-1/2'>
+                  <button disabled={true} 
+                    className='disabled:text-gray-600 disabled:bg-gray-400 px-3 py-1 text-sm font-bold bg-indigo-800 hover:bg-indigo-700 rounded-xl'>
+                    Claim Reward
+                  </button>
+                </div>
               </div>
             </div>
           ))}

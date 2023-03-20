@@ -18,9 +18,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <video id="background-video" autoPlay loop muted poster="https://pbs.twimg.com/tweet_video_thumb/FpM9CcwagAIiRD7.jpg">
-        <source src="https://video.twimg.com/tweet_video/FpM9CcwagAIiRD7.mp4" type="video/mp4" />
-      </video>
+      <div id="background-image"></div>
 
       <main className={styles.main}>
         <div className={styles.description}>
@@ -54,7 +52,7 @@ export default function Home() {
             <h2 className="text-2xl">
               Explore DAOs 👀
             </h2>
-            <p className={font.className}>
+            <p className="text-gray-200">
               Contribute to a DAO and get rewarded, with <i>complete transparency</i>.
             </p>
           </Link>
@@ -67,7 +65,7 @@ export default function Home() {
             <h2 className="text-2xl">
               Deploy a DAO 🚀
             </h2>
-            <p className={font.className}>
+            <p className="text-gray-200">
               Reward DAO contributors <i>autonomously</i> with Sector#3.
             </p>
           </Link>

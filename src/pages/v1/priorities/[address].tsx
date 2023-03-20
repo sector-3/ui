@@ -46,9 +46,7 @@ export default function PriorityPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <video id="background-video" autoPlay loop muted poster="https://pbs.twimg.com/tweet_video_thumb/FpM9CcwagAIiRD7.jpg">
-        {/* <source src="https://video.twimg.com/tweet_video/FpM9CcwagAIiRD7.mp4" type="video/mp4" /> */}
-      </video>
+      <div id="background-image"></div>
 
       <main className='p-2 sm:p-4 md:p-8 lg:p-16 xl:p-32 2xl:p-64'>
         <button className='py-5' onClick={()=>router.back()}>

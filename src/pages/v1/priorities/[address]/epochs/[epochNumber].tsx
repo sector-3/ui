@@ -257,7 +257,8 @@ function Contributions({ priorityAddress, epochNumber }: any) {
 
   const { data: contributionsData, isError, isLoading } = useContractRead({
     ...priorityContract,
-    functionName: 'getContributions'
+    functionName: 'getEpochContributions',
+    args: [epochNumber]
   })
   console.log('contributionsData:', contributionsData)
 

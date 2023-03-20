@@ -59,14 +59,14 @@ html {
 
 body {
   color: rgb(var(--foreground-rgb));  
-  /* background: no-repeat url(../../public/background.png); */
-  background-repeat: no-repeat;
-  background-position: bottom;
-  background-size: cover;
   color: #d1d5db;
 }
 
-#background-video {
+#background-image {
+  background-image: url(../../public/sheep.jpeg);
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: cover;
   width: 100vw;
   height: 100vh;
   object-fit: cover;

@@ -203,7 +203,7 @@ export default function PriorityDialog() {
                       Add DAO Priority
                     </h3>
                     <div className='flex mt-2'>
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-800 sm:mx-0 sm:h-10 sm:w-10">
+                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-800 sm:mx-0 sm:h-10 sm:w-10">
                         <InformationCircleIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
                       </div>
                       <p className="ml-2 text-sm text-gray-400">

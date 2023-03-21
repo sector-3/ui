@@ -20,6 +20,7 @@ import { InformationCircleIcon, ShieldCheckIcon } from '@heroicons/react/24/outl
 import ERC721Details from '@/components/v1/ERC721Details'
 import ERC20Details from '@/components/v1/ERC20Details'
 import Epoch from '@/components/v1/Epoch'
+import ClaimDialog from '@/components/v1/ClaimDialog'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -456,6 +457,13 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
   console.log('priorityRewardToken:', priorityRewardToken)
   console.log('priorityEpochNumber:', priorityEpochNumber)
 
+  const { address, isConnected } = useAccount()
+  console.log('address:', address)
+  console.log('isConnected:', isConnected)
+
+  const [isClaimButtonClicked, setClaimButtonClicked] = useState(false)
+  console.log('isClaimButtonClicked:', isClaimButtonClicked)
+
   if (!useIsMounted() || !allocationPercentages || !priorityBudgetInEther) {
     return (
       <div className="mt-4 flex items-center text-gray-400">
@@ -502,10 +510,21 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
                   {(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} <ERC20Details address={priorityRewardToken} />
                 </div>
                 <div className='md:w-1/2'>
-                  <button disabled={true} 
-                    className='disabled:text-gray-600 disabled:bg-gray-400 px-3 py-1 text-sm font-bold bg-indigo-800 hover:bg-indigo-700 rounded-xl'>
+                  {(address == contributor) && (
+                    <span className="relative inline-flex h-3 w-3 mr-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                    </span>
+                  )}
+                  <button disabled={address != contributor} 
+                    className='disabled:text-gray-600 disabled:bg-gray-400 px-3 py-1 text-sm font-bold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+                    onClick={() => setClaimButtonClicked(true)}
+                  >
                     Claim Reward
                   </button>
+                  {((address == contributor) && isClaimButtonClicked) && (
+                    <ClaimDialog contributorAddress={contributor} amount={(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} rewardToken={priorityRewardToken} />
+                  )}
                 </div>
               </div>
             </div>

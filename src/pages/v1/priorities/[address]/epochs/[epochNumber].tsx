@@ -268,8 +268,19 @@ function Contributions({ priorityAddress, epochNumber }: any) {
     contributions = contributionsData
   }
   console.log('contributions:', contributions)
+  
+  const { data: currentEpochNumberData } = useContractRead({
+    ...priorityContract,
+    functionName: 'getEpochNumber'
+  })
+  console.log('currentEpochNumberData:', currentEpochNumberData)
+  let currentEpochNumber: any = null
+  if (currentEpochNumberData != undefined) {
+    currentEpochNumber = currentEpochNumberData
+  }
+  console.log('currentEpochNumber:', currentEpochNumber)
 
-  if (!useIsMounted() || !contributions || !priorityTitle) {
+  if (!useIsMounted() || !contributions || !currentEpochNumber || !priorityTitle) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -284,14 +295,18 @@ function Contributions({ priorityAddress, epochNumber }: any) {
   return (
     <>
       <div className='container mt-8'>
-        <button disabled={!isConnected} 
-                className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
-                onClick={() => setReportButtonClicked(true)}>
-          + Report Contribution
-        </button>
+        {(epochNumber == currentEpochNumber) && (
+          <>
+            <button disabled={!isConnected} 
+              className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+              onClick={() => setReportButtonClicked(true)}>
+              + Report Contribution
+            </button>
 
-        {isReportButtonClicked && (
-          <ContributionDialog priorityTitle={priorityTitle} />
+            {isReportButtonClicked && (
+              <ContributionDialog priorityTitle={priorityTitle} />
+            )}
+          </>
         )}
 
         <h2 className="text-2xl text-gray-400">Contributions</h2>
@@ -536,7 +551,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
                 </div>
                 <div className='md:w-1/2'>
                   {claims[contributor] ? (
-                    <p>Claimed <CheckIcon className='inline h-6 w-6 text-emerald-400' /></p>
+                    <p className='text-emerald-400'><CheckIcon className='inline h-6 w-6 ' /> Claimed</p>
                   ) : (
                     <>
                       {(address == contributor) && (

@@ -487,15 +487,15 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
   console.log('priorityData:', priorityData)
   let priorityBudgetInEther: any = null
   let priorityRewardToken: any = null
-  let priorityEpochNumber: any = null
+  let currentEpochNumber: any = null
   if (priorityData) {
     priorityBudgetInEther = ethers.utils.formatUnits(String(priorityData[0]))
     priorityRewardToken = priorityData[1]
-    priorityEpochNumber = priorityData[2]
+    currentEpochNumber = priorityData[2]
   }
   console.log('priorityBudgetInEther:', priorityBudgetInEther)
   console.log('priorityRewardToken:', priorityRewardToken)
-  console.log('priorityEpochNumber:', priorityEpochNumber)
+  console.log('currentEpochNumber:', currentEpochNumber)
 
   const { address, isConnected } = useAccount()
   console.log('address:', address)
@@ -521,7 +521,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
         </div>
       ) : (
         <div className='mb-4 p-6 pb-2 bg-gray-800 rounded-xl'>
-          {(priorityEpochNumber <= epochNumber) && (
+          {(currentEpochNumber <= epochNumber) && (
             <div className='mb-6 border-2 border-gray-700 text-gray-400 rounded-lg p-2'>
               <InformationCircleIcon className='h-6 w-6 inline-flex mr-2' />
               Rewards can be claimed <i>after</i> this epoch has ended.
@@ -554,21 +554,23 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
                     <p className='text-emerald-400'><CheckIcon className='inline h-6 w-6 ' /> Claimed</p>
                   ) : (
                     <>
-                      {(address == contributor) && (
-                        <span className="relative inline-flex h-3 w-3 mr-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
-                        </span>
+                      {((currentEpochNumber > epochNumber) && (address == contributor)) && (
+                        <>
+                          <span className="relative inline-flex h-3 w-3 mr-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                          </span>
+                          {isClaimButtonClicked && (
+                            <ClaimDialog contributorAddress={contributor} amount={(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} rewardToken={priorityRewardToken} />
+                          )}
+                        </>
                       )}
-                      <button disabled={address != contributor} 
+                      <button disabled={(currentEpochNumber <= epochNumber) || (address != contributor)} 
                         className='disabled:text-gray-600 disabled:bg-gray-400 px-3 py-1 text-sm font-bold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
                         onClick={() => setClaimButtonClicked(true)}
                       >
                         Claim Reward
                       </button>
-                      {((address == contributor) && isClaimButtonClicked) && (
-                        <ClaimDialog contributorAddress={contributor} amount={(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} rewardToken={priorityRewardToken} />
-                      )}
                     </>
                   )}
                 </div>

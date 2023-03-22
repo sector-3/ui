@@ -94,7 +94,7 @@ export default function PriorityDialog() {
   const [discordNotificationSent, setDiscordNotificationSent] = useState(false)
   if (isSuccess && isTransactionSuccess) {
     if (!discordNotificationSent) {
-      sendDiscordNotification({ priorityTitle: title, address: address })
+      sendDiscordNotification({ priorityTitle: title, daoAddress: address })
       setDiscordNotificationSent(true)
     }
   }
@@ -326,10 +326,10 @@ export default function PriorityDialog() {
   )
 }
 
-function sendDiscordNotification({ priorityTitle, address }: any) {
+function sendDiscordNotification({ priorityTitle, daoAddress }: any) {
   console.log('sendDiscordNotification')
   
-  const content: String = `A new DAO Priority was added: ${config.sector3Domain}/v1/priorities/${address}\n\`\`\`${priorityTitle}\`\`\``
+  const content: String = `A new DAO Priority was added: ${config.sector3Domain}/v1/daos/${daoAddress}\n\`\`\`${priorityTitle}\`\`\``
   console.log('content:', content)
 
   if (config.discordWebhookPriorities) {

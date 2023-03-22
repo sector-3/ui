@@ -116,6 +116,9 @@ export default function ContributionDialog({ priorityTitle }: any) {
                   <div className='p-12 text-center'>
                     {isTransactionLoading ? (
                       <>
+                        <div className='text-5xl animate-bounce'>
+                          🐑
+                        </div>
                         <div>
                           <div className="inline-block h-16 w-16 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
                         </div>
@@ -179,184 +182,190 @@ export default function ContributionDialog({ priorityTitle }: any) {
                 ) : (
                   <form action="#" method="POST" onSubmit={handleSubmit}>
                     <div className="bg-black p-6">
-                      <div className="sm:flex sm:items-start">
-                        <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-800 sm:mx-0 sm:h-10 sm:w-10">
-                          <InformationCircleIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
+                      <Dialog.Title as="h3" className="text-lg font-semibold leading-6">
+                        Report DAO Contribution
+                      </Dialog.Title>
+                      
+                      <div className="mt-2 flex">
+                        <div className="mx-auto flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-gray-800">
+                          <InformationCircleIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />
                         </div>
-                        <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                          <Dialog.Title as="h3" className="text-lg font-semibold leading-6">
-                            Report DAO Contribution
-                          </Dialog.Title>
-                          
-                          <div className="mt-2">
-                            <p className="text-sm text-gray-400">
-                              Report a contribution that you made during this <i>current epoch</i>.
-                            </p>
-                            <p className="text-sm text-gray-400 mt-2">
-                              This information will be displayed <i>publicly</i>, so be careful what you share.
-                            </p>
-                          </div>
-                          
-                          <div className='mt-4'>
-                            <div>
-                              <label htmlFor="description" className='font-bold text-indigo-200'>
-                                Description
-                              </label>
-                              <textarea
-                                id="description"
-                                name="description"
-                                onChange={handleDescriptionChange}
-                                rows={3}
-                                className="block w-full rounded-md border-0 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
-                                placeholder="E.g. 'Implemented a bug fix'"
-                                defaultValue={''}
-                                required
-                              />
-                            </div>
-                          </div>
-                          
-                          <div className='mt-4'>
-                            <label htmlFor="proofUrl" className='font-bold text-indigo-200'>
-                              Proof of contribution URL
-                            </label>
-                            <input
-                              type="url"
-                              name="proofUrl"
-                              id="proofUrl"
-                              onChange={handleProofURLChange}
-                              className="block w-full flex-1 rounded-md border-0 ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
-                              placeholder="E.g. 'https://github.com/org/repo/pull/123'"
-                              required
-                            />
-                          </div>
-
-                          <div className='mt-4'>
-                            <label htmlFor="hoursSpent" className='font-bold text-indigo-200'>
-                              Hours spent
-                            </label><br />
-                            <input
-                              type="number"
-                              name="hoursSpent"
-                              id="hoursSpent"
-                              onChange={handleHoursSpentChange}
-                              className="w-1/4 flex-1 rounded-md border-0 ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
-                              placeholder="E.g. '8'"
-                              required
-                              min={0}
-                            />
-                          </div>
-
-                          <div className='mt-4'>
-                            <fieldset onChange={handleAlignmentPercentageChange}>
-                              <legend className="font-bold text-indigo-200">
-                                Priority alignment
-                              </legend>
-                              <p className="text-sm text-gray-400">
-                                How well does your contribution align with this DAO priority (&quot;{priorityTitle}&quot;)?
-                              </p>
-                              <div className="mt-2">
-                                <div className="flex items-center">
-                                  <input
-                                    type="radio"
-                                    name="alignment"
-                                    id="alignment-none"
-                                    value="0"
-                                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                    required
-                                  />
-                                  <label
-                                    htmlFor="alignment-none"
-                                    className="ml-3 block text-sm font-medium leading-6 text-red-400"
-                                  >
-                                    ☆☆☆☆☆ None
-                                  </label>
-                                </div>
-                                <div className="flex items-center">
-                                  <input
-                                    type="radio"
-                                    name="alignment"
-                                    id="alignment-barely"
-                                    value="20"
-                                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                  />
-                                  <label
-                                    htmlFor="alignment-barely"
-                                    className="ml-3 block text-sm font-medium leading-6 text-orange-400"
-                                  >
-                                    ★☆☆☆☆ Barely
-                                  </label>
-                                </div>
-                                <div className="flex items-center">
-                                  <input
-                                    type="radio"
-                                    name="alignment"
-                                    id="alignment-moderately"
-                                    value="40"
-                                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                  />
-                                  <label
-                                    htmlFor="alignment-moderately"
-                                    className="ml-3 block text-sm font-medium leading-6 text-amber-400"
-                                  >
-                                    ★★☆☆☆ Moderately
-                                  </label>
-                                </div>
-                                <div className="flex items-center">
-                                  <input
-                                    type="radio"
-                                    name="alignment"
-                                    id="alignment-mostly"
-                                    value="60"
-                                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                  />
-                                  <label
-                                    htmlFor="alignment-mostly"
-                                    className="ml-3 block text-sm font-medium leading-6 text-lime-400"
-                                  >
-                                    ★★★☆☆ Mostly
-                                  </label>
-                                </div>
-                                <div className="flex items-center">
-                                  <input
-                                    type="radio"
-                                    name="alignment"
-                                    id="alignment-highly"
-                                    value="80"
-                                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                  />
-                                  <label
-                                    htmlFor="alignment-highly"
-                                    className="ml-3 block text-sm font-medium leading-6 text-emerald-400"
-                                  >
-                                    ★★★★☆ Highly
-                                  </label>
-                                </div>
-                                <div className="flex items-center">
-                                  <input
-                                    type="radio"
-                                    name="alignment"
-                                    id="alignment-perfectly"
-                                    value="100"
-                                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                  />
-                                  <label
-                                    htmlFor="alignment-perfectly"
-                                    className="ml-3 block text-sm font-medium leading-6 text-cyan-400"
-                                  >
-                                    ★★★★★ Perfectly
-                                  </label>
-                                </div>
-                              </div>
-                            </fieldset>
-                          </div>
+                        <div className='ml-2'>
+                          <p className="text-sm text-gray-400">
+                            Report a contribution that you made during this <i>current epoch</i>.
+                          </p>
+                          <p className="text-sm text-gray-400 mt-2">
+                            This information will be displayed publicly, so be careful what you share.
+                          </p>
                         </div>
                       </div>
+                      
+                      <div className='mt-4'>
+                        <div>
+                          <label htmlFor="description" className='font-bold text-indigo-200'>
+                            Description
+                          </label>
+                          <textarea
+                            id="description"
+                            name="description"
+                            onChange={handleDescriptionChange}
+                            rows={3}
+                            className="block w-full rounded-md border-0 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
+                            placeholder="E.g. 'Implemented a bug fix'"
+                            defaultValue={''}
+                            required
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className='mt-4'>
+                        <label htmlFor="proofUrl" className='font-bold text-indigo-200'>
+                          Proof of contribution URL
+                        </label>
+                        <input
+                          type="url"
+                          name="proofUrl"
+                          id="proofUrl"
+                          onChange={handleProofURLChange}
+                          className="block w-full flex-1 rounded-md border-0 ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
+                          placeholder="E.g. 'https://github.com/org/repo/pull/123'"
+                          required
+                        />
+                      </div>
+
+                      <div className='mt-4'>
+                        <label htmlFor="hoursSpent" className='font-bold text-indigo-200'>
+                          Hours spent
+                        </label><br />
+                        <input
+                          type="number"
+                          name="hoursSpent"
+                          id="hoursSpent"
+                          onChange={handleHoursSpentChange}
+                          className="w-1/4 flex-1 rounded-md border-0 ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 p-2"
+                          placeholder="E.g. '8'"
+                          required
+                          min={0}
+                        />
+                      </div>
+
+                      <div className='mt-4'>
+                        <fieldset onChange={handleAlignmentPercentageChange}>
+                          <legend className="font-bold text-indigo-200">
+                            Priority alignment
+                          </legend>
+                          <p className="text-sm text-gray-400">
+                            How well does your contribution align with this DAO priority (&quot;{priorityTitle}&quot;)?
+                          </p>
+                          <div className="mt-2">
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                name="alignment"
+                                id="alignment-none"
+                                value="0"
+                                className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                required
+                              />
+                              <label
+                                htmlFor="alignment-none"
+                                className="ml-3 block text-sm font-medium leading-6 text-red-400"
+                              >
+                                ☆☆☆☆☆ None
+                              </label>
+                            </div>
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                name="alignment"
+                                id="alignment-barely"
+                                value="20"
+                                className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                              />
+                              <label
+                                htmlFor="alignment-barely"
+                                className="ml-3 block text-sm font-medium leading-6 text-orange-400"
+                              >
+                                ★☆☆☆☆ Barely
+                              </label>
+                            </div>
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                name="alignment"
+                                id="alignment-moderately"
+                                value="40"
+                                className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                              />
+                              <label
+                                htmlFor="alignment-moderately"
+                                className="ml-3 block text-sm font-medium leading-6 text-amber-400"
+                              >
+                                ★★☆☆☆ Moderately
+                              </label>
+                            </div>
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                name="alignment"
+                                id="alignment-mostly"
+                                value="60"
+                                className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                              />
+                              <label
+                                htmlFor="alignment-mostly"
+                                className="ml-3 block text-sm font-medium leading-6 text-lime-400"
+                              >
+                                ★★★☆☆ Mostly
+                              </label>
+                            </div>
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                name="alignment"
+                                id="alignment-highly"
+                                value="80"
+                                className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                              />
+                              <label
+                                htmlFor="alignment-highly"
+                                className="ml-3 block text-sm font-medium leading-6 text-emerald-400"
+                              >
+                                ★★★★☆ Highly
+                              </label>
+                            </div>
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                name="alignment"
+                                id="alignment-perfectly"
+                                value="100"
+                                className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                              />
+                              <label
+                                htmlFor="alignment-perfectly"
+                                className="ml-3 block text-sm font-medium leading-6 text-cyan-400"
+                              >
+                                ★★★★★ Perfectly
+                              </label>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </div>
                     </div>
-                    <div className="bg-gray-900 p-6 sm:flex sm:flex-row-reverse">
+                    <div className="bg-gray-900 p-6">
+                      {error && (
+                        <div className='mb-4 border-2 border-amber-900 text-amber-600 rounded-lg p-2 truncate'>
+                          <span className='mr-2 inline-flex bg-amber-900 text-amber-500 font-bold uppercase rounded-lg px-2 py-1'>
+                            <ExclamationTriangleIcon className='h-5 w-5 mr-2' /> {error.name}
+                          </span>
+                          {error.message}
+                        </div>
+                      )}
                       <button
                           type="submit"
                           disabled={!write || isLoading}
-                          className="disabled:text-gray-600 disabled:bg-gray-400 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:ml-3 sm:w-auto"
+                          className="disabled:text-gray-600 disabled:bg-gray-400 inline-flex w-full justify-center rounded-xl bg-indigo-800 px-4 py-2 font-semibold text-indigo-200 shadow-sm hover:bg-indigo-700 sm:w-auto"
                       >
                         {!isLoading ? (
                           <>

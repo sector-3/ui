@@ -16,10 +16,11 @@ import { useIsMounted } from '@/hooks/useIsMounted'
 import ContributionDialog from '@/components/v1/ContributionDialog'
 import { useState } from 'react'
 import DAO from '@/components/v1/DAO'
-import { InformationCircleIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
+import { CheckIcon, InformationCircleIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 import ERC721Details from '@/components/v1/ERC721Details'
 import ERC20Details from '@/components/v1/ERC20Details'
 import Epoch from '@/components/v1/Epoch'
+import ClaimDialog from '@/components/v1/ClaimDialog'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -267,8 +268,19 @@ function Contributions({ priorityAddress, epochNumber }: any) {
     contributions = contributionsData
   }
   console.log('contributions:', contributions)
+  
+  const { data: currentEpochNumberData } = useContractRead({
+    ...priorityContract,
+    functionName: 'getEpochNumber'
+  })
+  console.log('currentEpochNumberData:', currentEpochNumberData)
+  let currentEpochNumber: any = null
+  if (currentEpochNumberData != undefined) {
+    currentEpochNumber = currentEpochNumberData
+  }
+  console.log('currentEpochNumber:', currentEpochNumber)
 
-  if (!useIsMounted() || !contributions || !priorityTitle) {
+  if (!useIsMounted() || !contributions || !currentEpochNumber || !priorityTitle) {
     return (
       <div className="flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -283,14 +295,18 @@ function Contributions({ priorityAddress, epochNumber }: any) {
   return (
     <>
       <div className='container mt-8'>
-        <button disabled={!isConnected} 
-                className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
-                onClick={() => setReportButtonClicked(true)}>
-          + Report Contribution
-        </button>
+        {(epochNumber == currentEpochNumber) && (
+          <>
+            <button disabled={!isConnected} 
+              className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+              onClick={() => setReportButtonClicked(true)}>
+              + Report Contribution
+            </button>
 
-        {isReportButtonClicked && (
-          <ContributionDialog priorityTitle={priorityTitle} />
+            {isReportButtonClicked && (
+              <ContributionDialog priorityTitle={priorityTitle} />
+            )}
+          </>
         )}
 
         <h2 className="text-2xl text-gray-400">Contributions</h2>
@@ -427,6 +443,31 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
     console.log('allocationPercentages (after contract call):', allocationPercentages)
   }
 
+  let claimsContracts: any = [allocationPercentagesKeys.length]
+  for (let i = 0; i < allocationPercentagesKeys.length; i++) {
+    const contributor = allocationPercentagesKeys[i]
+    claimsContracts[i] = {
+      ...priorityContract,
+      functionName: 'isRewardClaimed',
+      args: [epochNumber, contributor]
+    }
+  }
+  console.log('claimsContracts:', claimsContracts)
+  const { data: claimsData } = useContractReads({
+    contracts: claimsContracts
+  })
+  console.log('claimsData:', claimsData)
+  let claims: any = null
+  if (claimsData != undefined) {
+    claims = {}
+    for (let i = 0; i < allocationPercentagesKeys.length; i++) {
+      const contributor = allocationPercentagesKeys[i]
+      const claimed = claimsData[i]
+      claims[contributor.toString()] = claimed
+    }
+  }
+  console.log('claims:', claims)
+
   const { data: priorityData } = useContractReads({
     contracts: [
       {
@@ -446,17 +487,24 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
   console.log('priorityData:', priorityData)
   let priorityBudgetInEther: any = null
   let priorityRewardToken: any = null
-  let priorityEpochNumber: any = null
+  let currentEpochNumber: any = null
   if (priorityData) {
     priorityBudgetInEther = ethers.utils.formatUnits(String(priorityData[0]))
     priorityRewardToken = priorityData[1]
-    priorityEpochNumber = priorityData[2]
+    currentEpochNumber = priorityData[2]
   }
   console.log('priorityBudgetInEther:', priorityBudgetInEther)
   console.log('priorityRewardToken:', priorityRewardToken)
-  console.log('priorityEpochNumber:', priorityEpochNumber)
+  console.log('currentEpochNumber:', currentEpochNumber)
 
-  if (!useIsMounted() || !allocationPercentages || !priorityBudgetInEther) {
+  const { address, isConnected } = useAccount()
+  console.log('address:', address)
+  console.log('isConnected:', isConnected)
+
+  const [isClaimButtonClicked, setClaimButtonClicked] = useState(false)
+  console.log('isClaimButtonClicked:', isClaimButtonClicked)
+
+  if (!useIsMounted() || !allocationPercentages || !claims || !priorityBudgetInEther) {
     return (
       <div className="mt-4 flex items-center text-gray-400">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -473,7 +521,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
         </div>
       ) : (
         <div className='mb-4 p-6 pb-2 bg-gray-800 rounded-xl'>
-          {(priorityEpochNumber <= epochNumber) && (
+          {(currentEpochNumber <= epochNumber) && (
             <div className='mb-6 border-2 border-gray-700 text-gray-400 rounded-lg p-2'>
               <InformationCircleIcon className='h-6 w-6 inline-flex mr-2' />
               Rewards can be claimed <i>after</i> this epoch has ended.
@@ -502,10 +550,29 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
                   {(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} <ERC20Details address={priorityRewardToken} />
                 </div>
                 <div className='md:w-1/2'>
-                  <button disabled={true} 
-                    className='disabled:text-gray-600 disabled:bg-gray-400 px-3 py-1 text-sm font-bold bg-indigo-800 hover:bg-indigo-700 rounded-xl'>
-                    Claim Reward
-                  </button>
+                  {claims[contributor] ? (
+                    <p className='text-emerald-400'><CheckIcon className='inline h-6 w-6 ' /> Claimed</p>
+                  ) : (
+                    <>
+                      {((currentEpochNumber > epochNumber) && (address == contributor)) && (
+                        <>
+                          <span className="relative inline-flex h-3 w-3 mr-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                          </span>
+                          {isClaimButtonClicked && (
+                            <ClaimDialog contributorAddress={contributor} amount={(allocationPercentages[contributor] * priorityBudgetInEther / 100).toFixed(2)} rewardToken={priorityRewardToken} />
+                          )}
+                        </>
+                      )}
+                      <button disabled={(currentEpochNumber <= epochNumber) || (address != contributor)} 
+                        className='disabled:text-gray-600 disabled:bg-gray-400 px-3 py-1 text-sm font-bold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+                        onClick={() => setClaimButtonClicked(true)}
+                      >
+                        Claim Reward
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

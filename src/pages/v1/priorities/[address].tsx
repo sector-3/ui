@@ -17,6 +17,7 @@ import DAO from '@/components/v1/DAO'
 import { ShieldCheckIcon } from '@heroicons/react/24/outline'
 import ERC721Details from '@/components/v1/ERC721Details'
 import ERC20Details from '@/components/v1/ERC20Details'
+import ContributorAddress from '@/components/v1/ContributorAddress'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -125,7 +126,7 @@ function EthereumAccount() {
     <button onClick={() => disconnect()} className='rounded-xl text-xl font-bold bg-gray-800 hover:bg-gray-700 px-4 py-2'>
       <div className='flex'>
         <img src={`https://cdn.stamp.fyi/avatar/eth:${address}?s=128`} className="h-7 w-7 bg-gray-700 rounded-full" />
-        &nbsp;<code>{address?.substring(0, 6)}...{address?.slice(-4)}</code>
+        &nbsp;<code><ContributorAddress address={address} /></code>
       </div>
     </button>
   )

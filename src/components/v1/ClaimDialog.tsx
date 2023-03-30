@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { config } from '@/utils/Config'
 import { ethers } from 'ethers'
 import ERC20Details from './ERC20Details'
+import ContributorAddress from './ContributorAddress'
 
 export default function ClaimDialog({ contributorAddress, amount, rewardToken }: any) {
   console.log('ClaimDialog')
@@ -178,7 +179,7 @@ export default function ClaimDialog({ contributorAddress, amount, rewardToken }:
                           className="h-6 w-6 bg-gray-700 rounded-full"
                           src={`https://cdn.stamp.fyi/avatar/eth:${contributorAddress}?s=128`}
                         />&nbsp;
-                        <code>{contributorAddress.substring(0, 6)}...{contributorAddress.slice(-4)}</code>
+                        <code><ContributorAddress address={contributorAddress} /></code>
                       </div>
                     </div>
                     <div className='mt-4'>

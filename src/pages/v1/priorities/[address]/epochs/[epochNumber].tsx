@@ -21,6 +21,7 @@ import ERC721Details from '@/components/v1/ERC721Details'
 import ERC20Details from '@/components/v1/ERC20Details'
 import Epoch from '@/components/v1/Epoch'
 import ClaimDialog from '@/components/v1/ClaimDialog'
+import ContributorAddress from '@/components/v1/ContributorAddress'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -134,7 +135,7 @@ function EthereumAccount() {
     <button onClick={() => disconnect()} className='rounded-xl text-xl font-bold bg-gray-800 hover:bg-gray-700 px-4 py-2'>
       <div className='flex'>
         <img src={`https://cdn.stamp.fyi/avatar/eth:${address}?s=128`} className="h-7 w-7 bg-gray-700 rounded-full" />
-        &nbsp;<code>{address?.substring(0, 6)}...{address?.slice(-4)}</code>
+        &nbsp;<code><ContributorAddress address={address} /></code>
       </div>
     </button>
   )
@@ -328,7 +329,7 @@ function Contributions({ priorityAddress, epochNumber }: any) {
                       className="h-6 w-6 bg-gray-700 rounded-full"
                       src={`https://cdn.stamp.fyi/avatar/eth:${contribution.contributor}?s=128`}
                     />&nbsp;
-                    <code>{contribution.contributor.substring(0, 6)}...{contribution.contributor.slice(-4)}</code><br />
+                    <code><ContributorAddress address={contribution.contributor} /></code><br />
                   </div>
                 </div>
 
@@ -535,7 +536,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
                     className="h-6 w-6 bg-gray-700 rounded-full"
                     src={`https://cdn.stamp.fyi/avatar/eth:${contributor}?s=128`}
                   />&nbsp;
-                  <code>{contributor.substring(0, 6)}...{contributor.slice(-4)}</code>
+                  <code><ContributorAddress address={contributor} /></code>
                 </div>
                 <div className='md:w-1/2'>
                   <div className="h-6 bg-gray-900 rounded-full">

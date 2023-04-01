@@ -84,7 +84,7 @@ export default function ContributionDialog({ priorityTitle, refetchContributions
       setDiscordNotificationSent(true)
     }
 
-    refetchContributions().then((res: ethers.utils.Result)=> console.log('refetchContributions:', res.status))
+    refetchContributions().then((res: ethers.utils.Result) => console.log('refetchContributions:', res.status))
   }
   console.log('discordNotificationSent:', discordNotificationSent)
 

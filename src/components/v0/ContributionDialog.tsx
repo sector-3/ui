@@ -66,7 +66,7 @@ export default function ContributionDialog({ priorityTitle, refetchContributions
   console.log('isTransactionSuccess:', isTransactionSuccess)
 
   if (isSuccess) {
-    refetchContributions().then((res: ethers.utils.Result)=> console.log('refetchContributions:', res.status))
+    refetchContributions().then((res: ethers.utils.Result) => console.log('refetchContributions:', res.status))
   }
 
   const handleSubmit = (event: any) => {

@@ -237,7 +237,7 @@ function Contributions({ priorityAddress, epochIndex }: any) {
   }
   console.log('priorityTitle:', priorityTitle)
 
-  const { data: contributionsData, isError, isLoading } = useContractRead({
+  const { data: contributionsData, refetch: refetchContributions, isError, isLoading } = useContractRead({
     ...priorityContract,
     functionName: 'getContributions'
   })
@@ -275,7 +275,7 @@ function Contributions({ priorityAddress, epochIndex }: any) {
         {/* ) : null} */}
 
         {isReportButtonClicked && (
-          <ContributionDialog priorityTitle={priorityTitle} />
+          <ContributionDialog priorityTitle={priorityTitle} refetchContributions={refetchContributions} />
         )}
 
         <h2 className="text-2xl text-gray-400">Contributions</h2>

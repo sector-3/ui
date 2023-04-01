@@ -1,4 +1,5 @@
 import { Fragment, useRef, useState } from 'react'
+import { ethers } from "ethers";
 import { Dialog, Transition } from '@headlessui/react'
 import { InformationCircleIcon, CheckBadgeIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount, Address } from 'wagmi'
@@ -7,7 +8,7 @@ import Sector3DAOPriority from '../../../abis/v1/Sector3DAOPriority.json'
 import Link from 'next/link'
 import { config } from '@/utils/Config'
 
-export default function ContributionDialog({ priorityTitle }: any) {
+export default function ContributionDialog({ priorityTitle, refetchContributions }: any) {
   console.log('ContributionDialog')
 
   console.log('priorityTitle:', priorityTitle)
@@ -82,6 +83,8 @@ export default function ContributionDialog({ priorityTitle }: any) {
       sendDiscordNotification({ priorityTitle: priorityTitle, address: address, epochNumber: epochNumber, description: description })
       setDiscordNotificationSent(true)
     }
+
+    refetchContributions().then((res: ethers.utils.Result)=> console.log('refetchContributions:', res.status))
   }
   console.log('discordNotificationSent:', discordNotificationSent)
 

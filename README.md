@@ -1,6 +1,7 @@
 # Sector#3 UI
 
 - Testnet: https://sepolia.sector3.xyz
+- Optimism: https://optimism.sector3.xyz
 - Mainnet: https://sector3.xyz
 
 ## Getting Started

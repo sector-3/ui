@@ -1,14 +1,16 @@
-import { mainnet, sepolia, goerli, localhost } from 'wagmi/chains'
+import { mainnet, sepolia, goerli, localhost, optimism } from 'wagmi/chains'
 import { config } from '@/utils/Config'
 
-const chains = [mainnet, sepolia, goerli, localhost]
+const chains = [mainnet, optimism, sepolia, goerli, localhost]
 let chainIndex = 0
-if (config.chain == 'sepolia') {
+if (config.chain == 'optimism') {
   chainIndex = 1
-} else if (config.chain == 'goerli') {
+} else if (config.chain == 'sepolia') {
   chainIndex = 2
-} else if (config.chain == 'localhost') {
+} else if (config.chain == 'goerli') {
   chainIndex = 3
+} else if (config.chain == 'localhost') {
+  chainIndex = 4
 }
 const chain = chains[chainIndex]
 console.log('chain:', chain)

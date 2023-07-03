@@ -39,12 +39,18 @@ export default function ERC20Details({ address }: any) {
     console.log('tokenLogoLoader')
     let tokenLogoPath = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
     
-    const customTokenLogos = [
+    let customTokenLogos = [
       '0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1', // Sector#3
       '0x333A4823466879eeF910A04D473505da62142069' // Nation3
     ]
+    if (config.chain == 'optimism') {
+      customTokenLogos = [
+        '0xe5eC44DD7D49E6edf31878E55DEc12eB79Bd10aE', // Sector#3
+        '0x29FAF5905bfF9Cfcc7CF56a5ed91E0f091F8664B' // Bankless
+      ]
+    }
     if (customTokenLogos.includes(address)) {
-      tokenLogoPath = `/token-logos/${address}.png`
+      tokenLogoPath = `/token-logos/${config.chain}/${address}.png`
     }
     console.log('tokenLogoPath:', tokenLogoPath)
     
@@ -68,7 +74,7 @@ export default function ERC20Details({ address }: any) {
               width={16}
               height={16}
               className='rounded-full bg-gray-800'
-              src={`/token-logos/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2.png`}
+              src={`/token-logos/${config.chain}/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2.png`}
               loader={tokenLogoLoader}
             />
           </div> */}

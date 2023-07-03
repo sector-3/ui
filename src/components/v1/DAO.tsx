@@ -2,6 +2,7 @@ import Sector3DAO from '../../../abis/v1/Sector3DAO.json'
 import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { useIsMounted } from '@/hooks/useIsMounted'
 import Image from 'next/image'
+import { config } from '@/utils/Config'
 
 export default function DAO({ address }: any) {
   console.log('DAO')
@@ -59,12 +60,18 @@ export default function DAO({ address }: any) {
     console.log('tokenLogoLoader')
     let tokenLogoPath = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${dao.token}/logo.png`
     
-    const customTokenLogos = [
+    let customTokenLogos = [
       '0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1', // Sector#3
       '0x333A4823466879eeF910A04D473505da62142069' // Nation3
     ]
+    if (config.chain == 'optimism') {
+      customTokenLogos = [
+        '0xe5eC44DD7D49E6edf31878E55DEc12eB79Bd10aE', // Sector#3
+        '0x29FAF5905bfF9Cfcc7CF56a5ed91E0f091F8664B' // Bankless
+      ]
+    }
     if (customTokenLogos.includes(dao.token)) {
-      tokenLogoPath = `/token-logos/${dao.token}.png`
+      tokenLogoPath = `/token-logos/${config.chain}/${dao.token}.png`
     }
     console.log('tokenLogoPath:', tokenLogoPath)
     
@@ -79,7 +86,7 @@ export default function DAO({ address }: any) {
           width={100}
           height={100}
           className='rounded-full bg-gray-800'
-          src={`/token-logos/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2.png`}
+          src={`/token-logos/${config.chain}/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2.png`}
           loader={tokenLogoLoader}
         />
       </div>

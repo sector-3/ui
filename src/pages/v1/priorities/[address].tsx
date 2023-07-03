@@ -4,7 +4,7 @@ import { PT_Mono } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import { config } from '@/utils/Config'
 import { chainUtils } from '@/utils/ChainUtils'
-import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAO from '../../../../abis/v1/Sector3DAO.json'
@@ -21,14 +21,14 @@ import ContributorAddress from '@/components/v1/ContributorAddress'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
-const { provider } = configureChains(
+const { publicClient } = configureChains(
   [chainUtils.chain],
   [publicProvider()]
 )
 
-const client = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
-  provider
+  publicClient
 })
 
 export default function PriorityPage() {
@@ -39,7 +39,7 @@ export default function PriorityPage() {
   console.log('address:', address)
 
   return (
-    <WagmiConfig client={client}>
+    <WagmiConfig config={wagmiConfig}>
       <Head>
         <title>Sector#3</title>
         <meta name="description" content="Do DAOs Dream of Electric Sheep? ⚡️🐑" />
@@ -135,7 +135,7 @@ function EthereumAccount() {
 function Priority({ address }: any) {
   console.log('Priority')
 
-  const priorityContract = {
+  const priorityContract: any = {
     address: address,
     abi: Sector3DAOPriority.abi
   }
@@ -173,12 +173,12 @@ function Priority({ address }: any) {
   let priority = null
   if (data) {
     priority = {
-      title: data[0],
-      rewardToken: data[1],
-      startDate: new Date(Number(data[2]) * 1_000).toISOString().substring(0, 10),
-      epochDuration: data[3],
-      epochBudget: ethers.utils.formatUnits(String(data[4])),
-      gatingNFT: data[5]
+      title: data[0].result,
+      rewardToken: data[1].result,
+      startDate: new Date(Number(data[2].result) * 1_000).toISOString().substring(0, 10),
+      epochDuration: data[3].result,
+      epochBudget: ethers.utils.formatUnits(String(data[4].result)),
+      gatingNFT: data[5].result
     }
   }
   console.log('priority:', priority)
@@ -208,14 +208,14 @@ function Priority({ address }: any) {
         </div>
       </div>
 
-      {(priority.gatingNFT != ethers.constants.AddressZero) && (
+      {/* {(priority.gatingNFT != ethers.constants.AddressZero) && (
         <div className='mt-4 border-2 border-amber-900 text-amber-600 rounded-lg p-2'>
           <span className='mr-2 inline-flex bg-amber-900 text-amber-500 font-bold uppercase rounded-lg px-2 py-1'>
             <ShieldCheckIcon className='h-5 w-5' /> NFT-gated
           </span>
           Contributing to this priority requires NFT ownership: <ERC721Details address={priority.gatingNFT} />
         </div>
-      )}
+      )} */}
     </>
   )
 }
@@ -247,7 +247,7 @@ function Epochs({ priorityAddress, epochNumber }: any) {
   console.log('priorityAddress:', priorityAddress)
   console.log('epochNumber:', epochNumber)
 
-  const priorityContract = {
+  const priorityContract: any = {
     address: priorityAddress,
     abi: Sector3DAOPriority.abi
   }
@@ -286,13 +286,13 @@ function Epochs({ priorityAddress, epochNumber }: any) {
   if (data) {
     priority = {
       address: priorityAddress,
-      title: data[0],
-      rewardToken: data[1],
-      startTime: Number(data[2]),
-      startDate: new Date(Number(data[2]) * 1_000).toISOString().substring(0, 10),
-      epochDuration: Number(data[3]),
-      epochBudget: ethers.utils.formatUnits(String(data[4])),
-      epochNumber: data[5]
+      title: data[0].result,
+      rewardToken: data[1].result,
+      startTime: Number(data[2].result),
+      startDate: new Date(Number(data[2].result) * 1_000).toISOString().substring(0, 10),
+      epochDuration: Number(data[3].result),
+      epochBudget: ethers.utils.formatUnits(String(data[4].result)),
+      epochNumber: data[5].result
     }
   }
   console.log('priority:', priority)

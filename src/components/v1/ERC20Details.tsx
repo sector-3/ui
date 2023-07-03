@@ -8,7 +8,7 @@ import ERC721 from '../../../abis/v1/ERC721.json'
 export default function ERC20Details({ address }: any) {
   console.log('ERC20Details')
 
-  const NFTContract = {
+  const NFTContract: any = {
     address: address,
     abi: ERC721.abi
   }
@@ -30,10 +30,11 @@ export default function ERC20Details({ address }: any) {
   let tokenDetails: any = null
   if (data) {
     tokenDetails = {
-      symbol: data[0],
-      name: data[1]
+      symbol: data[0].result,
+      name: data[1].result
     }
   }
+  console.log('tokenDetails:', tokenDetails)
 
   const tokenLogoLoader = () => {
     console.log('tokenLogoLoader')

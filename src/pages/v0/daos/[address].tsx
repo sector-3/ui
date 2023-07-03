@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
 import { config } from '@/utils/Config'
 import { chainUtils } from '@/utils/ChainUtils'
-import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAO from '../../../../abis/v0/Sector3DAO.json'
@@ -18,14 +18,14 @@ import PriorityDialog from '@/components/v0/PriorityDialog'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
-const { provider } = configureChains(
+const { publicClient } = configureChains(
   [chainUtils.chain],
   [publicProvider()]
 )
 
-const client = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
-  provider
+  publicClient
 })
 
 export default function DaoPage() {
@@ -36,7 +36,7 @@ export default function DaoPage() {
   console.log('address:', address)
 
   return (
-    <WagmiConfig client={client}>
+    <WagmiConfig config={wagmiConfig}>
       <Head>
         <title>Sector#3</title>
         <meta name="description" content="Do DAOs Dream of Electric Sheep? ⚡️🐑" />
@@ -167,7 +167,7 @@ function Priority({ priorityAddress }: any ) {
 
   console.log('priorityAddress:', priorityAddress)
 
-  const priorityContract = {
+  const priorityContract: any = {
     address: priorityAddress,
     abi: Sector3DAOPriority.abi
   }
@@ -211,12 +211,13 @@ function Priority({ priorityAddress }: any ) {
   
   const priority: any = {
     address: priorityAddress,
-    title: priorityData[0],
-    rewardToken: priorityData[1],
-    startDate: new Date(Number(priorityData[2]) * 1_000).toISOString().substring(0, 10),
-    epochDuration: priorityData[3],
-    epochBudget: ethers.utils.formatUnits(String(priorityData[4]))
+    title: priorityData[0].result,
+    rewardToken: priorityData[1].result,
+    startDate: new Date(Number(priorityData[2].result) * 1_000).toISOString().substring(0, 10),
+    epochDuration: priorityData[3].result,
+    epochBudget: ethers.utils.formatUnits(String(priorityData[4].result))
   }
+  console.log('priority:', priority)
   return (
     <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
       <h3 className='text-xl font-bold mb-2'>{priority.title}</h3>

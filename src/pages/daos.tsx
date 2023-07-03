@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { chainUtils } from '@/utils/ChainUtils'
-import { configureChains, createClient, useContractRead, useContractReads, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig, useContractRead, useContractReads, WagmiConfig } from 'wagmi'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAOFactory from '../../abis/Sector3DAOFactory.json'
 import Sector3DAO from '../../abis/v0/Sector3DAO.json'
@@ -9,21 +9,21 @@ import { useIsMounted } from '@/hooks/useIsMounted'
 import Link from 'next/link'
 import Image from 'next/image'
 
-const { provider } = configureChains(
+const { publicClient } = configureChains(
   [chainUtils.chain],
   [publicProvider()]
 )
 
-const client = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
-  provider
+  publicClient
 })
 
 export default function DAOsPage() {
   console.log('DAOsPage')
 
   return (
-    <WagmiConfig client={client}>
+    <WagmiConfig config={wagmiConfig}>
       <Head>
         <title>Sector#3</title>
         <meta name="description" content="Do DAOs Dream of Electric Sheep? ⚡️🐑" />
@@ -98,7 +98,7 @@ function DAOPreview({ address }: any) {
 
   console.log('address:', address)
 
-  const daoContract = {
+  const daoContract: any = {
     address: address,
     abi: Sector3DAO.abi
   }
@@ -128,10 +128,10 @@ function DAOPreview({ address }: any) {
 
   let dao: any = null
   if (data != undefined) {
-    const name = data[0]
-    const purpose = data[1]
-    const token = data[2]
-    const version = data[3]
+    const name = data[0].result
+    const purpose = data[1].result
+    const token = data[2].result
+    const version = data[3].result
     dao = {
       address: address,
       protocolVersion: version,
@@ -174,7 +174,6 @@ function DAOPreview({ address }: any) {
     }
 
     return (
-      // <Link href={`/v${dao.protocolVersion}/daos/${dao.address}`}>
       <Link href={`/v${dao.protocolVersion}/daos/${dao.address}`}>
         <div className='p-6 bg-black rounded-xl border-4 border-black hover:border-gray-700 border-l-gray-700 border-r-gray-700'>
           <div className='flex'>

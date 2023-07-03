@@ -75,9 +75,9 @@ export default function PriorityPage() {
 }
 
 function DAOAddress({ priorityAddress }: any) {
-  console.log('DAO')
+  console.log('DAOAddress')
 
-  console.log('DAOAddress:', DAOAddress)
+  console.log('priorityAddress:', priorityAddress)
 
   const { data, isError, isLoading } = useContractRead({
     address: priorityAddress,
@@ -85,6 +85,8 @@ function DAOAddress({ priorityAddress }: any) {
     functionName: 'dao'
   })
   console.log('data:', data)
+  console.log('isError:', isError)
+  console.log('isLoading:', isLoading)
 
   let daoAddress = null
   if (data) {

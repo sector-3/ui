@@ -18,12 +18,20 @@ import PriorityDialog from '@/components/v1/PriorityDialog'
 import { LockOpenIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 import ERC20Details from '@/components/v1/ERC20Details'
 import ContributorAddress from '@/components/v1/ContributorAddress'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
 const { publicClient } = configureChains(
   [chainUtils.chain],
-  [publicProvider()]
+  [
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        http: `https://rpc.ankr.com/${chain.network}`
+      })
+    }),
+    publicProvider()
+  ]
 )
 
 const wagmiConfig = createConfig({

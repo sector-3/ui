@@ -473,7 +473,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
     claims = {}
     for (let i = 0; i < allocationPercentagesKeys.length; i++) {
       const contributor = allocationPercentagesKeys[i]
-      const claimed = claimsData[i]
+      const claimed = claimsData[i].result
       claims[contributor.toString()] = claimed
     }
   }

@@ -141,15 +141,12 @@ function Priorities({ daoAddress }: any) {
   return (
     <div>
       <div className='container'>
-        {/* <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'> */}
-          <button disabled={!isConnected} 
-            className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
-            onClick={() => setPriorityButtonClicked(true)}
-          >
-            + Add Priority
-          </button>
-        {/* </Link> */}
-
+        <button disabled={!isConnected} 
+          className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+          onClick={() => setPriorityButtonClicked(true)}
+        >
+          + Add Priority
+        </button>
 
         {isPriorityButtonClicked && (
           <PriorityDialog />

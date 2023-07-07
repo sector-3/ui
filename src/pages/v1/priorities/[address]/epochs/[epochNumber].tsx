@@ -1,12 +1,10 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
 import { chainUtils } from '@/utils/ChainUtils'
 import { configureChains, createConfig, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
-import Sector3DAO from '../../../../../../abis/v1/Sector3DAO.json'
 import Sector3DAOPriority from '../../../../../../abis/v1/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
@@ -17,12 +15,12 @@ import ContributionDialog from '@/components/v1/ContributionDialog'
 import { useState } from 'react'
 import DAO from '@/components/v1/DAO'
 import { CheckIcon, InformationCircleIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
-import ERC721Details from '@/components/v1/ERC721Details'
 import ERC20Details from '@/components/v1/ERC20Details'
 import Epoch from '@/components/v1/Epoch'
 import ClaimDialog from '@/components/v1/ClaimDialog'
 import ContributorAddress from '@/components/v1/ContributorAddress'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
+import ERC721Details from '@/components/v1/ERC721Details'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -227,14 +225,14 @@ function Priority({ address }: any) {
         </div>
       </div>
 
-      {/* {(priority.gatingNFT != ethers.constants.AddressZero) && (
+      {(priority.gatingNFT?.toString() != ethers.constants.AddressZero) && (
         <div className='mt-4 border-2 border-amber-900 text-amber-600 rounded-lg p-2'>
           <span className='mr-2 inline-flex bg-amber-900 text-amber-500 font-bold uppercase rounded-lg px-2 py-1'>
             <ShieldCheckIcon className='h-5 w-5' /> NFT-gated
           </span>
           Contributing to this priority requires NFT ownership: <ERC721Details address={priority.gatingNFT} />
         </div>
-      )} */}
+      )}
     </>
   )
 }

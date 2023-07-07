@@ -1,6 +1,6 @@
 import Sector3DAO from '../../../abis/v1/Sector3DAO.json'
 import Sector3DAOPriority from '../../../abis/v1/Sector3DAOPriority.json'
-import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
+import { useContractReads } from 'wagmi'
 import { useIsMounted } from '@/hooks/useIsMounted'
 import Image from 'next/image'
 
@@ -10,7 +10,7 @@ export default function Epoch({ priorityAddress, epochNumber }: any) {
   console.log('priorityAddress:', priorityAddress)
   console.log('epochNumber:', epochNumber)
 
-  const priorityContract = {
+  const priorityContract: any = {
     address: priorityAddress,
     abi: Sector3DAOPriority.abi
   }
@@ -33,14 +33,15 @@ export default function Epoch({ priorityAddress, epochNumber }: any) {
 
   let epoch: any = null
   if (data != undefined) {
-    const startTime: number = Number(data[0])
-    const epochDuration: number = Number(data[1])
+    const startTime: number = Number(data[0].result)
+    const epochDuration: number = Number(data[1].result)
     epoch = {
       number: epochNumber,
       startDate: new Date(Number(startTime + ((epochNumber - 1) * epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10),
       endDate: new Date(Number(startTime + (epochNumber * epochDuration * 24*60*60)) * 1_000).toISOString().substring(0, 10)
     }
   }
+  console.log('epoch:', epoch)
 
   if (!useIsMounted() || !epoch) {
     return (

@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
 import { config } from '@/utils/Config'
 import { chainUtils } from '@/utils/ChainUtils'
-import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAO from '../../../../abis/v1/Sector3DAO.json'
@@ -18,17 +18,25 @@ import PriorityDialog from '@/components/v1/PriorityDialog'
 import { LockOpenIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 import ERC20Details from '@/components/v1/ERC20Details'
 import ContributorAddress from '@/components/v1/ContributorAddress'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
-const { provider } = configureChains(
+const { publicClient } = configureChains(
   [chainUtils.chain],
-  [publicProvider()]
+  [
+    jsonRpcProvider({
+      rpc: () => ({
+        http: config.providerEndpoint
+      })
+    }),
+    publicProvider()
+  ]
 )
 
-const client = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
-  provider
+  publicClient
 })
 
 export default function DaoPage() {
@@ -39,7 +47,7 @@ export default function DaoPage() {
   console.log('address:', address)
 
   return (
-    <WagmiConfig client={client}>
+    <WagmiConfig config={wagmiConfig}>
       <Head>
         <title>Sector#3</title>
         <meta name="description" content="Do DAOs Dream of Electric Sheep? ⚡️🐑" />
@@ -133,15 +141,12 @@ function Priorities({ daoAddress }: any) {
   return (
     <div>
       <div className='container'>
-        {/* <Link href={`${config.etherscanDomain}/address/${daoAddress}#writeContract#F1`} target='_blank'> */}
-          <button disabled={!isConnected} 
-            className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
-            onClick={() => setPriorityButtonClicked(true)}
-          >
-            + Add Priority
-          </button>
-        {/* </Link> */}
-
+        <button disabled={!isConnected} 
+          className='disabled:text-gray-600 disabled:bg-gray-400 float-right px-4 py-2 font-semibold bg-indigo-800 hover:bg-indigo-700 rounded-xl'
+          onClick={() => setPriorityButtonClicked(true)}
+        >
+          + Add Priority
+        </button>
 
         {isPriorityButtonClicked && (
           <PriorityDialog />
@@ -172,7 +177,7 @@ function Priority({ priorityAddress }: any ) {
 
   console.log('priorityAddress:', priorityAddress)
 
-  const priorityContract = {
+  const priorityContract: any = {
     address: priorityAddress,
     abi: Sector3DAOPriority.abi
   }
@@ -220,13 +225,14 @@ function Priority({ priorityAddress }: any ) {
   
   const priority: any = {
     address: priorityAddress,
-    title: priorityData[0],
-    rewardToken: priorityData[1],
-    startDate: new Date(Number(priorityData[2]) * 1_000).toISOString().substring(0, 10),
-    epochDuration: priorityData[3],
-    epochBudget: ethers.utils.formatUnits(String(priorityData[4])),
-    gatingNFT: priorityData[5]
+    title: priorityData[0].result,
+    rewardToken: priorityData[1].result,
+    startDate: new Date(Number(priorityData[2].result) * 1_000).toISOString().substring(0, 10),
+    epochDuration: priorityData[3].result,
+    epochBudget: ethers.utils.formatUnits(String(priorityData[4].result)),
+    gatingNFT: priorityData[5].result
   }
+  console.log('priority:', priority)
   return (
     <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
       {(priority.gatingNFT == ethers.constants.AddressZero) ? (

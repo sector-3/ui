@@ -1,8 +1,8 @@
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { ethers } from "ethers";
 import { Dialog, Transition } from '@headlessui/react'
 import { InformationCircleIcon, CheckBadgeIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount, Address } from 'wagmi'
+import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, Address } from 'wagmi'
 import { useRouter } from 'next/router'
 import Sector3DAOPriority from '../../../abis/v1/Sector3DAOPriority.json'
 import Link from 'next/link'
@@ -48,7 +48,7 @@ export default function ContributionDialog({ priorityTitle, refetchContributions
   }
   console.log('alignmentPercentage:', alignmentPercentage)
 
-  const { config: writeConfig, error } = usePrepareContractWrite({
+  const { config: writeConfig, error, isLoading: isPreparing } = usePrepareContractWrite({
     address: address as Address,
     abi: Sector3DAOPriority.abi,
     functionName: 'addContribution',
@@ -56,6 +56,7 @@ export default function ContributionDialog({ priorityTitle, refetchContributions
   })
   console.log('writeConfig:', writeConfig)
   console.log('error:', error)
+  console.log('isPreparing:', isPreparing)
   
   const { data: transactionData, isLoading, isSuccess, write } = useContractWrite(writeConfig)
   console.log('transactionData:', transactionData)
@@ -194,11 +195,8 @@ export default function ContributionDialog({ priorityTitle, refetchContributions
                           <InformationCircleIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />
                         </div>
                         <div className='ml-2'>
-                          <p className="text-sm text-gray-400">
-                            Report a contribution that you made during this <i>current epoch</i>.
-                          </p>
                           <p className="text-sm text-gray-400 mt-2">
-                            This information will be displayed publicly, so be careful what you share.
+                            Describe how you contributed to the DAO priority &quot;{priorityTitle}&quot;
                           </p>
                         </div>
                       </div>
@@ -372,6 +370,9 @@ export default function ContributionDialog({ priorityTitle, refetchContributions
                       >
                         {!isLoading ? (
                           <>
+                            {isPreparing && (
+                              <div className="mr-2 inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                            )}
                             Confirm
                           </>
                         ) : (

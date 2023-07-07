@@ -1,5 +1,5 @@
 import Sector3DAO from '../../../abis/v1/Sector3DAO.json'
-import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
+import { useContractReads } from 'wagmi'
 import { useIsMounted } from '@/hooks/useIsMounted'
 import Image from 'next/image'
 import { config } from '@/utils/Config'
@@ -9,7 +9,7 @@ export default function DAO({ address }: any) {
 
   console.log('address:', address)
 
-  const daoContract = {
+  const daoContract: any = {
     address: address,
     abi: Sector3DAO.abi
   }
@@ -36,9 +36,9 @@ export default function DAO({ address }: any) {
 
   let dao: any = null
   if (daoData != undefined) {
-    const name = daoData[0]
-    const purpose = daoData[1]
-    const token = daoData[2]
+    const name = daoData[0].result
+    const purpose = daoData[1].result
+    const token = daoData[2].result
     dao = {
       address: address,
       name: name,
@@ -46,6 +46,7 @@ export default function DAO({ address }: any) {
       token: token
     }
   }
+  console.log('dao:', dao)
 
   if (!useIsMounted() || !dao) {
     return (

@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import { chainUtils } from '@/utils/ChainUtils'
-import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
 import Sector3DAO from '../../../../../../abis/v0/Sector3DAO.json'
@@ -16,17 +16,25 @@ import { useIsMounted } from '@/hooks/useIsMounted'
 import ContributionDialog from '@/components/v0/ContributionDialog'
 import { useState } from 'react'
 import DAO from '@/components/v0/DAO'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
-const { provider } = configureChains(
+const { publicClient } = configureChains(
   [chainUtils.chain],
-  [publicProvider()]
+  [
+    jsonRpcProvider({
+      rpc: () => ({
+        http: config.providerEndpoint
+      })
+    }),
+    publicProvider()
+  ]
 )
 
-const client = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
-  provider
+  publicClient
 })
 
 export default function EpochPage() {
@@ -38,7 +46,7 @@ export default function EpochPage() {
   console.log('epochIndex:', epochIndex)
 
   return (
-    <WagmiConfig client={client}>
+    <WagmiConfig config={wagmiConfig}>
       <Head>
         <title>Sector#3</title>
         <meta name="description" content="Do DAOs Dream of Electric Sheep? ⚡️🐑" />
@@ -140,7 +148,7 @@ function EthereumAccount() {
 function Priority({ address }: any) {
   console.log('Priority')
 
-  const priorityContract = {
+  const priorityContract: any = {
     address: address,
     abi: Sector3DAOPriority.abi
   }
@@ -174,11 +182,11 @@ function Priority({ address }: any) {
   let priority = null
   if (data) {
     priority = {
-      title: data[0],
-      rewardToken: data[1],
-      startDate: new Date(Number(data[2]) * 1_000).toISOString().substring(0, 10),
-      epochDuration: data[3],
-      epochBudget: ethers.utils.formatUnits(String(data[4]))
+      title: data[0].result,
+      rewardToken: data[1].result,
+      startDate: new Date(Number(data[2].result) * 1_000).toISOString().substring(0, 10),
+      epochDuration: data[3].result,
+      epochBudget: ethers.utils.formatUnits(String(data[4].result))
     }
   }
   console.log('priority:', priority)

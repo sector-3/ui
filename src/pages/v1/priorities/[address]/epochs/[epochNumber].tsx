@@ -1,12 +1,10 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
 import { chainUtils } from '@/utils/ChainUtils'
-import { configureChains, createClient, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
-import Sector3DAO from '../../../../../../abis/v1/Sector3DAO.json'
 import Sector3DAOPriority from '../../../../../../abis/v1/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
@@ -17,22 +15,30 @@ import ContributionDialog from '@/components/v1/ContributionDialog'
 import { useState } from 'react'
 import DAO from '@/components/v1/DAO'
 import { CheckIcon, InformationCircleIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
-import ERC721Details from '@/components/v1/ERC721Details'
 import ERC20Details from '@/components/v1/ERC20Details'
 import Epoch from '@/components/v1/Epoch'
 import ClaimDialog from '@/components/v1/ClaimDialog'
 import ContributorAddress from '@/components/v1/ContributorAddress'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
+import ERC721Details from '@/components/v1/ERC721Details'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
-const { provider } = configureChains(
+const { publicClient } = configureChains(
   [chainUtils.chain],
-  [publicProvider()]
+  [
+    jsonRpcProvider({
+      rpc: () => ({
+        http: config.providerEndpoint
+      })
+    }),
+    publicProvider()
+  ]
 )
 
-const client = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
-  provider
+  publicClient
 })
 
 export default function EpochPage() {
@@ -44,7 +50,7 @@ export default function EpochPage() {
   console.log('epochNumber:', epochNumber)
 
   return (
-    <WagmiConfig client={client}>
+    <WagmiConfig config={wagmiConfig}>
       <Head>
         <title>Sector#3</title>
         <meta name="description" content="Do DAOs Dream of Electric Sheep? ⚡️🐑" />
@@ -84,9 +90,9 @@ export default function EpochPage() {
 }
 
 function DAOAddress({ priorityAddress }: any) {
-  console.log('DAO')
+  console.log('DAOAddress')
 
-  console.log('DAOAddress:', DAOAddress)
+  console.log('priorityAddress:', priorityAddress)
 
   const { data, isError, isLoading } = useContractRead({
     address: priorityAddress,
@@ -94,6 +100,8 @@ function DAOAddress({ priorityAddress }: any) {
     functionName: 'dao'
   })
   console.log('data:', data)
+  console.log('isError:', isError)
+  console.log('isLoading:', isLoading)
 
   let daoAddress = null
   if (data) {
@@ -144,7 +152,7 @@ function EthereumAccount() {
 function Priority({ address }: any) {
   console.log('Priority')
 
-  const priorityContract = {
+  const priorityContract: any = {
     address: address,
     abi: Sector3DAOPriority.abi
   }
@@ -182,12 +190,12 @@ function Priority({ address }: any) {
   let priority = null
   if (data) {
     priority = {
-      title: data[0],
-      rewardToken: data[1],
-      startDate: new Date(Number(data[2]) * 1_000).toISOString().substring(0, 10),
-      epochDuration: data[3],
-      epochBudget: ethers.utils.formatUnits(String(data[4])),
-      gatingNFT: data[5]
+      title: data[0].result,
+      rewardToken: data[1].result,
+      startDate: new Date(Number(data[2].result) * 1_000).toISOString().substring(0, 10),
+      epochDuration: data[3].result,
+      epochBudget: ethers.utils.formatUnits(String(data[4].result)),
+      gatingNFT: data[5].result
     }
   }
   console.log('priority:', priority)
@@ -217,7 +225,7 @@ function Priority({ address }: any) {
         </div>
       </div>
 
-      {(priority.gatingNFT != ethers.constants.AddressZero) && (
+      {(priority.gatingNFT?.toString() != ethers.constants.AddressZero) && (
         <div className='mt-4 border-2 border-amber-900 text-amber-600 rounded-lg p-2'>
           <span className='mr-2 inline-flex bg-amber-900 text-amber-500 font-bold uppercase rounded-lg px-2 py-1'>
             <ShieldCheckIcon className='h-5 w-5' /> NFT-gated
@@ -361,7 +369,7 @@ function Contributions({ priorityAddress, epochNumber }: any) {
                   </div>
                   <div className='w-1/2'>
                     <label className='text-gray-400'>Date reported</label><br />
-                    {new Date(contribution.timestamp.toNumber() * 1000).toISOString().substring(0, 10)}
+                    {new Date(Number(contribution.timestamp) * 1000).toISOString().substring(0, 16)}
                   </div>
                 </div>
               </div>
@@ -394,7 +402,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
   console.log('epochNumber:', epochNumber)
   console.log('contributions:', contributions)
 
-  const priorityContract = {
+  const priorityContract: any = {
     address: priorityAddress,
     abi: Sector3DAOPriority.abi
   }
@@ -437,7 +445,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
     for (let i = 0; i < allocationPercentagesKeys.length; i++) {
       const contributor = allocationPercentagesKeys[i]
       console.log('contributor:', contributor)
-      const allocationPercentage = ethers.utils.formatUnits(String(data[i]))
+      const allocationPercentage = ethers.utils.formatUnits(String(data[i].result))
       console.log('allocationPercentage:', allocationPercentage)
       allocationPercentages[contributor] = allocationPercentage
     }
@@ -463,7 +471,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
     claims = {}
     for (let i = 0; i < allocationPercentagesKeys.length; i++) {
       const contributor = allocationPercentagesKeys[i]
-      const claimed = claimsData[i]
+      const claimed = claimsData[i].result
       claims[contributor.toString()] = claimed
     }
   }
@@ -490,9 +498,9 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
   let priorityRewardToken: any = null
   let currentEpochNumber: any = null
   if (priorityData) {
-    priorityBudgetInEther = ethers.utils.formatUnits(String(priorityData[0]))
-    priorityRewardToken = priorityData[1]
-    currentEpochNumber = priorityData[2]
+    priorityBudgetInEther = ethers.utils.formatUnits(String(priorityData[0].result))
+    priorityRewardToken = priorityData[1].result
+    currentEpochNumber = priorityData[2].result
   }
   console.log('priorityBudgetInEther:', priorityBudgetInEther)
   console.log('priorityRewardToken:', priorityRewardToken)
@@ -539,7 +547,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
                   <code><ContributorAddress address={contributor} /></code>
                 </div>
                 <div className='md:w-1/2'>
-                  <div className="h-6 bg-gray-900 rounded-full">
+                  <div className="h-6 bg-gray-900 rounded-full shadow-inner">
                     <div className={`w-[${Math.round(allocationPercentages[contributor])}%] h-full text-right px-2 bg-gradient-to-r from-indigo-900 to-indigo-700 rounded-full`}>
                       {Number(allocationPercentages[contributor]).toFixed(2)}%
                     </div>

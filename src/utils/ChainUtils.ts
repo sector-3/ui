@@ -1,4 +1,4 @@
-import { mainnet, sepolia, goerli, localhost, optimism } from 'wagmi/chains'
+import { mainnet, optimism, sepolia, goerli, localhost } from 'wagmi/chains'
 import { config } from '@/utils/Config'
 
 const chains = [mainnet, optimism, sepolia, goerli, localhost]

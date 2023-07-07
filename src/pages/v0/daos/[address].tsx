@@ -15,12 +15,20 @@ import { useIsMounted } from '@/hooks/useIsMounted'
 import DAO from '@/components/v0/DAO'
 import { useState } from 'react'
 import PriorityDialog from '@/components/v0/PriorityDialog'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
 const { publicClient } = configureChains(
   [chainUtils.chain],
-  [publicProvider()]
+  [
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        http: `https://rpc.ankr.com/${config.chain}`
+      })
+    }),
+    publicProvider()
+  ]
 )
 
 const wagmiConfig = createConfig({

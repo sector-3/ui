@@ -8,10 +8,18 @@ import { config } from '@/utils/Config'
 import { useIsMounted } from '@/hooks/useIsMounted'
 import Link from 'next/link'
 import Image from 'next/image'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 const { publicClient } = configureChains(
   [chainUtils.chain],
-  [publicProvider()]
+  [
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        http: `https://rpc.ankr.com/${config.chain}`
+      })
+    }),
+    publicProvider()
+  ]
 )
 
 const wagmiConfig = createConfig({
@@ -145,7 +153,7 @@ function DAOPreview({ address }: any) {
   if (!useIsMounted() || isLoading) {
     return (
       <div className='p-6 bg-black rounded-xl border-4 border-black border-l-gray-700 border-r-gray-700'>
-        <div className="container mt-4 flex items-center text-gray-400">
+        <div className="container flex items-center text-gray-400">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent border-gray-400 align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
           &nbsp;Loading...
         </div>

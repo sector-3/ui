@@ -30,7 +30,7 @@ export default function ClaimDialog({ contributorAddress, amount, rewardToken }:
     abi: Sector3DAOPriority.abi
   }
 
-  const { config: writeConfig, error } = usePrepareContractWrite({
+  const { config: writeConfig, error, isLoading: isPreparing } = usePrepareContractWrite({
     address: address as Address,
     abi: Sector3DAOPriority.abi,
     functionName: 'claimReward',
@@ -41,6 +41,7 @@ export default function ClaimDialog({ contributorAddress, amount, rewardToken }:
   })
   console.log('writeConfig:', writeConfig)
   console.log('error:', error)
+  console.log('isPreparing:', isPreparing)
 
   const { data: transactionData, isLoading, isSuccess, write } = useContractWrite(writeConfig)
   console.log('transactionData:', transactionData)
@@ -206,6 +207,9 @@ export default function ClaimDialog({ contributorAddress, amount, rewardToken }:
                     >
                       {!isLoading ? (
                         <>
+                          {isPreparing && (
+                            <div className="mr-2 inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                          )}
                           Claim
                         </>
                       ) : (

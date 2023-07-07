@@ -195,11 +195,8 @@ export default function ContributionDialog({ priorityTitle, refetchContributions
                           <InformationCircleIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />
                         </div>
                         <div className='ml-2'>
-                          <p className="text-sm text-gray-400">
-                            Report a contribution that you made during this <i>current epoch</i>.
-                          </p>
                           <p className="text-sm text-gray-400 mt-2">
-                            This information will be displayed publicly, so be careful what you share.
+                            Describe how you contributed to the DAO priority &quot;{priorityTitle}&quot;
                           </p>
                         </div>
                       </div>

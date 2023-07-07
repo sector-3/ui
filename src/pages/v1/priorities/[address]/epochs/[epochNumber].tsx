@@ -371,7 +371,7 @@ function Contributions({ priorityAddress, epochNumber }: any) {
                   </div>
                   <div className='w-1/2'>
                     <label className='text-gray-400'>Date reported</label><br />
-                    {new Date(contribution.timestamp.toNumber() * 1000).toISOString().substring(0, 10)}
+                    {new Date(Number(contribution.timestamp) * 1000).toISOString().substring(0, 16)}
                   </div>
                 </div>
               </div>
@@ -447,7 +447,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
     for (let i = 0; i < allocationPercentagesKeys.length; i++) {
       const contributor = allocationPercentagesKeys[i]
       console.log('contributor:', contributor)
-      const allocationPercentage = ethers.utils.formatUnits(String(data[i]))
+      const allocationPercentage = ethers.utils.formatUnits(String(data[i].result))
       console.log('allocationPercentage:', allocationPercentage)
       allocationPercentages[contributor] = allocationPercentage
     }

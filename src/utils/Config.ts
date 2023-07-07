@@ -12,7 +12,7 @@ export const config = {
 console.log('config:', config)
 
 /**
- * @param chain localhost|goerli|sepolia|optimism|mainnet
+ * @param chain localhost|sepolia|optimism|mainnet
  */
 function getProviderEndpoint(chain: String): string {
   switch(chain) {
@@ -22,8 +22,6 @@ function getProviderEndpoint(chain: String): string {
       return 'https://rpc.ankr.com/optimism'
     case 'sepolia':
       return 'https://rpc.ankr.com/eth_sepolia'
-    case 'goerli':
-      return 'https://rpc.ankr.com/eth_goerli'
   }
   return 'http://127.0.0.1:8545'
 }

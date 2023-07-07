@@ -30,8 +30,8 @@ const { publicClient } = configureChains(
   [chainUtils.chain],
   [
     jsonRpcProvider({
-      rpc: (chain) => ({
-        http: `https://rpc.ankr.com/${config.chain}`
+      rpc: () => ({
+        http: config.providerEndpoint
       })
     }),
     publicProvider()
@@ -549,7 +549,7 @@ function Allocations({ priorityAddress, epochNumber, contributions }: any) {
                   <code><ContributorAddress address={contributor} /></code>
                 </div>
                 <div className='md:w-1/2'>
-                  <div className="h-6 bg-gray-900 rounded-full">
+                  <div className="h-6 bg-gray-900 rounded-full shadow-inner">
                     <div className={`w-[${Math.round(allocationPercentages[contributor])}%] h-full text-right px-2 bg-gradient-to-r from-indigo-900 to-indigo-700 rounded-full`}>
                       {Number(allocationPercentages[contributor]).toFixed(2)}%
                     </div>

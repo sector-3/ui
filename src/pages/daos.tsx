@@ -14,8 +14,8 @@ const { publicClient } = configureChains(
   [chainUtils.chain],
   [
     jsonRpcProvider({
-      rpc: (chain) => ({
-        http: `https://rpc.ankr.com/${config.chain}`
+      rpc: () => ({
+        http: config.providerEndpoint
       })
     }),
     publicProvider()

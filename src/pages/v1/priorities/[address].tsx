@@ -1,21 +1,17 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { PT_Mono } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
 import { config } from '@/utils/Config'
 import { chainUtils } from '@/utils/ChainUtils'
 import { configureChains, createConfig, useAccount, useConnect, useContractRead, useContractReads, useDisconnect, WagmiConfig } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { publicProvider } from '@wagmi/core/providers/public'
-import Sector3DAO from '../../../../abis/v1/Sector3DAO.json'
 import Sector3DAOPriority from '../../../../abis/v1/Sector3DAOPriority.json'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useIsMounted } from '@/hooks/useIsMounted'
 import DAO from '@/components/v1/DAO'
-import { ShieldCheckIcon } from '@heroicons/react/24/outline'
-import ERC721Details from '@/components/v1/ERC721Details'
 import ERC20Details from '@/components/v1/ERC20Details'
 import ContributorAddress from '@/components/v1/ContributorAddress'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
@@ -26,8 +22,8 @@ const { publicClient } = configureChains(
   [chainUtils.chain],
   [
     jsonRpcProvider({
-      rpc: (chain) => ({
-        http: `https://rpc.ankr.com/${config.chain}`
+      rpc: () => ({
+        http: config.providerEndpoint
       })
     }),
     publicProvider()

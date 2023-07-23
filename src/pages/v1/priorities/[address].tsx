@@ -17,7 +17,7 @@ import ContributorAddress from '@/components/v1/ContributorAddress'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import ERC721Details from '@/components/v1/ERC721Details'
 import { ShieldCheckIcon } from '@heroicons/react/24/outline'
-import { ContributionCount } from '@/components/v1/ContributionCount'
+import { EpochPreview } from '@/components/v1/EpochPreview'
 
 const font = PT_Mono({ subsets: ['latin'], weight: '400' })
 
@@ -341,14 +341,9 @@ function Epochs({ priorityAddress, epochNumber }: any) {
 
       <div className='container'>
         <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
-          <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochNumber}</h3>
-          From <b>{epochs[0].startDate}</b> to <b>{epochs[0].endDate}</b><br />
-          
-          <div className='text-gray-400 mt-4'>Contribution count: <ContributionCount priorityAddress={priorityAddress} epochNumber={priority.epochNumber} /></div>
+          <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochNumber} ({epochs[0].startDate} ➜ {epochs[0].endDate})</h3>
 
-          <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochNumber}`}>
-            <button className='mt-4 px-4 py-2 font-semibold rounded-xl bg-indigo-900 hover:bg-indigo-800'>⏳ Report Contributions</button>
-          </Link>
+          <EpochPreview priorityAddress={priorityAddress} epochNumber={priority.epochNumber} />
         </div>
       </div>
 
@@ -368,14 +363,9 @@ function Epochs({ priorityAddress, epochNumber }: any) {
               null
             ) : (
               <div key={index} className='mt-4 p-6 bg-gray-800 rounded-xl'>
-                <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochNumber - index}</h3>
-                From <b>{epoch.startDate}</b> to <b>{epoch.endDate}</b><br />
+                <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochNumber - index} ({epoch.startDate} ➜ {epoch.endDate})</h3>
 
-                <div className='text-gray-400 mt-4'>Contribution count: <ContributionCount priorityAddress={priorityAddress} epochNumber={priority.epochNumber - index} /></div>
-                
-                <Link href={`/v1/priorities/${priority.address}/epochs/${priority.epochNumber - index}`}>
-                  <button className='mt-4 px-4 py-2 font-semibold rounded-xl bg-indigo-900 hover:bg-indigo-800'>⌛️ View Contributions</button>
-                </Link>
+                <EpochPreview priorityAddress={priorityAddress} epochNumber={priority.epochNumber - index} />
               </div>
             )
           ))

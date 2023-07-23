@@ -3,9 +3,10 @@ import Sector3DAOPriority from '../../../abis/v1/Sector3DAOPriority.json'
 import { useIsMounted } from "@/hooks/useIsMounted"
 import Link from "next/link"
 
-export function EpochPreview({ priorityAddress, epochNumber }: any) {
+export function EpochPreview({ priorityAddress, currentEpochNumber, epochNumber }: any) {
     console.log('EpochPreview')
 
+    console.log('priorityAddress:', priorityAddress)
     console.log('epochNumber:', epochNumber)
 
     const { data, isError, isLoading } = useContractRead({
@@ -45,11 +46,22 @@ export function EpochPreview({ priorityAddress, epochNumber }: any) {
                             ))}
                         </div>
                     </div>
-
-                    <Link href={`/v1/priorities/${priorityAddress}/epochs/${epochNumber}`}>
-                        <button className='mt-4 px-4 py-2 font-semibold rounded-xl bg-indigo-900 hover:bg-indigo-800'>⏳ Report Contributions</button>
-                    </Link>
                 </>
+            )}
+            {(currentEpochNumber == epochNumber) ? (
+                <Link href={`/v1/priorities/${priorityAddress}/epochs/${epochNumber}`}>
+                    <button className='mt-4 px-4 py-2 font-semibold rounded-xl bg-indigo-900 hover:bg-indigo-800'>
+                        ⏳ Report Contributions
+                    </button>
+                </Link>
+            ) : (
+                (epochContributions.length > 0) && (
+                    <Link href={`/v1/priorities/${priorityAddress}/epochs/${epochNumber}`}>
+                        <button className='mt-4 px-4 py-2 font-semibold rounded-xl bg-indigo-900 hover:bg-indigo-800'>
+                            ⌛ View Contributions
+                        </button>
+                    </Link>
+                )
             )}
         </>
     )

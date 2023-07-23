@@ -343,7 +343,7 @@ function Epochs({ priorityAddress, epochNumber }: any) {
         <div className='mt-4 p-6 bg-gray-800 rounded-xl'>
           <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochNumber} ({epochs[0].startDate} ➜ {epochs[0].endDate})</h3>
 
-          <EpochPreview priorityAddress={priorityAddress} epochNumber={priority.epochNumber} />
+          <EpochPreview priorityAddress={priorityAddress} currentEpochNumber={priority.epochNumber} epochNumber={priority.epochNumber} />
         </div>
       </div>
 
@@ -365,7 +365,7 @@ function Epochs({ priorityAddress, epochNumber }: any) {
               <div key={index} className='mt-4 p-6 bg-gray-800 rounded-xl'>
                 <h3 className='text-xl font-bold mb-2'>Epoch #{priority.epochNumber - index} ({epoch.startDate} ➜ {epoch.endDate})</h3>
 
-                <EpochPreview priorityAddress={priorityAddress} epochNumber={priority.epochNumber - index} />
+                <EpochPreview priorityAddress={priorityAddress} currentEpochNumber={priority.epochNumber} epochNumber={priority.epochNumber - index} />
               </div>
             )
           ))

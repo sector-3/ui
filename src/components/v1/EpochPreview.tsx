@@ -41,7 +41,7 @@ export function EpochPreview({ priorityAddress, epochNumber }: any) {
                     <div>
                         <div className="mt-3 flex -space-x-2">
                             {Object.keys(epochContributors).map((contributor) => (
-                                <img className="inline-block h-8 w-8 rounded-full ring-2 ring" src={`https://cdn.stamp.fyi/avatar/eth:${contributor}?s=128`} alt=""/>
+                                <img key={contributor} className="inline-block h-8 w-8 rounded-full ring-2 ring" src={`https://cdn.stamp.fyi/avatar/eth:${contributor}?s=128`} alt=""/>
                             ))}
                         </div>
                     </div>

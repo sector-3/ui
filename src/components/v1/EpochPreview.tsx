@@ -2,6 +2,7 @@ import { useContractRead } from "wagmi"
 import Sector3DAOPriority from '../../../abis/v1/Sector3DAOPriority.json'
 import { useIsMounted } from "@/hooks/useIsMounted"
 import Link from "next/link"
+import { CircleStackIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline"
 
 export function EpochPreview({ priorityAddress, currentEpochNumber, epochNumber }: any) {
     console.log('EpochPreview')
@@ -22,7 +23,15 @@ export function EpochPreview({ priorityAddress, currentEpochNumber, epochNumber 
         epochContributions = data
     }
 
-    if (!useIsMounted() || isLoading) {
+    const { data: isEpochFundedData, isError: isEpochFundedError, isLoading: isEpochFundedLoading } = useContractRead({
+        address: priorityAddress,
+        abi: Sector3DAOPriority.abi,
+        functionName: 'isEpochFunded',
+        args: [ epochNumber ]
+    })
+    console.log('isEpochFundedData:', isEpochFundedData)
+
+    if (!useIsMounted() || isLoading || isEpochFundedLoading) {
         return (
             <span className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></span>
         )
@@ -42,7 +51,19 @@ export function EpochPreview({ priorityAddress, currentEpochNumber, epochNumber 
 
     return (
         <>
-            <div className='text-gray-400 mt-4'>Contributions: {epochContributions.length} ({epochHours}h)</div>
+            {((epochContributions.length > 0)  && (epochNumber != currentEpochNumber)) && (
+                !isEpochFundedData ? (
+                    <span className='float-right inline-flex bg-amber-900 text-amber-500 font-bold uppercase text-sm rounded-lg px-2 py-1'>
+                        <ExclamationCircleIcon className='h-5 w-5' /> Not yet funded
+                    </span>
+                ) : (
+                    <span className='float-right inline-flex bg-emerald-900 text-emerald-500 font-bold uppercase text-sm rounded-lg px-2 py-1'>
+                        <CircleStackIcon className='h-5 w-5' /> Funded
+                    </span>
+                )
+            )}
+
+            <div className='text-gray-400 mt-4'>Contributions: {epochContributions.length} (⏱️{epochHours}h)</div>
             {(epochContributions.length > 0) && (
                 <>
                     <div>

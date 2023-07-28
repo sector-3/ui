@@ -34,9 +34,15 @@ export function EpochPreview({ priorityAddress, currentEpochNumber, epochNumber 
     }
     console.log('epochContributors:', epochContributors)
 
+    let epochHours: number = 0
+    for (const contribution of epochContributions) {
+        epochHours += contribution.hoursSpent
+    }
+    console.log('epochHours:', epochHours)
+
     return (
         <>
-            <div className='text-gray-400 mt-4'>Contributions: {epochContributions.length}</div>
+            <div className='text-gray-400 mt-4'>Contributions: {epochContributions.length} ({epochHours}h)</div>
             {(epochContributions.length > 0) && (
                 <>
                     <div>
